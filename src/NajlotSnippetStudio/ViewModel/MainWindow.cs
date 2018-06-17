@@ -1,18 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NajlotSnippetStudio.ViewModel
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public class MainWindow : ViewModelBase
     {
         private ObservableCollection<Template> _templates = new ObservableCollection<Template>();
@@ -76,20 +68,11 @@ namespace NajlotSnippetStudio.ViewModel
                 {
                     return;
                 }
-
-                if (_selectedTemplateIndex == value)
-                {
-                    //return;
-                }
-
+				
 				if(Templates.Count > value)
 				{
 					try
 					{
-						// HACK:
-						// Beim Ändern des Templates (und damit den dazugehörigen Quellcode) versucht
-						// AvalonEditBehavior das CaretOffset zu behalten.
-						// Sollte der Quelltext länger sein, schmiert die Anwendung ab...
 						CurrentTemplate = Templates[value];
 					}
 					catch(Exception ex)

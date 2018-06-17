@@ -1,18 +1,10 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Diagnostics;
 using Microsoft.CSharp;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Specialized;
 using Microsoft.VisualBasic;
 
-/// <summary>
-/// 
-/// </summary>
 internal class NotFoundException : Exception
 {
     public NotFoundException(string what) : base(what + " not found!"){}
@@ -20,9 +12,6 @@ internal class NotFoundException : Exception
 
 namespace NajlotSnippetStudio
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public static class TemplateRunner
 	{
 		public static void Run( ViewModel.Template template, ref StringCollection compileOutput)

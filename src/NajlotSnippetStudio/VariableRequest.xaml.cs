@@ -24,12 +24,12 @@ namespace NajlotSnippetStudio
 			InitializeComponent();
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void OkClick(object sender, RoutedEventArgs e)
 		{
 			this.Close();
 		}
 
-		private void Button_Click_1(object sender, RoutedEventArgs e)
+		private void CancelClick(object sender, RoutedEventArgs e)
 		{
 			var variable = this.DataContext as ViewModel.Variable;
 

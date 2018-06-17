@@ -1,16 +1,3 @@
-/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:NajlotSnippetStudio"
-                           x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-
-  You can also use Blend to do all this with the tool's support.
-  See http://www.galasoft.ch/mvvm
-*/
 
 using CommonServiceLocator;
 using GalaSoft.MvvmLight;
@@ -31,25 +18,20 @@ namespace NajlotSnippetStudio.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
+			if (ViewModelBase.IsInDesignModeStatic)
+			{
 
-            SimpleIoc.Default.Register<MainViewModel>();
+			}
+
+			SimpleIoc.Default.Register<MainViewModel>();
         }
 
         public MainViewModel Main
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
+				// DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+				return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
         

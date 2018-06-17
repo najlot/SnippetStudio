@@ -20,8 +20,8 @@
 
         <Border Background="LightGray" Grid.Row="1">
             <WrapPanel HorizontalAlignment="Right">
-                <Button Content="Ok" Margin="5" MinWidth="100" Padding="10,5" Click="Button_Click" />
-                <Button Content="Cancel" Margin="5" MinWidth="100" Padding="10,5" Click="Button_Click_1" />
+                <Button Content="Ok" Margin="5" MinWidth="100" Padding="10,5" Click="OkClick" />
+                <Button Content="Cancel" Margin="5" MinWidth="100" Padding="10,5" Click="CancelClick" />
             </WrapPanel>
         </Border>
     </Grid>

@@ -8,9 +8,6 @@ using System.Collections.Specialized;
 
 namespace NajlotSnippetStudio.ViewModel
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public class Template : ViewModelBase
 	{
 		public string Name { get => _name; set => Set( nameof(Name), ref _name, value); }
