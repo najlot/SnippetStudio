@@ -1,0 +1,60 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Views="clr-namespace:NajlotSnippetStudio.Views" 
+        xmlns:vms="clr-namespace:NajlotSnippetStudio.ViewModel" 
+        x:Class="NajlotSnippetStudio.MainWindow" 
+        mc:Ignorable="d" WindowState="Maximized"
+        Title="NajlotSnippetStudio" MinHeight="480" MinWidth="640" d:DataContext="{d:DesignInstance {x:Type vms:MainWindow}, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Visibility="{Binding CurrentTemplate.VariableSelectionNotVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel>
+                <WrapPanel DockPanel.Dock="Bottom">
+                    <Button Content="Add" Command="{Binding AddTemplateCommand}" Margin="5" Padding="10,5" MinWidth="100"/>
+                    <Button Content="Delete" Command="{Binding DeleteTemplateCommand}" Margin="5" Padding="10,5" MinWidth="100"/>
+                </WrapPanel>
+
+                <DataGrid
+				  RowHeaderWidth="0" 
+				  ItemsSource="{Binding Templates}" 
+				  SelectedIndex="{Binding SelectedTemplateIndex}"
+				  CanUserSortColumns="False" 
+				  CanUserAddRows="False"
+				  AutoGenerateColumns="False" 
+				  Background="{StaticResource PrimaryFontColor}" 
+				  HorizontalGridLinesBrush="LightGray" 
+				  VerticalGridLinesBrush="LightGray"
+				  SelectionUnit="FullRow"
+				  BorderBrush="LightGray" 
+                  SelectionMode="Single">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="SizeToCells" Header="Templates" MinWidth="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Name}" Background="Transparent" BorderThickness="0" Style="{StaticResource DataGridTextBox}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </ScrollViewer>
+
+        <Views:Template Margin="5" Grid.Column="1" DataContext="{Binding CurrentTemplate}"/>
+
+    </Grid>
+</Window>

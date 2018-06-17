@@ -1,0 +1,29 @@
+﻿<Window x:Class="NajlotSnippetStudio.VariableRequest"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NajlotSnippetStudio"
+        mc:Ignorable="d"
+        Title="VariableRequest" Height="200" Width="400" WindowStyle="None" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <StackPanel>
+                <Label Content="{Binding RequestName}" Grid.Column="4"/>
+                <TextBox Name="InputTextBox" Text="{Binding Value}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Grid.Column="5" Margin="5"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Background="LightGray" Grid.Row="1">
+            <WrapPanel HorizontalAlignment="Right">
+                <Button Content="Ok" Margin="5" MinWidth="100" Padding="10,5" Click="Button_Click" />
+                <Button Content="Cancel" Margin="5" MinWidth="100" Padding="10,5" Click="Button_Click_1" />
+            </WrapPanel>
+        </Border>
+    </Grid>
+
+</Window>
