@@ -85,7 +85,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="TemplateIO.cs" />
+    <Compile Include="IO\TemplateIO.cs" />
     <Compile Include="TemplateRunner.cs" />
     <Compile Include="TextEditorBehaviour.cs" />
     <Compile Include="VariableRequest.xaml.cs">

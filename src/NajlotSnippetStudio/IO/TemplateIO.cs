@@ -8,11 +8,8 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace NajlotSnippetStudio
+namespace NajlotSnippetStudio.IO
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public static class TemplateIO
 	{
 		public static void SaveAsXML( ViewModel.MainWindow mw )
