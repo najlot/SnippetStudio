@@ -86,6 +86,8 @@
     <Compile Include="IO\TemplateIO.cs" />
     <Compile Include="TemplateRunner.cs" />
     <Compile Include="TextEditorBehaviour.cs" />
+    <Compile Include="Utils\ZipArchiveStreamEntry.cs" />
+    <Compile Include="Utils\ZipArchiveUtils.cs" />
     <Compile Include="VariableRequest.xaml.cs">
       <DependentUpon>VariableRequest.xaml</DependentUpon>
     </Compile>
