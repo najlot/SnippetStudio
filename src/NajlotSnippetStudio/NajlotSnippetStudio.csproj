@@ -77,13 +77,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IO\TemplateReader.cs" />
+    <Compile Include="IO\TemplateWriter.cs" />
     <Compile Include="Utils\IconUtilities.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="IO\TemplateIO.cs" />
     <Compile Include="TemplateRunner.cs" />
     <Compile Include="TextEditorBehaviour.cs" />
     <Compile Include="Utils\ZipArchiveStreamEntry.cs" />

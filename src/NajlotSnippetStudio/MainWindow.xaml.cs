@@ -28,7 +28,7 @@ namespace NajlotSnippetStudio
 			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
 
 			ViewModel.MainWindow data;
-			TemplateIO.LoadFromXML(out data);
+			TemplateReader.LoadFromXML(out data);
 			this.DataContext = data;
 
 			var args = Environment.GetCommandLineArgs();
@@ -68,7 +68,7 @@ namespace NajlotSnippetStudio
 		{
 			try
 			{
-				TemplateIO.SaveAsXML(this.DataContext as ViewModel.MainWindow);
+				TemplateWriter.SaveAsXML(this.DataContext as ViewModel.MainWindow);
 			}
 			catch (Exception ex)
 			{
