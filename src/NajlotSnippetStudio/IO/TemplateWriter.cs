@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NajlotSnippetStudio.ViewModel;
+using System;
 using System.IO;
 using System.Windows;
 using System.Xml;
@@ -8,13 +9,10 @@ namespace NajlotSnippetStudio.IO
 {
 	public static class TemplateWriter
 	{
-		public static void SaveAsXML(ViewModel.MainWindow mw)
-		{
-			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string appDataVolder = Path.Combine(appData, "NajlotSnippetStudio");
-			string fileName = Path.Combine(appDataVolder, "NajlotSnippetStudio.xml");
-			if (!Directory.Exists(appDataVolder)) Directory.CreateDirectory(appDataVolder);
+		private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Template));
 
+		public static void Save(Template template, string fileName)
+		{
 			if (File.Exists(fileName))
 			{
 				File.Copy(fileName, fileName + ".bak", true);
@@ -23,30 +21,44 @@ namespace NajlotSnippetStudio.IO
 
 			try
 			{
-				var data = mw;
-				data.SaveID++;
-
-				XmlSerializer xsSubmit = new XmlSerializer(typeof(ViewModel.MainWindow));
-				var subReq = data;
-				var xml = "";
-
 				using (var sww = new StringWriter())
 				{
 					using (XmlWriter writer = XmlWriter.Create(sww))
 					{
-						xsSubmit.Serialize(writer, subReq);
-						xml = sww.ToString();
+						xmlSerializer.Serialize(writer, (object)template);
+						File.WriteAllText(fileName, sww.ToString(), System.Text.Encoding.Unicode);
+						File.Delete(fileName + ".bak");
 					}
 				}
-
-				File.WriteAllText(fileName, xml, System.Text.Encoding.Unicode);
-
-				File.Delete(fileName + ".bak");
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), ex.GetType().ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
 				File.Copy(fileName + ".bak", fileName);
+			}
+		}
+
+		public static void Save(ViewModel.MainWindow mw)
+		{
+			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			string appDataFolder = Path.Combine(appData, "NajlotSnippetStudio");
+			if (!Directory.Exists(appDataFolder)) Directory.CreateDirectory(appDataFolder);
+
+			foreach (var template in mw.Templates)
+			{
+				Save(template, Path.Combine(appDataFolder, template.Name + ".xml"));
+			}
+
+			CleanUp(appDataFolder);
+		}
+
+		[Obsolete("Will be removed with SingleXMLTemplateReader in one of the following releases.")]
+		private static void CleanUp(string appDataFolder)
+		{
+			// Drop old version of file, of exists
+			if (File.Exists(Path.Combine(appDataFolder, "NajlotSnippetStudio.xml")))
+			{
+				File.Delete(Path.Combine(appDataFolder, "NajlotSnippetStudio.xml"));
 			}
 		}
 	}

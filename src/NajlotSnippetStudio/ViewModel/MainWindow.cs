@@ -84,9 +84,7 @@ namespace NajlotSnippetStudio.ViewModel
                 Set(nameof(SelectedTemplateIndex), ref _selectedTemplateIndex, value);
             }
         }
-
-		public int SaveID { get; set; } = 0;
-
+		
 		[System.Xml.Serialization.XmlIgnore]
 		public RelayCommand AddTemplateCommand { get; set; }
 		[System.Xml.Serialization.XmlIgnore]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NajlotSnippetStudio.ViewModel;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -6,30 +7,37 @@ namespace NajlotSnippetStudio.IO
 {
 	public static class TemplateReader
 	{
-		public static void LoadFromXML(out ViewModel.MainWindow mw)
+		private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Template));
+
+		public static void ReadAllTemplates(out ViewModel.MainWindow mw)
 		{
 			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string appDataVolder = Path.Combine(appData, "NajlotSnippetStudio");
-			string fileName = Path.Combine(appDataVolder, "NajlotSnippetStudio.xml");
-			if (!Directory.Exists(appDataVolder)) Directory.CreateDirectory(appDataVolder);
+			string appDataFolder = Path.Combine(appData, "NajlotSnippetStudio");
+			
+			if (!Directory.Exists(appDataFolder)) Directory.CreateDirectory(appDataFolder);
 
-			if (!File.Exists(fileName))
+			string oldFileName = Path.Combine(appDataFolder, "NajlotSnippetStudio.xml");
+
+			if (File.Exists(oldFileName))
 			{
-				mw = new ViewModel.MainWindow();
-				mw.CurrentTemplate = new ViewModel.Template();
-				mw.CurrentTemplate.IsEnabled = false;
+				SingleXMLTemplateReader.Load(oldFileName, out mw);
 				return;
 			}
 
-			XmlSerializer xsSubmit = new XmlSerializer(typeof(ViewModel.MainWindow));
-
-			using (var file = File.OpenRead(fileName))
+			mw = new ViewModel.MainWindow();
+			
+			foreach (var filePath in Directory.GetFiles(appDataFolder))
 			{
-				mw = xsSubmit.Deserialize(file) as ViewModel.MainWindow;
+				ReadTemplate(mw, filePath);
 			}
+		}
 
-			foreach (var tpl in mw.Templates)
+		private static void ReadTemplate(ViewModel.MainWindow mw, string filePath)
+		{
+			using (var file = File.OpenRead(filePath))
 			{
+				var tpl = xmlSerializer.Deserialize(file) as Template;
+
 				foreach (var dep in tpl.Dependencies)
 				{
 					dep.Dependencies = tpl.Dependencies;
@@ -39,14 +47,9 @@ namespace NajlotSnippetStudio.IO
 				{
 					variable.Variables = tpl.Variables;
 				}
-			}
 
-			if (mw.Templates.Count == 0)
-			{
-				mw.CurrentTemplate = new ViewModel.Template();
-				mw.CurrentTemplate.IsEnabled = false;
+				mw.Templates.Add(tpl);
 			}
-
 		}
 	}
 }

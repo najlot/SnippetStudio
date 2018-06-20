@@ -77,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IO\SingleXMLTemplateReader.cs" />
     <Compile Include="IO\TemplateReader.cs" />
     <Compile Include="IO\TemplateWriter.cs" />
     <Compile Include="Utils\IconUtilities.cs" />
