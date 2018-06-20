@@ -59,7 +59,8 @@ namespace NajlotSnippetStudio
 				if (editor.Document != null)
 				{
 					var caretOffset = editor.CaretOffset;
-					editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue.ToString();
+					var text = dependencyPropertyChangedEventArgs.NewValue?.ToString();
+					editor.Document.Text = text == null ? "": text;
 					editor.CaretOffset = caretOffset;
 				}
 			}

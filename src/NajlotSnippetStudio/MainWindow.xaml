@@ -27,7 +27,7 @@
                 <DataGrid
 				  RowHeaderWidth="0" 
 				  ItemsSource="{Binding Templates}" 
-				  SelectedIndex="{Binding SelectedTemplateIndex}"
+				  SelectedItem="{Binding CurrentTemplate}"
 				  CanUserSortColumns="False" 
 				  CanUserAddRows="False"
 				  AutoGenerateColumns="False" 

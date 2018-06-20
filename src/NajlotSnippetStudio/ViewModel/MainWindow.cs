@@ -51,40 +51,6 @@ namespace NajlotSnippetStudio.ViewModel
             }
         }
 
-        private int _selectedTemplateIndex;
-        /// <summary>
-        /// Sets and gets the SelectedTemplateIndex property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int SelectedTemplateIndex
-        {
-            get
-            {
-                return _selectedTemplateIndex;
-            }
-            set
-            {
-                if (value < 0)
-                {
-                    return;
-                }
-				
-				if(Templates.Count > value)
-				{
-					try
-					{
-						CurrentTemplate = Templates[value];
-					}
-					catch(Exception ex)
-					{
-						Console.Error.WriteLine(ex);
-					}
-				}
-                
-                Set(nameof(SelectedTemplateIndex), ref _selectedTemplateIndex, value);
-            }
-        }
-		
 		[System.Xml.Serialization.XmlIgnore]
 		public RelayCommand AddTemplateCommand { get; set; }
 		[System.Xml.Serialization.XmlIgnore]
@@ -131,25 +97,21 @@ namespace NajlotSnippetStudio.ViewModel
 
 				Templates.Add(newTpl);
 
-                SelectedTemplateIndex = Templates.Count -1;
-            }, true);
+				CurrentTemplate = newTpl;
+
+			}, true);
 
             DeleteTemplateCommand = new RelayCommand(() =>
             {
                 Templates.Remove(CurrentTemplate);
                 if(Templates.Count > 0)
                 {
-                    SelectedTemplateIndex = 0;
-                }
+					CurrentTemplate = Templates[0];
+				}
                 else
                 {
-                    SelectedTemplateIndex = -1;
-                    CurrentTemplate = new Template()
-                    {
-                        IsEnabled = false
-                    };
-                }
-                
+					CurrentTemplate = null;
+				}
             }, true);
         }
 
