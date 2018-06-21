@@ -1,7 +1,6 @@
 ﻿using NajlotSnippetStudio.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,10 +16,10 @@ namespace NajlotSnippetStudio.IO
 		private static readonly string NajlotAppDataFolder = Path.Combine(AppDataFolder, "NajlotSnippetStudio");
 
 		private static XmlSerializer XmlSerializer = new XmlSerializer(typeof(Template));
-
+		
 		public static void Save(Template template)
 		{
-			string fileName = Path.Combine(NajlotAppDataFolder, template.Name + ".xml");
+			string fileName = Path.Combine(NajlotAppDataFolder, template.Name + ".nss");
 			
 			try
 			{
@@ -46,7 +45,7 @@ namespace NajlotSnippetStudio.IO
 				return;
 			}
 
-			string fileName = Path.Combine(NajlotAppDataFolder, template.OriginalName + ".xml");
+			string fileName = Path.Combine(NajlotAppDataFolder, template.OriginalName + ".nss");
 			if(File.Exists(fileName))
 			{
 				File.Delete(fileName);

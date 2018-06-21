@@ -25,7 +25,7 @@ namespace NajlotSnippetStudio.IO
 
 			ViewModel.MainWindow mainWindow = new ViewModel.MainWindow();
 			
-			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder))
+			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder, "*.nss"))
 			{
 				var template = ReadTemplate(filePath);
 				template.Name = Path.GetFileNameWithoutExtension(filePath);

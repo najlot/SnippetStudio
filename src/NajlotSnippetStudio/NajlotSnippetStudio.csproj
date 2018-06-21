@@ -87,6 +87,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="TemplateRunner.cs" />
+    <Compile Include="Utils\StreamUtils.cs" />
     <Compile Include="Views\TextEditorBehaviour.cs" />
     <Compile Include="Utils\ZipArchiveStreamEntry.cs" />
     <Compile Include="Utils\ZipArchiveUtils.cs" />

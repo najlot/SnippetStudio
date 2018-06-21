@@ -15,11 +15,6 @@ namespace NajlotSnippetStudio.ViewModel
 		public string Name { get => _name;
 			set
 			{
-				if(string.Compare(value, "NajlotSnippetStudio") == 0)
-				{
-					return; // name reserved
-				}
-
 				value = value.Replace("\\", "").Replace("/", "").Replace(":", "").Trim();
 
 				if (NameIsValid(value))
