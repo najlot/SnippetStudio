@@ -1,4 +1,5 @@
-﻿using NajlotSnippetStudio.ViewModel;
+﻿using NajlotSnippetStudio.Utils;
+using NajlotSnippetStudio.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.IO
 {
-	public class TemplateWriter : XmlTemplateIoBase
+	public class TemplateWriter
 	{
 		private static readonly string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		private static readonly string NajlotAppDataFolder = Path.Combine(AppDataFolder, "NajlotSnippetStudio");
@@ -21,14 +22,7 @@ namespace NajlotSnippetStudio.IO
 			
 			try
 			{
-				using (var stringWriter = new StringWriter())
-				{
-					using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
-					{
-						XmlTemplateSerializer.Serialize(xmlWriter, template);
-						File.WriteAllText(fileName, stringWriter.ToString(), Encoding.Unicode);
-					}
-				}
+				File.WriteAllText(fileName, XmlUtils.ObjectToXmlString<Template>(template), Encoding.Unicode);
 			}
 			catch (Exception ex)
 			{

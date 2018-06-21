@@ -80,7 +80,6 @@
     <Compile Include="IO\SingleXMLTemplateReader.cs" />
     <Compile Include="IO\TemplateReader.cs" />
     <Compile Include="IO\TemplateWriter.cs" />
-    <Compile Include="IO\XmlTemplateIoBase.cs" />
     <Compile Include="Utils\IconUtilities.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -89,6 +88,7 @@
     </Compile>
     <Compile Include="TemplateRunner.cs" />
     <Compile Include="Utils\StreamUtils.cs" />
+    <Compile Include="Utils\XmlUtils.cs" />
     <Compile Include="Views\TextEditorBehaviour.cs" />
     <Compile Include="Utils\ZipArchiveStreamEntry.cs" />
     <Compile Include="Utils\ZipArchiveUtils.cs" />

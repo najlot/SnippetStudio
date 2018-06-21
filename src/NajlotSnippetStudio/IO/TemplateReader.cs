@@ -1,11 +1,14 @@
 ﻿using NajlotSnippetStudio.ViewModel;
 using System;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.IO
 {
-	public class TemplateReader : XmlTemplateIoBase
+	public class TemplateReader
 	{
+		private static XmlSerializer XmlTemplateSerializer = new XmlSerializer(typeof(Template));
+
 		public static ViewModel.MainWindow ReadAllTemplates()
 		{
 			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
