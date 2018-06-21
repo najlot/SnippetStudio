@@ -117,14 +117,14 @@
             <TabItem Header="Template">
                 <AvalonEdit:TextEditor SyntaxHighlighting="VB" Margin="5">
                     <i:Interaction.Behaviors>
-                        <base:TextEditorBehaviour BindedText="{Binding TemplateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <local:TextEditorBehaviour BindedText="{Binding TemplateString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </i:Interaction.Behaviors>
                 </AvalonEdit:TextEditor>
             </TabItem>
             <TabItem Header="Code">
                 <AvalonEdit:TextEditor Name="Code" ShowLineNumbers="True" Margin="5" SyntaxHighlighting="{Binding SelectedValue, ElementName=CodeLanguage}">
                     <i:Interaction.Behaviors>
-                        <base:TextEditorBehaviour BindedText="{Binding Code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <local:TextEditorBehaviour BindedText="{Binding Code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </i:Interaction.Behaviors>
                 </AvalonEdit:TextEditor>
             </TabItem>

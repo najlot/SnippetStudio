@@ -3,7 +3,7 @@ using System.Windows.Interactivity;
 using System.Windows;
 using ICSharpCode.AvalonEdit;
 
-namespace NajlotSnippetStudio
+namespace NajlotSnippetStudio.Views
 {
 	public sealed class TextEditorBehaviour : Behavior<TextEditor>
 	{
