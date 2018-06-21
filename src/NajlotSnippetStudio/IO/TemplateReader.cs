@@ -1,14 +1,11 @@
 ﻿using NajlotSnippetStudio.ViewModel;
 using System;
 using System.IO;
-using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.IO
 {
-	public static class TemplateReader
+	public class TemplateReader : XmlTemplateIoBase
 	{
-		private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Template));
-		
 		public static ViewModel.MainWindow ReadAllTemplates()
 		{
 			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -28,6 +25,7 @@ namespace NajlotSnippetStudio.IO
 			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder, "*.nss"))
 			{
 				var template = ReadTemplate(filePath);
+				
 				template.Name = Path.GetFileNameWithoutExtension(filePath);
 				template.OriginalName = template.Name;
 				mainWindow.Templates.Add(template);
@@ -39,8 +37,10 @@ namespace NajlotSnippetStudio.IO
 			}
 			else
 			{
-				mainWindow.CurrentTemplate = new Template();
-				mainWindow.CurrentTemplate.IsEnabled = false;
+				mainWindow.CurrentTemplate = new Template()
+				{
+					IsEnabled = false
+				};
 			}
 
 			return mainWindow;
@@ -50,7 +50,7 @@ namespace NajlotSnippetStudio.IO
 		{
 			using (var fileStream = File.OpenRead(filePath))
 			{
-				var template = xmlSerializer.Deserialize(fileStream) as Template;
+				var template = XmlTemplateSerializer.Deserialize(fileStream) as Template;
 
 				foreach (var dependency in template.Dependencies)
 				{

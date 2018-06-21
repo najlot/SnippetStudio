@@ -10,12 +10,10 @@ using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.IO
 {
-	public static class TemplateWriter
+	public class TemplateWriter : XmlTemplateIoBase
 	{
 		private static readonly string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		private static readonly string NajlotAppDataFolder = Path.Combine(AppDataFolder, "NajlotSnippetStudio");
-
-		private static XmlSerializer XmlSerializer = new XmlSerializer(typeof(Template));
 		
 		public static void Save(Template template)
 		{
@@ -27,7 +25,7 @@ namespace NajlotSnippetStudio.IO
 				{
 					using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
 					{
-						XmlSerializer.Serialize(xmlWriter, template);
+						XmlTemplateSerializer.Serialize(xmlWriter, template);
 						File.WriteAllText(fileName, stringWriter.ToString(), Encoding.Unicode);
 					}
 				}

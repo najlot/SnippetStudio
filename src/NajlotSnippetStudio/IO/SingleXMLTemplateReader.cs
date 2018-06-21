@@ -32,8 +32,10 @@ namespace NajlotSnippetStudio.IO
 
 			if (mainWindow.Templates.Count == 0)
 			{
-				mainWindow.CurrentTemplate = new ViewModel.Template();
-				mainWindow.CurrentTemplate.IsEnabled = false;
+				mainWindow.CurrentTemplate = new ViewModel.Template()
+				{
+					IsEnabled = false
+				};
 			}
 
 			return mainWindow;
