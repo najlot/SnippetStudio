@@ -1,6 +1,10 @@
 ﻿using NajlotSnippetStudio.ViewModel;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
@@ -9,47 +13,80 @@ namespace NajlotSnippetStudio.IO
 {
 	public static class TemplateWriter
 	{
-		private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Template));
+		private static readonly string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		private static readonly string NajlotAppDataFolder = Path.Combine(AppDataFolder, "NajlotSnippetStudio");
 
-		public static void Save(Template template, string fileName)
+		private static XmlSerializer XmlSerializer = new XmlSerializer(typeof(Template));
+
+		public static void Save(Template template)
 		{
-			if (File.Exists(fileName))
-			{
-				File.Copy(fileName, fileName + ".bak", true);
-				File.Delete(fileName);
-			}
-
+			string fileName = Path.Combine(NajlotAppDataFolder, template.Name + ".xml");
+			
 			try
 			{
-				using (var sww = new StringWriter())
+				using (var stringWriter = new StringWriter())
 				{
-					using (XmlWriter writer = XmlWriter.Create(sww))
+					using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
 					{
-						xmlSerializer.Serialize(writer, (object)template);
-						File.WriteAllText(fileName, sww.ToString(), System.Text.Encoding.Unicode);
-						File.Delete(fileName + ".bak");
+						XmlSerializer.Serialize(xmlWriter, template);
+						File.WriteAllText(fileName, stringWriter.ToString(), Encoding.Unicode);
 					}
 				}
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), ex.GetType().ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-				File.Copy(fileName + ".bak", fileName);
 			}
 		}
-
-		public static void Save(ViewModel.MainWindow mw)
+		
+		private static void Remove(Template template)
 		{
-			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string appDataFolder = Path.Combine(appData, "NajlotSnippetStudio");
-			if (!Directory.Exists(appDataFolder)) Directory.CreateDirectory(appDataFolder);
-
-			foreach (var template in mw.Templates)
+			if(template.OriginalName == null)
 			{
-				Save(template, Path.Combine(appDataFolder, template.Name + ".xml"));
+				return;
 			}
 
-			CleanUp(appDataFolder);
+			string fileName = Path.Combine(NajlotAppDataFolder, template.OriginalName + ".xml");
+			if(File.Exists(fileName))
+			{
+				File.Delete(fileName);
+			}
+		}
+		
+		public static void Save(IList<Template> templates)
+		{
+			if (!Directory.Exists(NajlotAppDataFolder)) Directory.CreateDirectory(NajlotAppDataFolder);
+			
+			foreach(var templateToRemove in templates.Where(tpl =>
+			{
+				if(tpl.MarkedForDeletion)
+				{
+					return true;
+				}
+
+				if(tpl.OriginalName == null)
+				{
+					return false;
+				}
+
+				return string.Compare(tpl.OriginalName, tpl.Name, true) != 0;
+			}).ToArray())
+			{
+				Remove(templateToRemove);
+
+				if(templateToRemove.MarkedForDeletion)
+				{
+					templates.Remove(templateToRemove);
+				}
+				
+			}
+
+			foreach (var template in templates.Where(tpl => tpl.IsChanged))
+			{
+				Save(template);
+			}
+
+			CleanUp(NajlotAppDataFolder);
 		}
 
 		[Obsolete("Will be removed with SingleXMLTemplateReader in one of the following releases.")]

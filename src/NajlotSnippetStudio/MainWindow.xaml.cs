@@ -27,15 +27,14 @@ namespace NajlotSnippetStudio
 			InitializeComponent();
 			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
 
-			ViewModel.MainWindow data;
-			TemplateReader.ReadAllTemplates(out data);
-			this.DataContext = data;
+			ViewModel.MainWindow mainWindow = TemplateReader.ReadAllTemplates();
+			this.DataContext = mainWindow;
 
 			var args = Environment.GetCommandLineArgs();
 
 			if (args.Length > 1)
 			{
-				foreach (var tpl in data.Templates)
+				foreach (var tpl in mainWindow.Templates)
 				{
 					if (tpl.Name == args[1])
 					{
@@ -52,7 +51,7 @@ namespace NajlotSnippetStudio
 
 						if (outStr.Length > 0)
 						{
-							MessageBox.Show(outStr, "Compile Error", MessageBoxButton.OK, MessageBoxImage.Error);
+							MessageBox.Show(outStr, "Build failed", MessageBoxButton.OK, MessageBoxImage.Error);
 						}
 
 						this.Close();
@@ -68,7 +67,8 @@ namespace NajlotSnippetStudio
 		{
 			try
 			{
-				TemplateWriter.Save(this.DataContext as ViewModel.MainWindow);
+				var mainWindow = this.DataContext as ViewModel.MainWindow;
+				TemplateWriter.Save(mainWindow.Templates);
 			}
 			catch (Exception ex)
 			{

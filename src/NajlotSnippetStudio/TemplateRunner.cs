@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.VisualBasic;
 
-internal class NotFoundException : Exception
-{
-    public NotFoundException(string what) : base(what + " not found!"){}
-}
-
 namespace NajlotSnippetStudio
 {
+	internal class NotFoundException : Exception
+	{
+		public NotFoundException(string what) : base(what + " not found!") { }
+	}
+
 	public static class TemplateRunner
 	{
 		public static void Run( ViewModel.Template template, ref StringCollection compileOutput)

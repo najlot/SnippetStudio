@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace NajlotSnippetStudio.ViewModel
@@ -28,8 +29,23 @@ namespace NajlotSnippetStudio.ViewModel
                 Set(nameof(Templates), ref _templates, value);
             }
         }
-        
-        private Template _currentTemplate = null;
+
+		public System.ComponentModel.ICollectionView VisibleTemplates
+		{
+			get
+			{
+				var templates = System.Windows.Data.CollectionViewSource.GetDefaultView(Templates);
+				templates.Filter = (template) =>
+				{
+					var templateEntry = template as Template;
+					return !templateEntry.MarkedForDeletion;
+				};
+				
+				return templates;
+			}
+		}
+
+		private Template _currentTemplate = null;
         /// <summary>
         /// Sets and gets the CurrentTemplate property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -46,6 +62,14 @@ namespace NajlotSnippetStudio.ViewModel
                 {
                     return;
                 }
+
+				if(value == null)
+				{
+					CurrentTemplate = new Template()
+					{
+						IsEnabled = false
+					};
+				}
 
                 Set(nameof(CurrentTemplate), ref _currentTemplate, value);
             }
@@ -103,16 +127,37 @@ namespace NajlotSnippetStudio.ViewModel
 
             DeleteTemplateCommand = new RelayCommand(() =>
             {
-                Templates.Remove(CurrentTemplate);
-                if(Templates.Count > 0)
-                {
-					CurrentTemplate = Templates[0];
+				if (CurrentTemplate == null)
+				{
+					return;
 				}
-                else
-                {
-					CurrentTemplate = null;
+
+				Template newSelection = null;
+
+				foreach (var item in VisibleTemplates)
+				{
+					var visibleTemplate = item as Template;
+					
+					if(visibleTemplate == CurrentTemplate)
+					{
+						if(newSelection != null)
+						{
+							break;
+						}
+						else
+						{
+							continue;
+						}
+					}
+
+					newSelection = visibleTemplate;
 				}
-            }, true);
+
+				CurrentTemplate.MarkedForDeletion = true;
+				VisibleTemplates.Refresh();
+
+				CurrentTemplate = newSelection;
+			}, true);
         }
 
     }

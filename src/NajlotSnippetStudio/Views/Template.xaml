@@ -23,7 +23,7 @@
 
         <WrapPanel>
             <Label Content="Name: " />
-            <TextBox Text="{Binding Name}" MinWidth="200" Margin="5"/>
+            <TextBox Text="{Binding Name}" MinWidth="200" Padding="4" Margin="5"/>
             <ComboBox Name="CodeLanguage" Margin="5,0" Height="20" ItemsSource="{Binding PossibleLanguages}" SelectedValue="{Binding CodeLanguage}" MinWidth="50"/>
             <Button Content="Run" Command="{Binding RunCommand}" Margin="5" Padding="10,5" MinWidth="100" />
         </WrapPanel>

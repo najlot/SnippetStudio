@@ -5,12 +5,63 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace NajlotSnippetStudio.ViewModel
 {
 	public class Template : ViewModelBase
 	{
-		public string Name { get => _name; set => Set( nameof(Name), ref _name, value); }
+		// TODO notify the user
+		public string Name { get => _name;
+			set
+			{
+				if(string.Compare(value, "NajlotSnippetStudio") == 0)
+				{
+					return; // name reserved
+				}
+
+				value = value.Replace("\\", "").Replace("/", "").Replace(":", "").Trim();
+
+				if (NameIsValid(value))
+				{
+					if(NameIsUnique(value))
+					{
+						Set(nameof(Name), ref _name, value);
+					}
+				}
+			}
+		}
+
+		private bool NameIsUnique(string value)
+		{
+			// TODO implement
+			return true;
+		}
+
+		public bool MarkedForDeletion { get; set; } = false;
+
+		private bool NameIsValid(string value)
+		{
+			try
+			{
+				var tempPath = Path.GetTempPath();
+				var fileName = Path.Combine(tempPath, value);
+				File.WriteAllText(fileName, "");
+				File.Delete(fileName);
+			}
+			catch
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		// TODO implement
+		public bool IsChanged { get; set; } = true;
+
+		public string OriginalName { get; set; }
+
 		public string TemplateString { get; set; } = "";
 		
 		private string _code = Resources.Resource.InitialCodeCS;

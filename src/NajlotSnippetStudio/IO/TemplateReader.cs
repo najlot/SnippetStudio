@@ -8,47 +8,61 @@ namespace NajlotSnippetStudio.IO
 	public static class TemplateReader
 	{
 		private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Template));
-
-		public static void ReadAllTemplates(out ViewModel.MainWindow mw)
+		
+		public static ViewModel.MainWindow ReadAllTemplates()
 		{
-			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string appDataFolder = Path.Combine(appData, "NajlotSnippetStudio");
+			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			string najlotAppDataFolder = Path.Combine(appDataFolder, "NajlotSnippetStudio");
 			
-			if (!Directory.Exists(appDataFolder)) Directory.CreateDirectory(appDataFolder);
+			if (!Directory.Exists(najlotAppDataFolder)) Directory.CreateDirectory(najlotAppDataFolder);
 
-			string oldFileName = Path.Combine(appDataFolder, "NajlotSnippetStudio.xml");
+			string oldFileName = Path.Combine(najlotAppDataFolder, "NajlotSnippetStudio.xml");
 
 			if (File.Exists(oldFileName))
 			{
-				SingleXMLTemplateReader.Load(oldFileName, out mw);
-				return;
+				return SingleXMLTemplateReader.Load(oldFileName);
 			}
 
-			mw = new ViewModel.MainWindow();
+			ViewModel.MainWindow mainWindow = new ViewModel.MainWindow();
 			
-			foreach (var filePath in Directory.GetFiles(appDataFolder))
+			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder))
 			{
-				ReadTemplate(mw, filePath);
+				var template = ReadTemplate(filePath);
+				template.Name = Path.GetFileNameWithoutExtension(filePath);
+				template.OriginalName = template.Name;
+				mainWindow.Templates.Add(template);
 			}
+
+			if(mainWindow.Templates.Count > 0)
+			{
+				mainWindow.CurrentTemplate = mainWindow.Templates[0];
+			}
+			else
+			{
+				mainWindow.CurrentTemplate = new Template();
+				mainWindow.CurrentTemplate.IsEnabled = false;
+			}
+
+			return mainWindow;
 		}
 
-		private static void ReadTemplate(ViewModel.MainWindow mw, string filePath)
+		private static Template ReadTemplate(string filePath)
 		{
-			using (var file = File.OpenRead(filePath))
+			using (var fileStream = File.OpenRead(filePath))
 			{
-				var tpl = xmlSerializer.Deserialize(file) as Template;
+				var template = xmlSerializer.Deserialize(fileStream) as Template;
 
-				foreach (var dep in tpl.Dependencies)
+				foreach (var dependency in template.Dependencies)
 				{
-					dep.Dependencies = tpl.Dependencies;
+					dependency.Dependencies = template.Dependencies;
 				}
 
-				foreach (var variable in tpl.Variables)
+				foreach (var variable in template.Variables)
 				{
-					variable.Variables = tpl.Variables;
+					variable.Variables = template.Variables;
 				}
 
-				mw.Templates.Add(tpl);
+				return template;
 			}
 		}
 	}
