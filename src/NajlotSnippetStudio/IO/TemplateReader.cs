@@ -30,7 +30,6 @@ namespace NajlotSnippetStudio.IO
 			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder, "*.nss"))
 			{
 				var template = ReadTemplate(filePath);
-				
 				mainWindow.Templates.Add(template);
 			}
 

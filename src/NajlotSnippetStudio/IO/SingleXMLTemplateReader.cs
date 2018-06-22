@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NajlotSnippetStudio.Utils;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -9,12 +10,11 @@ namespace NajlotSnippetStudio.IO
 	{
 		public static ViewModel.MainWindow Load(string fileName)
 		{
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ViewModel.MainWindow));
 			ViewModel.MainWindow mainWindow;
 
 			using (var file = File.OpenRead(fileName))
 			{
-				mainWindow = xmlSerializer.Deserialize(file) as ViewModel.MainWindow;
+				mainWindow = XmlUtils.XmlStreamToObject<ViewModel.MainWindow>(file, true);
 			}
 
 			foreach (var tpl in mainWindow.Templates)

@@ -45,7 +45,7 @@
                         <DataGridTemplateColumn Width="SizeToCells" Header="Templates" MinWidth="70">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBox Text="{Binding Name}" Background="Transparent" BorderThickness="0" Style="{StaticResource DataGridTextBox}"/>
+                                    <TextBox Text="{Binding Name}" Background="Transparent" BorderThickness="0" IsReadOnly="True" Style="{StaticResource DataGridTextBox}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
