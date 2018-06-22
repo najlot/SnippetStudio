@@ -25,6 +25,13 @@ namespace NajlotSnippetStudio.Utils
 			}
 		}
 
-
+		public static T XmlStreamToObject<T>(Stream stream, bool leaveOpen) where T: class
+		{
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+			using (var streamReader = new StreamReader(stream, Encoding.Default, true, 1024, leaveOpen))
+			{
+				return xmlSerializer.Deserialize(streamReader) as T;
+			}
+		}
 	}
 }

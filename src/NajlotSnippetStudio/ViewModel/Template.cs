@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.ViewModel
 {
@@ -56,7 +57,7 @@ namespace NajlotSnippetStudio.ViewModel
 		public bool IsChanged { get; set; } = true;
 
 		public string OriginalName { get; set; }
-
+		
 		public string TemplateString { get; set; } = "";
 		
 		private string _code = Resources.Resource.InitialCodeCS;
@@ -81,8 +82,7 @@ namespace NajlotSnippetStudio.ViewModel
 				{
 					Code = Resources.Resource.InitialCodeVB;
 				}
-
-				if (Code == "" || (Code == Resources.Resource.InitialCodeVB && _codeLanguage == "VB"))
+				else if (Code == "" || (Code == Resources.Resource.InitialCodeVB && _codeLanguage == "VB"))
 				{
 					Code = Resources.Resource.InitialCodeCS;
 				}
@@ -91,18 +91,21 @@ namespace NajlotSnippetStudio.ViewModel
 			}
 		}
 
-		[System.Xml.Serialization.XmlIgnore]
+		[XmlIgnore]
 		public List<string> PossibleLanguages { get; set; } = new List<string>();
 
+		[XmlArray("Variables")]
 		public ObservableCollection<Variable> Variables { get; set; } = new ObservableCollection<Variable>();
+
+		[XmlArray("Dependencies")]
 		public ObservableCollection<Dependency> Dependencies { get; set; } = new ObservableCollection<Dependency>();
 		public bool IsEnabled { get; set; } = true;
 
-		[System.Xml.Serialization.XmlIgnore]
+		[XmlIgnore]
 		public RelayCommand RunCommand { get; set; }
-		[System.Xml.Serialization.XmlIgnore]
+		[XmlIgnore]
 		public RelayCommand AddDependencyCommand { get; set; }
-		[System.Xml.Serialization.XmlIgnore]
+		[XmlIgnore]
 		public RelayCommand AddVariableCommand { get; set; }
 
 		private string _logString = "";

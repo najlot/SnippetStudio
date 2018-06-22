@@ -1,5 +1,7 @@
-﻿using NajlotSnippetStudio.ViewModel;
+﻿using NajlotSnippetStudio.Utils;
+using NajlotSnippetStudio.ViewModel;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -29,8 +31,6 @@ namespace NajlotSnippetStudio.IO
 			{
 				var template = ReadTemplate(filePath);
 				
-				template.Name = Path.GetFileNameWithoutExtension(filePath);
-				template.OriginalName = template.Name;
 				mainWindow.Templates.Add(template);
 			}
 
@@ -53,18 +53,57 @@ namespace NajlotSnippetStudio.IO
 		{
 			using (var fileStream = File.OpenRead(filePath))
 			{
-				var template = XmlTemplateSerializer.Deserialize(fileStream) as Template;
-
-				foreach (var dependency in template.Dependencies)
+				var template = new Template
 				{
-					dependency.Dependencies = template.Dependencies;
-				}
+					Name = Path.GetFileNameWithoutExtension(filePath)
+				};
 
-				foreach (var variable in template.Variables)
+				template.OriginalName = template.Name;
+
+				foreach (var entry in ZipArchiveUtils.StreamToZipArchiveEntries(fileStream))
 				{
-					variable.Variables = template.Variables;
-				}
+					switch(entry.EntryName)
+					{
+						case "Version":
+							var version = StreamUtils.StreamToString(entry.Stream, false);
+							
+							if (version != "1.0")
+							{
+								throw new NotImplementedException($"Version {version} is not supported!");
+							}
 
+							break;
+
+						case "Dependencies":
+							template.Dependencies = XmlUtils.XmlStreamToObject<ObservableCollection<Dependency>>(entry.Stream, false);
+
+							foreach (var dep in template.Dependencies)
+							{
+								dep.Dependencies = template.Dependencies;
+							}
+
+							break;
+							
+						case "Variables":
+							template.Variables = XmlUtils.XmlStreamToObject<ObservableCollection<Variable>>(entry.Stream, false);
+
+							foreach (var variable in template.Variables)
+							{
+								variable.Variables = template.Variables;
+							}
+
+							break;
+
+						case "Template":
+							template.TemplateString = StreamUtils.StreamToString(entry.Stream, false);
+							break;
+
+						case "Code":
+							template.Code = StreamUtils.StreamToString(entry.Stream, false);
+							break;
+					}
+				}
+				
 				return template;
 			}
 		}

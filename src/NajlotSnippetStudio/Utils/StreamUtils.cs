@@ -22,5 +22,13 @@ namespace NajlotSnippetStudio.Utils
 			stream.Seek(0, SeekOrigin.Begin);
 			return stream;
 		}
+
+		public static string StreamToString(Stream stream, bool leaveOpen)
+		{
+			using (var reader = new StreamReader(stream, Encoding.Default, true, 1024, leaveOpen))
+			{
+				return reader.ReadToEnd();
+			}
+		}
 	}
 }

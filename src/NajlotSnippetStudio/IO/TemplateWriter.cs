@@ -22,7 +22,39 @@ namespace NajlotSnippetStudio.IO
 			
 			try
 			{
-				File.WriteAllText(fileName, XmlUtils.ObjectToXmlString<Template>(template), Encoding.Unicode);
+				var dependenciesString = XmlUtils.ObjectToXmlString(template.Dependencies);
+				var variablesString = XmlUtils.ObjectToXmlString(template.Variables);
+
+				if (File.Exists(fileName))
+				{
+					File.Delete(fileName);
+				}
+
+				using (var fileStream = File.OpenWrite(fileName))
+				{
+					using (var dependenciesStream = StreamUtils.StringToStream(dependenciesString))
+					{
+						using (var variablesStream = StreamUtils.StringToStream(variablesString))
+						{
+							using (var templateStream = StreamUtils.StringToStream(template.TemplateString))
+							{
+								using (var codeStream = StreamUtils.StringToStream(template.Code))
+								{
+									using (var versionStream = StreamUtils.StringToStream("1.0"))
+									{
+										var zipArchiveStreamEntries = new List<ZipArchiveStreamEntry>();
+										zipArchiveStreamEntries.Add(new ZipArchiveStreamEntry("Version", versionStream));
+										zipArchiveStreamEntries.Add(new ZipArchiveStreamEntry("Dependencies", dependenciesStream));
+										zipArchiveStreamEntries.Add(new ZipArchiveStreamEntry("Variables", variablesStream));
+										zipArchiveStreamEntries.Add(new ZipArchiveStreamEntry("Template", templateStream));
+										zipArchiveStreamEntries.Add(new ZipArchiveStreamEntry("Code", codeStream));
+										ZipArchiveUtils.ZipArchiveStreamEntriesToStream(zipArchiveStreamEntries, fileStream);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{

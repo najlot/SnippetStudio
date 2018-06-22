@@ -25,9 +25,9 @@ namespace NajlotSnippetStudio.Utils
 			return memoryStream;
 		}
 
-		public static void ZipArchiveStreamEntriesToStream(IEnumerable<ZipArchiveStreamEntry> zipArchiveStreamEntries, Stream memoryStream)
+		public static void ZipArchiveStreamEntriesToStream(IEnumerable<ZipArchiveStreamEntry> zipArchiveStreamEntries, Stream stream)
 		{
-			using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+			using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
 			{
 				foreach (var streamEntry in zipArchiveStreamEntries)
 				{
