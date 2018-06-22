@@ -8,7 +8,9 @@ namespace NajlotSnippetStudio.ViewModel
 {
     public class MainWindow : ViewModelBase
     {
-        private ObservableCollection<Template> _templates = new ObservableCollection<Template>();
+		public static MainWindow Current { get; private set; }
+
+		private ObservableCollection<Template> _templates = new ObservableCollection<Template>();
         /// <summary>
         /// Sets and gets the Templates property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -82,6 +84,8 @@ namespace NajlotSnippetStudio.ViewModel
 
         public MainWindow()
         {
+			Current = this;
+
             AddTemplateCommand = new RelayCommand(() =>
             {
                 var newTpl = new Template()

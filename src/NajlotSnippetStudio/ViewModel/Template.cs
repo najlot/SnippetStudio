@@ -2,21 +2,25 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NajlotSnippetStudio.ViewModel
 {
 	public class Template : ViewModelBase
 	{
-		// TODO notify the user
 		public string Name { get => _name;
 			set
 			{
 				value = value.Replace("\\", "").Replace("/", "").Replace(":", "").Trim();
+
+				if (value == _name) return;
 
 				if (NameIsValid(value))
 				{
@@ -24,14 +28,36 @@ namespace NajlotSnippetStudio.ViewModel
 					{
 						Set(nameof(Name), ref _name, value);
 					}
+					else
+					{
+						NotifyAboutErrorForShortTime( $"Template {value} already exists!");
+					}
+				}
+				else
+				{
+					NotifyAboutErrorForShortTime(value + " in an invalid name!");
 				}
 			}
 		}
 
+		public void NotifyAboutErrorForShortTime(string errorText)
+		{
+			Task.Run(() =>
+			{
+				LogString = errorText;
+
+				Thread.Sleep(3000);
+
+				if(LogString == errorText)
+				{
+					LogString = "";
+				}
+			});
+		}
+
 		private bool NameIsUnique(string value)
 		{
-			// TODO implement
-			return true;
+			return MainWindow.Current.Templates.Where(tpl => !tpl.MarkedForDeletion && tpl.Name == value).Count() == 0;
 		}
 
 		public bool MarkedForDeletion { get; set; } = false;
@@ -53,7 +79,7 @@ namespace NajlotSnippetStudio.ViewModel
 			return true;
 		}
 
-		// TODO implement
+		// TODO implement (saving only changed)
 		public bool IsChanged { get; set; } = true;
 
 		public string OriginalName { get; set; }
@@ -122,6 +148,7 @@ namespace NajlotSnippetStudio.ViewModel
 			set
 			{
 				Set(nameof(LogString), ref _logString, value);
+				HasErrors = _logString.Length > 0;
 			}
 		}
 
@@ -172,8 +199,7 @@ namespace NajlotSnippetStudio.ViewModel
 						e = e.InnerException;
 					}
 				}
-
-				HasErrors = LogString.Length > 0;
+				
 			}, true);
 
 			AddDependencyCommand = new RelayCommand(() =>
