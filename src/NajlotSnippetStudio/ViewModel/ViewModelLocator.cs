@@ -23,18 +23,18 @@ namespace NajlotSnippetStudio.ViewModel
 
 			}
 
-			SimpleIoc.Default.Register<MainViewModel>();
+			SimpleIoc.Default.Register<MainWindow>();
         }
 
-        public MainViewModel Main
-        {
-            get
-            {
-				// DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
-				return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
-        
+		public MainWindow MainWindow
+		{
+			get
+			{
+				// DataContext="{Binding Source={StaticResource Locator}, Path=MainWindow}"
+				return ServiceLocator.Current.GetInstance<MainWindow>();
+			}
+		}
+		
         public static void Cleanup()
         {
             // Clear the ViewModels

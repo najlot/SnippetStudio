@@ -7,7 +7,8 @@
         xmlns:vms="clr-namespace:NajlotSnippetStudio.ViewModel" 
         x:Class="NajlotSnippetStudio.MainWindow" 
         mc:Ignorable="d" WindowState="Maximized"
-        Title="NajlotSnippetStudio" MinHeight="480" MinWidth="640" d:DataContext="{d:DesignInstance {x:Type vms:MainWindow}, IsDesignTimeCreatable=True}">
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainWindow}"
+        Title="NajlotSnippetStudio" MinHeight="480" MinWidth="640" >
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>

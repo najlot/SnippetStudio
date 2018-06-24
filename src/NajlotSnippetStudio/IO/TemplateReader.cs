@@ -1,54 +1,53 @@
 ﻿using NajlotSnippetStudio.Utils;
 using NajlotSnippetStudio.ViewModel;
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace NajlotSnippetStudio.IO
 {
 	public class TemplateReader
 	{
 		private static XmlSerializer XmlTemplateSerializer = new XmlSerializer(typeof(Template));
-
-		public static ViewModel.MainWindow ReadAllTemplates()
+		
+		private static string NajlotAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NajlotSnippetStudio");
+		
+		public static IEnumerable<Template> ReadAllTemplates()
 		{
-			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string najlotAppDataFolder = Path.Combine(appDataFolder, "NajlotSnippetStudio");
 			
-			if (!Directory.Exists(najlotAppDataFolder)) Directory.CreateDirectory(najlotAppDataFolder);
+			if (!Directory.Exists(NajlotAppDataFolder)) Directory.CreateDirectory(NajlotAppDataFolder);
 
-			string oldFileName = Path.Combine(najlotAppDataFolder, "NajlotSnippetStudio.xml");
+			string oldFileName = Path.Combine(NajlotAppDataFolder, "NajlotSnippetStudio.xml");
 
 			if (File.Exists(oldFileName))
 			{
-				return SingleXMLTemplateReader.Load(oldFileName);
+				return SingleXMLTemplateReader.Load(oldFileName).Templates;
 			}
 
-			ViewModel.MainWindow mainWindow = new ViewModel.MainWindow();
-			
-			foreach (var filePath in Directory.GetFiles(najlotAppDataFolder, "*.nss"))
-			{
-				var template = ReadTemplate(filePath);
-				mainWindow.Templates.Add(template);
-			}
-
-			if(mainWindow.Templates.Count > 0)
-			{
-				mainWindow.CurrentTemplate = mainWindow.Templates[0];
-			}
-			else
-			{
-				mainWindow.CurrentTemplate = new Template()
-				{
-					IsEnabled = false
-				};
-			}
-
-			return mainWindow;
+			return Directory.GetFiles(NajlotAppDataFolder, "*.nss").Select(path => ReadTemplateFromPath(path));
 		}
 
-		private static Template ReadTemplate(string filePath)
+		public static Template ReadTemplateFromName(string filePath)
+		{
+			var path = filePath;
+
+			if (!File.Exists(path))
+			{
+				path = Path.Combine(NajlotAppDataFolder, filePath);
+
+				if (!File.Exists(path))
+				{
+					path += ".nss";
+				}
+			}
+			
+			return ReadTemplateFromPath(path);
+		}
+
+		private static Template ReadTemplateFromPath(string filePath)
 		{
 			using (var fileStream = File.OpenRead(filePath))
 			{

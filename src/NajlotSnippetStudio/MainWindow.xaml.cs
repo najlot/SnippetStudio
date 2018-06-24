@@ -1,7 +1,10 @@
-﻿using NajlotSnippetStudio.IO;
+﻿using CommonServiceLocator;
+using NajlotSnippetStudio.IO;
 using NajlotSnippetStudio.Utils;
+using NajlotSnippetStudio.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,16 +28,12 @@ namespace NajlotSnippetStudio
 		public MainWindow()
 		{
 			InitializeComponent();
-			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
-
-			ViewModel.MainWindow mainWindow = TemplateReader.ReadAllTemplates();
-			this.DataContext = mainWindow;
 
 			var args = Environment.GetCommandLineArgs();
 
 			if (args.Length > 1)
 			{
-				foreach (var tpl in mainWindow.Templates)
+				foreach (var tpl in TemplateReader.ReadAllTemplates())
 				{
 					if (tpl.Name == args[1])
 					{
@@ -60,7 +59,33 @@ namespace NajlotSnippetStudio
 				}
 			}
 
+			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
+			
 			this.Closing += MainWindow_Closing;
+			this.Loaded += MainWindow_Loaded;
+		}
+
+		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+		{
+			var mainWindow = ServiceLocator.Current.GetInstance<ViewModel.MainWindow>();
+			var templates = TemplateReader.ReadAllTemplates();
+
+			foreach(var template in templates)
+			{
+				mainWindow.Templates.Add(template);
+			}
+			
+			if (mainWindow.Templates.Count > 0)
+			{
+				mainWindow.CurrentTemplate = mainWindow.Templates[0];
+			}
+			else
+			{
+				mainWindow.CurrentTemplate = new Template()
+				{
+					IsEnabled = false
+				};
+			}
 		}
 
 		private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

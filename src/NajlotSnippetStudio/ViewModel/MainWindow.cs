@@ -8,8 +8,6 @@ namespace NajlotSnippetStudio.ViewModel
 {
     public class MainWindow : ViewModelBase
     {
-		public static MainWindow Current { get; private set; }
-
 		private ObservableCollection<Template> _templates = new ObservableCollection<Template>();
         /// <summary>
         /// Sets and gets the Templates property.
@@ -29,7 +27,8 @@ namespace NajlotSnippetStudio.ViewModel
                 }
 
                 Set(nameof(Templates), ref _templates, value);
-            }
+				VisibleTemplates.Refresh();
+			}
         }
 
 		public System.ComponentModel.ICollectionView VisibleTemplates
@@ -45,6 +44,11 @@ namespace NajlotSnippetStudio.ViewModel
 				
 				return templates;
 			}
+		}
+
+		public bool NameIsUnique(string value)
+		{
+			return Templates.Where(tpl => !tpl.MarkedForDeletion && tpl.Name == value).Count() == 0;
 		}
 
 		private Template _currentTemplate = null;
@@ -78,20 +82,23 @@ namespace NajlotSnippetStudio.ViewModel
         }
 
 		[System.Xml.Serialization.XmlIgnore]
-		public RelayCommand AddTemplateCommand { get; set; }
-		[System.Xml.Serialization.XmlIgnore]
-		public RelayCommand DeleteTemplateCommand { get; set; }
+		public RelayCommand AddTemplateCommand { get => new RelayCommand(() =>
+			{
+				var newName = "";
 
-        public MainWindow()
-        {
-			Current = this;
-
-            AddTemplateCommand = new RelayCommand(() =>
-            {
-                var newTpl = new Template()
-                {
-                    Name = "New Template"
-                };
+				for (int i = 1; i < int.MaxValue; i++)
+				{
+					newName = "Snippet_" + i;
+					if(NameIsUnique(newName))
+					{
+						break;
+					}
+				}
+				
+				var newTpl = new Template()
+				{
+					Name = newName
+				};
 
 				newTpl.Dependencies.Add(new Dependency()
 				{
@@ -127,10 +134,12 @@ namespace NajlotSnippetStudio.ViewModel
 
 				CurrentTemplate = newTpl;
 
-			}, true);
+			});
+		}
 
-            DeleteTemplateCommand = new RelayCommand(() =>
-            {
+		[System.Xml.Serialization.XmlIgnore]
+		public RelayCommand DeleteTemplateCommand { get => new RelayCommand(() =>
+			{
 				if (CurrentTemplate == null)
 				{
 					return;
@@ -141,10 +150,10 @@ namespace NajlotSnippetStudio.ViewModel
 				foreach (var item in VisibleTemplates)
 				{
 					var visibleTemplate = item as Template;
-					
-					if(visibleTemplate == CurrentTemplate)
+
+					if (visibleTemplate == CurrentTemplate)
 					{
-						if(newSelection != null)
+						if (newSelection != null)
 						{
 							break;
 						}
@@ -161,8 +170,12 @@ namespace NajlotSnippetStudio.ViewModel
 				VisibleTemplates.Refresh();
 
 				CurrentTemplate = newSelection;
-			}, true);
-        }
+			});
+		}
 
+        public MainWindow()
+        {
+			
+        }
     }
 }

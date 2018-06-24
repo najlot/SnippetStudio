@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using CommonServiceLocator;
 
 namespace NajlotSnippetStudio.ViewModel
 {
@@ -57,7 +58,8 @@ namespace NajlotSnippetStudio.ViewModel
 
 		private bool NameIsUnique(string value)
 		{
-			return MainWindow.Current.Templates.Where(tpl => !tpl.MarkedForDeletion && tpl.Name == value).Count() == 0;
+			var mainWindow = ServiceLocator.Current.GetInstance<ViewModel.MainWindow>();
+			return mainWindow.NameIsUnique(value);
 		}
 
 		public bool MarkedForDeletion { get; set; } = false;
