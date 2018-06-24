@@ -29,37 +29,33 @@ namespace NajlotSnippetStudio
 		{
 			InitializeComponent();
 
+			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
+
 			var args = Environment.GetCommandLineArgs();
 
 			if (args.Length > 1)
 			{
-				foreach (var tpl in TemplateReader.ReadAllTemplates())
+				var tpl = TemplateReader.ReadTemplateFromName(args[1]);
+				
+				this.Visibility = Visibility.Hidden;
+				var output = new System.Collections.Specialized.StringCollection();
+				TemplateRunner.Run(tpl, ref output);
+
+				var outStr = "";
+
+				foreach (var line in output)
 				{
-					if (tpl.Name == args[1])
-					{
-						this.Visibility = Visibility.Hidden;
-						var output = new System.Collections.Specialized.StringCollection();
-						TemplateRunner.Run(tpl, ref output);
-
-						var outStr = "";
-
-						foreach (var line in output)
-						{
-							outStr += line + "\r\n";
-						}
-
-						if (outStr.Length > 0)
-						{
-							MessageBox.Show(outStr, "Build failed", MessageBoxButton.OK, MessageBoxImage.Error);
-						}
-
-						this.Close();
-						return;
-					}
+					outStr += line + "\r\n";
 				}
-			}
 
-			this.Icon = NajlotSnippetStudio.Resources.Resource.App.ToImageSource();
+				if (outStr.Length > 0)
+				{
+					MessageBox.Show(outStr, "Build failed", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+
+				this.Close();
+				return;
+			}
 			
 			this.Closing += MainWindow_Closing;
 			this.Loaded += MainWindow_Loaded;
