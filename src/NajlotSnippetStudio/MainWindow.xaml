@@ -43,10 +43,17 @@
                     </DataGrid.Resources>
 
                     <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="SizeToCells" Header="" MinWidth="20">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="->" Background="Transparent" BorderThickness="0" Padding="0" Margin="3" Visibility="{Binding IsCurrentSelectionVisibility}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn Width="SizeToCells" Header="Templates" MinWidth="70">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBox Text="{Binding Name}" Background="Transparent" BorderThickness="0" IsReadOnly="True" Style="{StaticResource DataGridTextBox}"/>
+                                    <Label Content="{Binding Name}" Background="Transparent" BorderThickness="0" Padding="0" Margin="3"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -11,12 +11,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CommonServiceLocator;
+using System.Windows;
 
 namespace NajlotSnippetStudio.ViewModel
 {
 	public class Template : ViewModelBase
 	{
-		public string Name { get => _name;
+		public string Name
+		{
+			get => _name;
 			set
 			{
 				value = value.Replace("\\", "").Replace("/", "").Replace(":", "").Trim();
@@ -25,13 +28,13 @@ namespace NajlotSnippetStudio.ViewModel
 
 				if (NameIsValid(value))
 				{
-					if(NameIsUnique(value))
+					if (NameIsUnique(value))
 					{
 						Set(nameof(Name), ref _name, value);
 					}
 					else
 					{
-						NotifyAboutErrorForShortTime( $"Template {value} already exists!");
+						NotifyAboutErrorForShortTime($"Template {value} already exists!");
 					}
 				}
 				else
@@ -49,7 +52,7 @@ namespace NajlotSnippetStudio.ViewModel
 
 				Thread.Sleep(3000);
 
-				if(LogString == errorText)
+				if (LogString == errorText)
 				{
 					LogString = "";
 				}
@@ -61,6 +64,9 @@ namespace NajlotSnippetStudio.ViewModel
 			var mainWindow = ServiceLocator.Current.GetInstance<ViewModel.MainWindow>();
 			return mainWindow.NameIsUnique(value);
 		}
+
+		[XmlIgnore]
+		public Visibility IsCurrentSelectionVisibility { get => _isCurrentSelectionVisibility; set => Set(nameof(IsCurrentSelectionVisibility), ref _isCurrentSelectionVisibility, value); }
 
 		public bool MarkedForDeletion { get; set; } = false;
 
@@ -85,9 +91,9 @@ namespace NajlotSnippetStudio.ViewModel
 		public bool IsChanged { get; set; } = true;
 
 		public string OriginalName { get; set; }
-		
+
 		public string TemplateString { get; set; } = "";
-		
+
 		private string _code = Resources.Resource.InitialCodeCS;
 		public string Code { get { return _code; } set { Set(nameof(Code), ref _code, value); } }
 
@@ -130,54 +136,60 @@ namespace NajlotSnippetStudio.ViewModel
 		public bool IsEnabled { get; set; } = true;
 
 		[XmlIgnore]
-		public RelayCommand RunCommand { get => new RelayCommand(() =>
-			{
-				var output = new StringCollection();
-				LogString = "";
+		public RelayCommand RunCommand
+		{
+			get => new RelayCommand(() =>
+{
+var output = new StringCollection();
+LogString = "";
 
-				try
-				{
-					TemplateRunner.Run(this, ref output);
-					foreach (var line in output) LogString += line + "\r\n";
-				}
-				catch (Exception ex)
-				{
-					var e = ex;
+try
+{
+TemplateRunner.Run(this, ref output);
+foreach (var line in output) LogString += line + "\r\n";
+}
+catch (Exception ex)
+{
+var e = ex;
 
-					while (e != null)
-					{
-						var arr = e.ToString().Replace("\r\n", "\n").Split('\n');
+while (e != null)
+{
+var arr = e.ToString().Replace("\r\n", "\n").Split('\n');
 
-						foreach (var msg in arr)
-						{
-							LogString += msg + "\r\n";
-						}
+foreach (var msg in arr)
+{
+LogString += msg + "\r\n";
+}
 
-						e = e.InnerException;
-					}
-				}
+e = e.InnerException;
+}
+}
 
-			});
+});
 		}
 
 		[XmlIgnore]
-		public RelayCommand AddDependencyCommand { get => new RelayCommand(() =>
-			{
-				Dependencies.Add(new Dependency()
-				{
-					Dependencies = this.Dependencies
-				});
-			});
+		public RelayCommand AddDependencyCommand
+		{
+			get => new RelayCommand(() =>
+{
+Dependencies.Add(new Dependency()
+{
+Dependencies = this.Dependencies
+});
+});
 		}
 
 		[XmlIgnore]
-		public RelayCommand AddVariableCommand { get => new RelayCommand(() =>
-			{
-				Variables.Add(new Variable()
-				{
-					Variables = this.Variables
-				});
-			});
+		public RelayCommand AddVariableCommand
+		{
+			get => new RelayCommand(() =>
+{
+Variables.Add(new Variable()
+{
+Variables = this.Variables
+});
+});
 		}
 
 		private string _logString = "";
@@ -200,6 +212,7 @@ namespace NajlotSnippetStudio.ViewModel
 
 		private bool _hasErrors = false;
 		private string _name;
+		private Visibility _isCurrentSelectionVisibility = Visibility.Collapsed;
 
 		public bool HasErrors
 		{
@@ -218,7 +231,7 @@ namespace NajlotSnippetStudio.ViewModel
 			PossibleLanguages.Clear();
 			PossibleLanguages.Add("C#");
 			PossibleLanguages.Add("VB");
-			
+
 		}
 	}
 }

@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace NajlotSnippetStudio.ViewModel
 {
@@ -69,16 +70,23 @@ namespace NajlotSnippetStudio.ViewModel
                     return;
                 }
 
-				if(value == null)
+				if (_currentTemplate != null)
 				{
-					CurrentTemplate = new Template()
+					_currentTemplate.IsCurrentSelectionVisibility = Visibility.Collapsed;
+				}
+				
+				if (value == null)
+				{
+					_currentTemplate = new Template()
 					{
 						IsEnabled = false
 					};
 				}
+				
+				Set(nameof(CurrentTemplate), ref _currentTemplate, value);
 
-                Set(nameof(CurrentTemplate), ref _currentTemplate, value);
-            }
+				_currentTemplate.IsCurrentSelectionVisibility = Visibility.Visible;
+			}
         }
 
 		[System.Xml.Serialization.XmlIgnore]
