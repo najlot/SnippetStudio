@@ -130,11 +130,55 @@ namespace NajlotSnippetStudio.ViewModel
 		public bool IsEnabled { get; set; } = true;
 
 		[XmlIgnore]
-		public RelayCommand RunCommand { get; set; }
+		public RelayCommand RunCommand { get => new RelayCommand(() =>
+			{
+				var output = new StringCollection();
+				LogString = "";
+
+				try
+				{
+					TemplateRunner.Run(this, ref output);
+					foreach (var line in output) LogString += line + "\r\n";
+				}
+				catch (Exception ex)
+				{
+					var e = ex;
+
+					while (e != null)
+					{
+						var arr = e.ToString().Replace("\r\n", "\n").Split('\n');
+
+						foreach (var msg in arr)
+						{
+							LogString += msg + "\r\n";
+						}
+
+						e = e.InnerException;
+					}
+				}
+
+			});
+		}
+
 		[XmlIgnore]
-		public RelayCommand AddDependencyCommand { get; set; }
+		public RelayCommand AddDependencyCommand { get => new RelayCommand(() =>
+			{
+				Dependencies.Add(new Dependency()
+				{
+					Dependencies = this.Dependencies
+				});
+			});
+		}
+
 		[XmlIgnore]
-		public RelayCommand AddVariableCommand { get; set; }
+		public RelayCommand AddVariableCommand { get => new RelayCommand(() =>
+			{
+				Variables.Add(new Variable()
+				{
+					Variables = this.Variables
+				});
+			});
+		}
 
 		private string _logString = "";
 		/// <summary>
@@ -174,52 +218,7 @@ namespace NajlotSnippetStudio.ViewModel
 			PossibleLanguages.Clear();
 			PossibleLanguages.Add("C#");
 			PossibleLanguages.Add("VB");
-
-			RunCommand = new RelayCommand(() =>
-			{
-				var output = new StringCollection();
-				LogString = "";
-
-				try
-				{
-					TemplateRunner.Run(this, ref output);
-					foreach (var line in output) LogString += line + "\r\n";
-				}
-				catch (Exception ex)
-				{
-					var e = ex;
-
-					while (e != null)
-					{
-						var arr = e.ToString().Replace("\r\n", "\n").Split('\n');
-
-						foreach (var msg in arr)
-						{
-							LogString += msg + "\r\n";
-						}
-
-						e = e.InnerException;
-					}
-				}
-				
-			}, true);
-
-			AddDependencyCommand = new RelayCommand(() =>
-			{
-				Dependencies.Add(new Dependency()
-				{
-					Dependencies = this.Dependencies
-				});
-			}, true);
-
-			AddVariableCommand = new RelayCommand(() =>
-			{
-				Variables.Add(new Variable()
-				{
-					Variables = this.Variables
-				});
-			}, true);
+			
 		}
-
 	}
 }

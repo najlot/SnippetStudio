@@ -11,14 +11,15 @@ namespace NajlotSnippetStudio.ViewModel
 		public ObservableCollection<Dependency> Dependencies { get; set; }
 
 		[System.Xml.Serialization.XmlIgnore]
-		public RelayCommand DeleteCommand { get; set; }
+		public RelayCommand DeleteCommand { get => new RelayCommand(() =>
+			{
+				Dependencies.Remove(this);
+			});
+		}
 
 		public Dependency()
 		{
-			DeleteCommand = new RelayCommand(() =>
-			{
-				Dependencies.Remove(this);
-			}, true);
+
 		}
 	}
 }

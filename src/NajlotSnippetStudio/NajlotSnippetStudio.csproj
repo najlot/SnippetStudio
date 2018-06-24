@@ -96,7 +96,6 @@
       <DependentUpon>VariableRequest.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\Dependency.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\Template.cs" />
     <Compile Include="ViewModel\Variable.cs" />
