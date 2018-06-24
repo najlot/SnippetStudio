@@ -13,7 +13,7 @@ namespace NajlotSnippetStudio.Utils
 		{
 			var stream = new MemoryStream();
 
-			using (var streamWriter = new StreamWriter(stream, Encoding.Default, s.Length, true))
+			using (var streamWriter = new StreamWriter(stream, Encoding.Default, s.Length + 5, true))
 			{
 				streamWriter.Write(s);
 				streamWriter.Flush();
