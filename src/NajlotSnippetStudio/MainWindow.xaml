@@ -18,7 +18,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Visibility="{Binding CurrentTemplate.VariableSelectionNotVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <ScrollViewer>
             <DockPanel>
                 <WrapPanel DockPanel.Dock="Bottom">
                     <Button Content="Add" Command="{Binding AddTemplateCommand}" Margin="5" Padding="10,5" MinWidth="100"/>
