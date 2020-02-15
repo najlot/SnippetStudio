@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+			 xmlns:local="clr-namespace:SnippetStudio.Mobile.View"
+			 xmlns:converter="clr-namespace:SnippetStudio.Mobile.Converter"
+			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
+			 x:Class="SnippetStudio.Mobile.View.SnippetView"
+			 Title="Snippet">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<converter:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
+			<converter:IdToItemConverter x:Key="IdToItemConverter" />
+			<converter:EnumToTranslationConverter x:Key="EnumToTranslationConverter" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Command="{Binding SaveCommand}" IconImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+			ConverterParameter='M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z'}" />
+		<ToolbarItem Command="{Binding DeleteCommand}" IconImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+			ConverterParameter='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z'}" />
+	</ContentPage.ToolbarItems>
+
+	<ContentPage.Content>
+		<ScrollView>
+			<StackLayout Margin="2,0">
+				<Label Text="{x:Static loc:SnippetLoc.Name}" LineBreakMode="NoWrap" />
+				<Entry Text="{Binding Item.Name}" />
+				<Label Text="{x:Static loc:SnippetLoc.Language}" LineBreakMode="NoWrap" />
+				<Picker x:Name="LanguagesPicker" ItemsSource="{Binding AvailableLanguages}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Item.LanguageId, Converter={StaticResource IdToItemConverter}, ConverterParameter={x:Reference LanguagesPicker}}"/>
+				<Label Text="{x:Static loc:SnippetLoc.Dependencies}" LineBreakMode="NoWrap" />
+				<ListView ItemsSource="{Binding Dependencies}"
+					VerticalOptions="FillAndExpand"
+					HasUnevenRows="true"
+					CachingStrategy="RecycleElement">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<ViewCell>
+								<StackLayout Padding="10">
+									<StackLayout.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding EditDependencyCommand}" />
+									</StackLayout.GestureRecognizers>
+									<StackLayout Orientation="Horizontal">
+										<Label Text="{Binding Item.Name}" VerticalOptions="FillAndExpand" />
+									</StackLayout>
+								</StackLayout>
+							</ViewCell>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+					<ListView.Footer>
+						<Button Command="{Binding AddDependencyCommand}" Margin="1" HeightRequest="36" WidthRequest="36" BackgroundColor="#004d40"
+							ImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+							ConverterParameter='M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'}" />
+					</ListView.Footer>
+				</ListView>
+				<Label Text="{x:Static loc:SnippetLoc.Variables}" LineBreakMode="NoWrap" />
+				<ListView ItemsSource="{Binding Variables}"
+					VerticalOptions="FillAndExpand"
+					HasUnevenRows="true"
+					CachingStrategy="RecycleElement">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<ViewCell>
+								<StackLayout Padding="10">
+									<StackLayout.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding EditVariableCommand}" />
+									</StackLayout.GestureRecognizers>
+									<StackLayout Orientation="Horizontal">
+										<Label Text="{Binding Item.Name}" VerticalOptions="FillAndExpand" />
+										<Label Text="{Binding Item.RequestName}" VerticalOptions="FillAndExpand" />
+									</StackLayout>
+								</StackLayout>
+							</ViewCell>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+					<ListView.Footer>
+						<Button Command="{Binding AddVariableCommand}" Margin="1" HeightRequest="36" WidthRequest="36" BackgroundColor="#004d40"
+							ImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+							ConverterParameter='M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'}" />
+					</ListView.Footer>
+				</ListView>
+				<Label Text="{x:Static loc:SnippetLoc.Template}" LineBreakMode="NoWrap" />
+				<Entry Text="{Binding Item.Template}" />
+				<Label Text="{x:Static loc:SnippetLoc.Code}" LineBreakMode="NoWrap" />
+				<Entry Text="{Binding Item.Code}" />
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>

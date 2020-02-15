@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SnippetStudio.Contracts
+{
+	public class UpdateSnippet
+	{
+		public Guid Id { get; set; }
+		public string Name { get; set; }
+		public Guid LanguageId { get; set; }
+		public List<Dependency> Dependencies { get; set; }
+		public List<Variable> Variables { get; set; }
+		public string Template { get; set; }
+		public string Code { get; set; }
+
+		private UpdateSnippet(){}
+
+		public UpdateSnippet(
+			Guid id,
+			string name,
+			Guid languageId,
+			List<Dependency> dependencies,
+			List<Variable> variables,
+			string template,
+			string code)
+		{
+			Id = id;
+			Name = name;
+			LanguageId = languageId;
+			Dependencies = dependencies;
+			Variables = variables;
+			Template = template;
+			Code = code;
+		}
+	}
+}

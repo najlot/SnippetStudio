@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:converter="clr-namespace:SnippetStudio.Mobile.Converter"
+			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
+			 x:Class="SnippetStudio.Mobile.View.AllLanguagesView"
+			 Title="Languages">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<converter:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Command="{Binding AddLanguageCommand}" IconImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+			ConverterParameter='M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'}" />
+	</ContentPage.ToolbarItems>
+
+	<ContentPage.Content>
+		<ListView ItemsSource="{Binding Languages}"
+				  VerticalOptions="FillAndExpand"
+				  HasUnevenRows="true"
+				  RefreshCommand="{Binding RefreshLanguagesCommand}"
+				  IsPullToRefreshEnabled="true"
+				  IsRefreshing="{Binding IsBusy}"
+				  CachingStrategy="RecycleElement">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<ViewCell>
+						<StackLayout Padding="10">
+							<StackLayout.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding EditLanguageCommand}" />
+							</StackLayout.GestureRecognizers>
+							<Label Text="{Binding Item.Name}" />
+						</StackLayout>
+					</ViewCell>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</ContentPage.Content>
+</ContentPage>

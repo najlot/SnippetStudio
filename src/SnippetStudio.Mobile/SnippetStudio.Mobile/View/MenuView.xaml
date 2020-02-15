@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
+             mc:Ignorable="d"
+			 Title="Menu"
+             x:Class="SnippetStudio.Mobile.View.MenuView">
+	
+	<ContentPage.Content>
+		<StackLayout>
+			<Button Text="Languages" Command="{Binding NavigateToLanguages}"
+					HorizontalOptions="FillAndExpand" Margin="1" BackgroundColor="#004d40" TextColor="#ffffff" />
+			<Button Text="Snippets" Command="{Binding NavigateToSnippets}"
+					HorizontalOptions="FillAndExpand" Margin="1" BackgroundColor="#004d40" TextColor="#ffffff" />
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

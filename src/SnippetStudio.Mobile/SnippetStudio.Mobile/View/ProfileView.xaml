@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:converter="clr-namespace:SnippetStudio.Mobile.Converter"
+			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
+             mc:Ignorable="d"
+			 Title="Profile"
+             x:Class="SnippetStudio.Mobile.View.ProfileView">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<converter:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
+			<converter:SourceToVisibilityConverter x:Key="SourceToVisibilityConverter" />
+			<converter:EnumToTranslationConverter x:Key="EnumToTranslationConverter" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Command="{Binding SaveCommand}" IconImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
+			ConverterParameter='M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z'}" />
+	</ContentPage.ToolbarItems>
+
+	<ContentPage.Content>
+		<ScrollView>
+			<StackLayout Margin="5">
+				<Label Text="{x:Static loc:ProfileLoc.ProfileType}" />
+				<Picker ItemsSource="{Binding PossibleSources, Converter={d:StaticResource EnumToTranslationConverter}, ConverterParameter={x:Type loc:SourceLoc}}" 
+						SelectedItem="{Binding Source, Converter={d:StaticResource EnumToTranslationConverter}, ConverterParameter={x:Type loc:SourceLoc}}" />
+
+				<Label Text="{x:Static loc:ProfileLoc.ProfileName}" />
+				<Entry Text="{Binding Profile.Name}" />
+
+				<ContentView BindingContext="{Binding Profile}"
+							 IsVisible="{Binding Source, Converter={StaticResource SourceToVisibilityConverter}, ConverterParameter=Local}">
+					<StackLayout Margin="5">
+						<Label Text="{x:Static loc:ProfileLoc.Foldername}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding FolderName}" />
+					</StackLayout>
+				</ContentView>
+
+				<ContentView BindingContext="{Binding Profile}"
+							 IsVisible="{Binding Source, Converter={StaticResource SourceToVisibilityConverter}, ConverterParameter=REST}">
+					<StackLayout Margin="5">
+						<Label Text="{x:Static loc:ProfileLoc.ServerName}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding ServerName}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.User}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding ServerUser}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.Password}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding ServerPassword}" />
+					</StackLayout>
+				</ContentView>
+
+				<ContentView BindingContext="{Binding Profile}"
+							 IsVisible="{Binding Source, Converter={StaticResource SourceToVisibilityConverter}, ConverterParameter=RMQ}">
+					<StackLayout Margin="5">
+						<Label Text="{x:Static loc:ProfileLoc.RmqHost}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding RabbitMqHost}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.RmqVirtualHost}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding RabbitMqVirtualHost}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.RmqUser}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding RabbitMqUser}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.RmqPassword}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding RabbitMqPassword}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.User}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding ServerUser}" />
+
+						<Label Text="{x:Static loc:ProfileLoc.Password}" LineBreakMode="NoWrap" />
+						<Entry Text="{Binding ServerPassword}" />
+					</StackLayout>
+				</ContentView>
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>
