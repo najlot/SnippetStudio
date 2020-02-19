@@ -48,7 +48,7 @@
 				</DockPanel>
 				<DockPanel Margin="5">
 					<Label Content="{x:Static loc:SnippetLoc.Language}" MinWidth="75" />
-					<ComboBox ItemsSource="{Binding AvailableLanguages}" SelectedValue="{Binding Item.LanguageId}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" />
+					<TextBox Text="{Binding Item.Language}" />
 				</DockPanel>
 				<DockPanel>
 					<DockPanel DockPanel.Dock="Top">

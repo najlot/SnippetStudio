@@ -28,10 +28,6 @@ namespace SnippetStudio.Service.Repository
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<LanguageModel>(entity =>
-			{
-				entity.HasKey(e => e.Id);
-			});
 			modelBuilder.Entity<SnippetModel>(entity =>
 			{
 				entity.HasKey(e => e.Id);
@@ -40,7 +36,6 @@ namespace SnippetStudio.Service.Repository
 			});
 		}
 
-		public DbSet<LanguageModel> Languages { get; set; }
 		public DbSet<SnippetModel> Snippets { get; set; }
 	}
 }

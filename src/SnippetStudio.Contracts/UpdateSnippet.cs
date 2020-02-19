@@ -7,7 +7,7 @@ namespace SnippetStudio.Contracts
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; }
-		public Guid LanguageId { get; set; }
+		public string Language { get; set; }
 		public List<Dependency> Dependencies { get; set; }
 		public List<Variable> Variables { get; set; }
 		public string Template { get; set; }
@@ -18,7 +18,7 @@ namespace SnippetStudio.Contracts
 		public UpdateSnippet(
 			Guid id,
 			string name,
-			Guid languageId,
+			string language,
 			List<Dependency> dependencies,
 			List<Variable> variables,
 			string template,
@@ -26,7 +26,7 @@ namespace SnippetStudio.Contracts
 		{
 			Id = id;
 			Name = name;
-			LanguageId = languageId;
+			Language = language;
 			Dependencies = dependencies;
 			Variables = variables;
 			Template = template;

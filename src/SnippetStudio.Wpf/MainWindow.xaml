@@ -25,17 +25,11 @@
 		<DataTemplate DataType="{x:Type vms:ProfileViewModel}">
 			<Views:ProfileView />
 		</DataTemplate>
-		<DataTemplate DataType="{x:Type vms:AllLanguagesViewModel}">
-			<Views:AllLanguagesView />
-		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:AllSnippetsViewModel}">
 			<Views:AllSnippetsView />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:DependencyViewModel}">
 			<Views:DependencyView />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type vms:LanguageViewModel}">
-			<Views:LanguageView />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:SnippetViewModel}">
 			<Views:SnippetView />

@@ -10,7 +10,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class AllSnippetsViewModel : AbstractViewModel, IDisposable
 	{
-		private readonly LanguageService _languageService;
 		private readonly SnippetService _snippetService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
@@ -32,13 +31,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 		}
 
 		public AllSnippetsViewModel(ErrorService errorService,
-			LanguageService languageService,
 			SnippetService snippetService,
 			INavigationService navigationService,
 			Messenger messenger)
 		{
 			_errorService = errorService;
-			_languageService = languageService;
 			_snippetService = snippetService;
 			_navigationService = navigationService;
 			_messenger = messenger;
@@ -88,10 +85,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);
 
-				var languages = await _languageService.GetItemsAsync(false);
 
 				var vm = new SnippetViewModel(
-					languages,
 					_errorService,
 					item,
 					_navigationService,
@@ -133,12 +128,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 					}
 				}
 
-				var languages = await _languageService.GetItemsAsync(false);
 
 				if (index == -1)
 				{
 					Snippets.Insert(0, new SnippetViewModel(
-						languages,
 						_errorService,
 						obj.Item,
 						_navigationService,
@@ -149,7 +142,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 				else
 				{
 					Snippets.Insert(index, new SnippetViewModel(
-						languages,
 						_errorService,
 						obj.Item,
 						_navigationService,
@@ -180,10 +172,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);
 
-				var languages = await _languageService.GetItemsAsync(false);
 
 				var itemVm = new SnippetViewModel(
-					languages,
 					_errorService,
 					item,
 					_navigationService,
@@ -213,12 +203,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 				IsBusy = true;
 				Snippets.Clear();
 
-				var languages = await _languageService.GetItemsAsync(true);
 				var snippets = await _snippetService.GetItemsAsync(true);
 
 				Snippets = new ObservableCollection<SnippetViewModel>(snippets
 					.Select(item => new SnippetViewModel(
-						languages,
 						_errorService,
 						item,
 						_navigationService,

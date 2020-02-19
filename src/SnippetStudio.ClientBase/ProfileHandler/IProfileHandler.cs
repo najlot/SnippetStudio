@@ -5,7 +5,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 {
 	public interface IProfileHandler
 	{
-		LanguageService GetLanguageService();
 		SnippetService GetSnippetService();
 
 		IProfileHandler SetNext(IProfileHandler handler);

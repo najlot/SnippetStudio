@@ -47,17 +47,13 @@ namespace SnippetStudio.Service
 				var db = client.GetDatabase(mongoDbConfig.Database);
 
 				services.AddSingleton(db);
-				services.AddScoped<ILanguageRepository, MongoDbLanguageRepository>();
 				services.AddScoped<ISnippetRepository, MongoDbSnippetRepository>();
-				services.AddScoped<ILanguageQuery, MongoDbLanguageQuery>();
 				services.AddScoped<ISnippetQuery, MongoDbSnippetQuery>();
 			}
 			else if (mysqlConfig != null)
 			{
 				services.AddSingleton(mysqlConfig);
-				services.AddScoped<ILanguageRepository, MySqlLanguageRepository>();
 				services.AddScoped<ISnippetRepository, MySqlSnippetRepository>();
-				services.AddScoped<ILanguageQuery, MySqlLanguageQuery>();
 				services.AddScoped<ISnippetQuery, MySqlSnippetQuery>();
 				services.AddScoped<MySqlDbContext>();
 			}
@@ -66,9 +62,7 @@ namespace SnippetStudio.Service
 				if (fileConfig == null) fileConfig = new FileConfiguration();
 
 				services.AddSingleton(fileConfig);
-				services.AddScoped<ILanguageRepository, FileLanguageRepository>();
 				services.AddScoped<ISnippetRepository, FileSnippetRepository>();
-				services.AddScoped<ILanguageQuery, FileLanguageQuery>();
 				services.AddScoped<ISnippetQuery, FileSnippetQuery>();
 			}
 
@@ -79,7 +73,6 @@ namespace SnippetStudio.Service
 				_useCoseiRabbitMq = true;
 			}
 
-			services.AddScoped<LanguageService>();
 			services.AddScoped<SnippetService>();
 			services.AddScoped<TokenService>();
 

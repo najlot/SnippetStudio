@@ -35,11 +35,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DependencyLoc.resx</DependentUpon>
     </Compile>
-    <Compile Update="Localisation\LanguageLoc.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>LanguageLoc.resx</DependentUpon>
-    </Compile>
     <Compile Update="Localisation\SnippetLoc.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -76,10 +71,6 @@
     <EmbeddedResource Update="Localisation\DependencyLoc.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyLoc.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Localisation\LanguageLoc.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>LanguageLoc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Localisation\SnippetLoc.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

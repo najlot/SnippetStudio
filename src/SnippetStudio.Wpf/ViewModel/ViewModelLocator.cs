@@ -26,14 +26,12 @@ namespace SnippetStudio.Wpf.ViewModel
 			profileHandler.SetNext(new RestProfileHandler()).SetNext(new RmqProfileHandler());
 
 			serviceCollection.AddSingleton<IProfileHandler>(profileHandler);
-			serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetLanguageService());
 			serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetSnippetService());
 
 			// Register viewmodels
 			serviceCollection.AddSingleton<LoginViewModel>();
 			serviceCollection.AddScoped<MenuViewModel>();
 
-			serviceCollection.AddScoped<AllLanguagesViewModel>();
 			serviceCollection.AddScoped<AllSnippetsViewModel>();
 
 			Main = new MainViewModel();

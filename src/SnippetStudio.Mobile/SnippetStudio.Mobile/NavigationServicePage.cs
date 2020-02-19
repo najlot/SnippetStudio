@@ -34,10 +34,6 @@ namespace SnippetStudio.Mobile
 			{
 				cp = new LoginView();
 			}
-			else if (vm is AllLanguagesViewModel)
-			{
-				cp = new AllLanguagesView();
-			}
 			else if (vm is AllSnippetsViewModel)
 			{
 				cp = new AllSnippetsView();
@@ -49,10 +45,6 @@ namespace SnippetStudio.Mobile
 			else if (vm is DependencyViewModel)
 			{
 				cp = new DependencyView();
-			}
-			else if (vm is LanguageViewModel)
-			{
-				cp = new LanguageView();
 			}
 			else if (vm is SnippetViewModel)
 			{

@@ -13,7 +13,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 	public partial class SnippetViewModel : AbstractViewModel
 	{
 		private bool _isBusy;
-		public IEnumerable<ILanguage> AvailableLanguages { get; }
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
@@ -22,14 +21,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
 		public SnippetViewModel(
-			IEnumerable<ILanguage> languages,
 			ErrorService errorService,
 			SnippetModel snippetModel,
 			INavigationService navigationService,
 			Messenger messenger)
 		{
 			Item = snippetModel;
-			AvailableLanguages = languages;
 			_errorService = errorService;
 			_navigationService = navigationService;
 			_messenger = messenger;

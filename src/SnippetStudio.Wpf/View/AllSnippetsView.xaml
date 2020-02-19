@@ -52,7 +52,7 @@
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
 							</Label>
-							<Label Content="{Binding Item.Template}" Padding="5,5,5,0" VerticalContentAlignment="Center">
+							<Label Content="{Binding Item.Language}" Padding="5,5,5,0" VerticalContentAlignment="Center">
 								<i:Interaction.Triggers>
 									<i:EventTrigger EventName="MouseDoubleClick">
 										<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />

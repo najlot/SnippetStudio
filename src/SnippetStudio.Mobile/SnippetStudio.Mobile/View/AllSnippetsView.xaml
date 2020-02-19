@@ -33,7 +33,7 @@
 								<TapGestureRecognizer Command="{Binding EditSnippetCommand}" />
 							</StackLayout.GestureRecognizers>
 							<Label Text="{Binding Item.Name}" />
-							<Label Text="{Binding Item.Template}" />
+							<Label Text="{Binding Item.Language}" />
 						</StackLayout>
 					</ViewCell>
 				</DataTemplate>

@@ -30,7 +30,7 @@ namespace SnippetStudio.Service.Query
 			{
 				Id = e.Id,
 				Name = e.Name,
-				LanguageId = e.Language.Id,
+				Language = e.Language,
 				Dependencies = e.Dependencies,
 				Variables = e.Variables,
 				Template = e.Template,
@@ -44,7 +44,7 @@ namespace SnippetStudio.Service.Query
 			{
 				Id = e.Id,
 				Name = e.Name,
-				LanguageId = e.Language.Id,
+				Language = e.Language,
 				Dependencies = e.Dependencies,
 				Variables = e.Variables,
 				Template = e.Template,
@@ -58,7 +58,7 @@ namespace SnippetStudio.Service.Query
 			{
 				Id = e.Id,
 				Name = e.Name,
-				LanguageId = e.Language.Id,
+				Language = e.Language,
 				Dependencies = e.Dependencies,
 				Variables = e.Variables,
 				Template = e.Template,

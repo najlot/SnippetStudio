@@ -9,8 +9,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 		{
 			if (profile is LocalProfile localProfile)
 			{
-				var languageStore = new LocalLanguageStore(localProfile.FolderName);
-				LanguageService = new LanguageService(languageStore);
 				var snippetStore = new LocalSnippetStore(localProfile.FolderName);
 				SnippetService = new SnippetService(snippetStore);
 			}

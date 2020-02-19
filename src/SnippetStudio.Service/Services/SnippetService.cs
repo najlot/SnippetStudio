@@ -11,15 +11,12 @@ namespace SnippetStudio.Service.Services
 	public class SnippetService : IDisposable
 	{
 		private readonly ISnippetRepository _snippetRepository;
-		private readonly ILanguageRepository _languageRepository;
 		private readonly ISnippetQuery _snippetQuery;
 
 		public SnippetService(ISnippetRepository snippetRepository,
-			ILanguageRepository languageRepository,
 			ISnippetQuery snippetQuery)
 		{
 			_snippetRepository = snippetRepository;
-			_languageRepository = languageRepository;
 			_snippetQuery = snippetQuery;
 		}
 
@@ -29,7 +26,7 @@ namespace SnippetStudio.Service.Services
 			{
 				Id = command.Id,
 				Name = command.Name,
-				Language = _languageRepository.Get(command.LanguageId),
+				Language = command.Language,
 				Dependencies = command.Dependencies,
 				Variables = command.Variables,
 				Template = command.Template,
@@ -44,7 +41,7 @@ namespace SnippetStudio.Service.Services
 			var item = _snippetRepository.Get(command.Id);
 			
 			item.Name = command.Name;
-			item.Language = _languageRepository.Get(command.LanguageId);
+			item.Language = command.Language;
 			item.Template = command.Template;
 			item.Code = command.Code;
 
@@ -113,7 +110,6 @@ namespace SnippetStudio.Service.Services
 				if (disposing)
 				{
 					(_snippetRepository as IDisposable)?.Dispose();
-					(_languageRepository as IDisposable)?.Dispose();
 					(_snippetQuery as IDisposable)?.Dispose();
 				}
 			}

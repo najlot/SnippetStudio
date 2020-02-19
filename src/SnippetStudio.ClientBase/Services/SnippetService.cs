@@ -21,6 +21,7 @@ namespace SnippetStudio.ClientBase.Services
 			{
 				Id = Guid.NewGuid(),
 				Name = "",
+				Language = "",
 				Template = "",
 				Code = "",
 			};

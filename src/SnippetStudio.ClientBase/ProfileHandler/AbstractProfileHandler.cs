@@ -7,18 +7,14 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	{
 		private IProfileHandler _next = null;
 
-		protected LanguageService LanguageService { get; set; }
 		protected SnippetService SnippetService { get; set; }
 
-		public LanguageService GetLanguageService() => LanguageService ?? _next?.GetLanguageService();
 		public SnippetService GetSnippetService() => SnippetService ?? _next?.GetSnippetService();
 
 		public IProfileHandler SetNext(IProfileHandler next) => _next = next;
 
 		public void SetProfile(ProfileBase profile)
 		{
-			LanguageService?.Dispose();
-			LanguageService = null;
 			SnippetService?.Dispose();
 			SnippetService = null;
 

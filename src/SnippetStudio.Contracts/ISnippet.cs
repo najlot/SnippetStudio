@@ -9,7 +9,7 @@ namespace SnippetStudio.Contracts
 	{
 		Guid Id { get; set; }
 		string Name { get; set; }
-		Guid LanguageId { get; set; }
+		string Language { get; set; }
 		List<TDependency> Dependencies { get; set; }
 		List<TVariable> Variables { get; set; }
 		string Template { get; set; }

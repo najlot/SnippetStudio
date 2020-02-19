@@ -72,7 +72,7 @@ namespace SnippetStudio.ClientBase.Services
 
 			var request = new CreateSnippet(item.Id,
 				item.Name,
-				item.LanguageId,
+				item.Language,
 				item.Dependencies,
 				item.Variables,
 				item.Template,
@@ -98,7 +98,7 @@ namespace SnippetStudio.ClientBase.Services
 
 			var request = new UpdateSnippet(item.Id,
 				item.Name,
-				item.LanguageId,
+				item.Language,
 				item.Dependencies,
 				item.Variables,
 				item.Template,

@@ -27,8 +27,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				var requestClient = CreateRequestClient();
 				var tokenProvider = new TokenProvider(CreateRequestClient, _profile.ServerUser, _profile.ServerPassword);
 
-				var languageStore = new LanguageStore(requestClient, tokenProvider);
-				LanguageService = new LanguageService(languageStore);
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
 				SnippetService = new SnippetService(snippetStore);
 			}

@@ -29,7 +29,7 @@
 				<Label Text="{x:Static loc:SnippetLoc.Name}" LineBreakMode="NoWrap" />
 				<Entry Text="{Binding Item.Name}" />
 				<Label Text="{x:Static loc:SnippetLoc.Language}" LineBreakMode="NoWrap" />
-				<Picker x:Name="LanguagesPicker" ItemsSource="{Binding AvailableLanguages}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Item.LanguageId, Converter={StaticResource IdToItemConverter}, ConverterParameter={x:Reference LanguagesPicker}}"/>
+				<Entry Text="{Binding Item.Language}" />
 				<Label Text="{x:Static loc:SnippetLoc.Dependencies}" LineBreakMode="NoWrap" />
 				<ListView ItemsSource="{Binding Dependencies}"
 					VerticalOptions="FillAndExpand"

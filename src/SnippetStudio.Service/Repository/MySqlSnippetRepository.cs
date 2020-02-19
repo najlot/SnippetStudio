@@ -33,7 +33,6 @@ namespace SnippetStudio.Service.Repository
 				return null;
 			}
 
-			_context.Entry(e).Reference(r => r.Language).Load();
 
 			return e;
 		}
