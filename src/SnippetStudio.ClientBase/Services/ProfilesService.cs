@@ -69,6 +69,27 @@ namespace SnippetStudio.ClientBase.Services
 				return _profiles;
 			}
 
+			// Try migrate from old
+			var NajlotAppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NajlotSnippetStudio");
+
+			if (Directory.Exists(NajlotAppDataFolder))
+			{
+				var oldEntries = new List<ProfileBase>()
+				{
+					new LocalProfile()
+					{
+						Id = Guid.NewGuid(),
+						Name = "Local",
+						FolderName = NajlotAppDataFolder,
+						Source = Source.Local
+					}
+				};
+
+				Save(oldEntries);
+
+				return oldEntries;
+			}
+
 			var id = Guid.NewGuid();
 
 			var list = new List<ProfileBase>()
@@ -79,18 +100,6 @@ namespace SnippetStudio.ClientBase.Services
 						Name = "Local",
 						FolderName = id.ToString(),
 						Source = Source.Local
-					},
-					new RestProfile()
-					{
-						Id = Guid.NewGuid(),
-						Name = "Rest",
-						Source = Source.REST
-					},
-					new RmqProfile()
-					{
-						Id = Guid.NewGuid(),
-						Name = "RMQ",
-						Source = Source.RMQ
 					}
 				};
 

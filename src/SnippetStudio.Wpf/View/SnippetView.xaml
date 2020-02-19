@@ -40,16 +40,17 @@
 			</Button>
 		</WrapPanel>
 		<ScrollViewer>
-			<StackPanel Margin="2,0" MinWidth="400" MinHeight="200"
-						HorizontalAlignment="Center" VerticalAlignment="Center">
+			<StackPanel Margin="2,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 				<DockPanel Margin="5">
-					<Label Content="{x:Static loc:SnippetLoc.Name}" MinWidth="75" />
+					<Label Content="{x:Static loc:SnippetLoc.Name}" MinWidth="50" />
 					<TextBox Text="{Binding Item.Name}" />
 				</DockPanel>
+				<!--
 				<DockPanel Margin="5">
 					<Label Content="{x:Static loc:SnippetLoc.Language}" MinWidth="75" />
 					<TextBox Text="{Binding Item.Language}" />
 				</DockPanel>
+				-->
 				<DockPanel>
 					<DockPanel DockPanel.Dock="Top">
 						<Button ToolTip="{x:Static loc:CommonLoc.New}" Command="{Binding AddDependencyCommand}" Margin="5" DockPanel.Dock="Right">
@@ -67,6 +68,7 @@
 					</DockPanel>
 
 					<DataGrid
+						BorderThickness="1,0,0,0"
 						Margin="0,0,5,0"
 						RowHeaderWidth="0"
 						ItemsSource="{Binding Dependencies}"
@@ -93,25 +95,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-
-							<DataGridTemplateColumn Header="Edit" Width="SizeToCells">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button ToolTip="Edit" Command="{Binding EditDependencyCommand}" DockPanel.Dock="Right" Padding="2">
-											<Button.Content>
-												<Path
-													Width="14"
-													Height="14"
-													Stretch="Uniform"
-													Fill="{StaticResource ForegroundColor}"
-													Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-											</Button.Content>
-										</Button>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-
-							<DataGridTemplateColumn Header="Delete" Width="SizeToCells">
+							<DataGridTemplateColumn Header="" Width="SizeToCells">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<Button ToolTip="Delete" Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Padding="2">
@@ -152,6 +136,7 @@
 					</DockPanel>
 
 					<DataGrid
+						BorderThickness="1,0,0,0"
 						Margin="0,0,5,0"
 						RowHeaderWidth="0"
 						ItemsSource="{Binding Variables}"
@@ -194,25 +179,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-
-							<DataGridTemplateColumn Header="Edit" Width="SizeToCells">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button ToolTip="Edit" Command="{Binding EditVariableCommand}" DockPanel.Dock="Right" Padding="2">
-											<Button.Content>
-												<Path
-													Width="14"
-													Height="14"
-													Stretch="Uniform"
-													Fill="{StaticResource ForegroundColor}"
-													Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-											</Button.Content>
-										</Button>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-
-							<DataGridTemplateColumn Header="Delete" Width="SizeToCells">
+							<DataGridTemplateColumn Header="" Width="SizeToCells">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<Button ToolTip="Delete" Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Padding="2">
@@ -237,12 +204,12 @@
 					</DataGrid>
 				</DockPanel>
 				<DockPanel Margin="5">
-					<Label Content="{x:Static loc:SnippetLoc.Template}" MinWidth="75" />
-					<TextBox Text="{Binding Item.Template}" />
+					<Label Content="{x:Static loc:SnippetLoc.Template}" DockPanel.Dock="Top" />
+					<TextBox Text="{Binding Item.Template}" AcceptsReturn="True" AcceptsTab="True" />
 				</DockPanel>
 				<DockPanel Margin="5">
-					<Label Content="{x:Static loc:SnippetLoc.Code}" MinWidth="75" />
-					<TextBox Text="{Binding Item.Code}" />
+					<Label Content="{x:Static loc:SnippetLoc.Code}" DockPanel.Dock="Top" />
+					<TextBox Text="{Binding Item.Code}" AcceptsReturn="True" AcceptsTab="True" />
 				</DockPanel>
 			</StackPanel>
 		</ScrollViewer>

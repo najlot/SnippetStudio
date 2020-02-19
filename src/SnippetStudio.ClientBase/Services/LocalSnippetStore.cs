@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.Contracts;
 
@@ -15,21 +16,36 @@ namespace SnippetStudio.ClientBase.Services
 
 		public LocalSnippetStore(string folderName)
 		{
-			var appdataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SnippetStudio");
-			appdataDir = Path.Combine(appdataDir, folderName);
-			Directory.CreateDirectory(appdataDir);
+			if (Path.IsPathRooted(folderName))
+			{
+				_dataPath = folderName;
+			}
+			else
+			{
+				var appdataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SnippetStudio");
+				appdataDir = Path.Combine(appdataDir, folderName);
+				Directory.CreateDirectory(appdataDir);
 
-			_dataPath = Path.Combine(appdataDir, "Snippets.json");
+				_dataPath = appdataDir;
+			}
+			
 			_items = GetItems();
 		}
 
 		private List<SnippetModel> GetItems()
 		{
 			List<SnippetModel> items;
-			if (File.Exists(_dataPath))
+			var path = Path.Combine(_dataPath, "Snippets.json");
+
+			if (File.Exists(path))
 			{
-				var data = File.ReadAllText(_dataPath);
+				var data = File.ReadAllText(path);
 				items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SnippetModel>>(data);
+			}
+			else if (Directory.Exists(_dataPath))
+			{
+				items = ObsoleteReader.TemplateReader.
+					ReadAllTemplates(_dataPath).ToList();
 			}
 			else
 			{
