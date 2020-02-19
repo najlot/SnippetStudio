@@ -11,7 +11,7 @@
 	<ContentPage.Content>
 		<StackLayout>
 			<Button Text="Snippets" Command="{Binding NavigateToSnippets}"
-					HorizontalOptions="FillAndExpand" Margin="1" BackgroundColor="#4a148c" TextColor="#ffffff" />
+					HorizontalOptions="FillAndExpand" Margin="1" BackgroundColor="#212121" TextColor="#ffffff" />
 		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
