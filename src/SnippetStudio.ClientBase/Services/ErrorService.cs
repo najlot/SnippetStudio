@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.ViewModel;
 
 namespace SnippetStudio.ClientBase.Services
@@ -12,17 +13,17 @@ namespace SnippetStudio.ClientBase.Services
 			_navigationService = navigationService;
 		}
 
-		public void ShowAlert(string message, Exception ex)
+		public async Task ShowAlert(string message, Exception ex)
 		{
-			ShowAlert(message, ex.Message);
+			await ShowAlert(message, ex.Message);
 		}
 
-		public void ShowAlert(Exception ex)
+		public async Task ShowAlert(Exception ex)
 		{
-			ShowAlert(ex.GetType().Name, ex.Message);
+			await ShowAlert(ex.GetType().Name, ex.Message);
 		}
 
-		public void ShowAlert(string title, string message)
+		public async Task ShowAlert(string title, string message)
 		{
 			var vm = new AlertViewModel()
 			{
@@ -30,7 +31,7 @@ namespace SnippetStudio.ClientBase.Services
 				Message = message
 			};
 
-			_navigationService.NavigateForward(vm);
+			await _navigationService.NavigateForward(vm);
 		}
 	}
 }

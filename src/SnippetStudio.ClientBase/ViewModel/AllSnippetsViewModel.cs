@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using SnippetStudio.Contracts;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Services;
 using SnippetStudio.ClientBase.Validation;
@@ -40,36 +41,94 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_navigationService = navigationService;
 			_messenger = messenger;
 
-			_messenger.Register<SaveSnippet>(this.Handle);
-			_messenger.Register<EditSnippet>(this.Handle);
-			_messenger.Register<DeleteSnippet>(this.Handle);
+			_messenger.Register<SaveSnippet>(Handle);
+			_messenger.Register<EditSnippet>(Handle);
+			_messenger.Register<DeleteSnippet>(Handle);
+
+			_messenger.Register<SnippetCreated>(Handle);
+			_messenger.Register<SnippetUpdated>(Handle);
+			_messenger.Register<SnippetDeleted>(Handle);
 		}
 
-		private async void Handle(DeleteSnippet obj)
+		private void Handle(SnippetCreated obj)
+		{
+
+			Snippets.Insert(0, new SnippetViewModel(
+				_errorService,
+				new Models.SnippetModel()
+				{
+					Id = obj.Id,
+					Name = obj.Name,
+					Language = obj.Language,
+					Dependencies = obj.Dependencies,
+					Variables = obj.Variables,
+					Template = obj.Template,
+					Code = obj.Code,
+				},
+				_navigationService,
+				_messenger));
+		}
+
+		private void Handle(SnippetUpdated obj)
+		{
+			var oldItem = Snippets.FirstOrDefault(i => i.Item.Id == obj.Id);
+			var index = -1;
+
+			if (oldItem != null)
+			{
+				index = Snippets.IndexOf(oldItem);
+
+				if (index != -1)
+				{
+					Snippets.RemoveAt(index);
+				}
+			}
+
+			if (index == -1)
+			{
+				index = 0;
+			}
+
+
+			Snippets.Insert(index, new SnippetViewModel(
+				_errorService,
+				new Models.SnippetModel()
+				{
+					Id = obj.Id,
+					Name = obj.Name,
+					Language = obj.Language,
+					Dependencies = obj.Dependencies,
+					Variables = obj.Variables,
+					Template = obj.Template,
+					Code = obj.Code,
+				},
+				_navigationService,
+				_messenger));
+		}
+
+		private void Handle(SnippetDeleted obj)
+		{
+			var oldItem = Snippets.FirstOrDefault(i => i.Item.Id == obj.Id);
+
+			if (oldItem != null)
+			{
+				Snippets.Remove(oldItem);
+			}
+		}
+
+		private async Task Handle(DeleteSnippet obj)
 		{
 			try
 			{
-				var oldItem = Snippets.FirstOrDefault(i => i.Item.Id == obj.Id);
-
-				if (oldItem != null)
-				{
-					var index = Snippets.IndexOf(oldItem);
-
-					if (index != -1)
-					{
-						Snippets.RemoveAt(index);
-					}
-				}
-
 				await _snippetService.DeleteItemAsync(obj.Id);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 
-		private async void Handle(EditSnippet obj)
+		private async Task Handle(EditSnippet obj)
 		{
 			if (IsBusy)
 			{
@@ -99,11 +158,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<DeleteVariable>(vm.Handle);
 				_messenger.Register<SaveVariable>(vm.Handle);
 
-				_navigationService.NavigateForward(vm);
+				_messenger.Register<SnippetUpdated>(vm.Handle);
+
+				await _navigationService.NavigateForward(vm);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlert("Error loading...", ex);
 			}
 			finally
 			{
@@ -111,48 +172,22 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		private async void Handle(SaveSnippet obj)
+		private async Task Handle(SaveSnippet obj)
 		{
 			try
 			{
-				int index = -1;
-				var oldItem = Snippets.FirstOrDefault(i => i.Item.Id == obj.Item.Id);
-
-				if (oldItem != null)
+				if (Snippets.Any(i => i.Item.Id == obj.Item.Id))
 				{
-					index = Snippets.IndexOf(oldItem);
-
-					if (index != -1)
-					{
-						Snippets.RemoveAt(index);
-					}
-				}
-
-
-				if (index == -1)
-				{
-					Snippets.Insert(0, new SnippetViewModel(
-						_errorService,
-						obj.Item,
-						_navigationService,
-						_messenger));
-
-					await _snippetService.AddItemAsync(obj.Item);
+					await _snippetService.UpdateItemAsync(obj.Item);
 				}
 				else
 				{
-					Snippets.Insert(index, new SnippetViewModel(
-						_errorService,
-						obj.Item,
-						_navigationService,
-						_messenger));
-
-					await _snippetService.UpdateItemAsync(obj.Item);
+					await _snippetService.AddItemAsync(obj.Item);
 				}
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 
@@ -172,18 +207,24 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);
 
-
 				var itemVm = new SnippetViewModel(
 					_errorService,
 					item,
 					_navigationService,
 					_messenger);
 
-				_navigationService.NavigateForward(itemVm);
+				_messenger.Register<EditDependency>(itemVm.Handle);
+				_messenger.Register<DeleteDependency>(itemVm.Handle);
+				_messenger.Register<SaveDependency>(itemVm.Handle);
+				_messenger.Register<EditVariable>(itemVm.Handle);
+				_messenger.Register<DeleteVariable>(itemVm.Handle);
+				_messenger.Register<SaveVariable>(itemVm.Handle);
+
+				await _navigationService.NavigateForward(itemVm);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error adding...", ex);
+				await _errorService.ShowAlert("Error adding...", ex);
 			}
 			finally
 			{
@@ -214,7 +255,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error loading data...", ex);
+				await _errorService.ShowAlert("Error loading data...", ex);
 			}
 			finally
 			{
@@ -244,6 +285,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public void Dispose()
 		{
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion IDisposable Support

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SnippetStudio.ClientBase.Models;
 
 namespace SnippetStudio.ClientBase.Validation
@@ -7,7 +8,7 @@ namespace SnippetStudio.ClientBase.Validation
 	{
 		public override IEnumerable<ValidationResult> Validate(DependencyModel o)
 		{
-			return new List<ValidationResult>();
+			return Array.Empty<ValidationResult>();
 		}
 	}
 }

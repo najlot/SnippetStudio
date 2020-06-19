@@ -5,9 +5,9 @@ namespace SnippetStudio.ClientBase.Validation
 {
 	public class DependencyValidationList : ValidationList<DependencyModel>
 	{
-		protected override IEnumerable<ValidationBase<DependencyModel>> GetValidations()
+		public DependencyValidationList()
 		{
-			yield return new DependencyValidation();
+			Add(new DependencyValidation());
 		}
 	}
 }

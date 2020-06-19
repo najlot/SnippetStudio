@@ -1,5 +1,6 @@
 ﻿using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
+using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase.ProfileHandler
 {
@@ -9,6 +10,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 		IProfileHandler SetNext(IProfileHandler handler);
 
-		void SetProfile(ProfileBase profile);
+		Task SetProfile(ProfileBase profile);
 	}
 }

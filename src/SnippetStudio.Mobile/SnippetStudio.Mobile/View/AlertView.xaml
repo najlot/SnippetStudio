@@ -8,7 +8,7 @@
              x:Class="SnippetStudio.Mobile.View.AlertView"
 			 Title="{Binding Title}">
 	<ContentPage.Content>
-		<ScrollView>
+		<ScrollView Margin="20">
 			<StackLayout>
 				<Label Text="{Binding Message}" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
 			</StackLayout>

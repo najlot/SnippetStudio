@@ -13,17 +13,23 @@ namespace SnippetStudio.Wpf.ViewModel
 		/// </summary>
 		public ViewModelLocator()
 		{
+			var messenger = new Messenger();
+			var dispatcher = new DispatcherHelper();
 			var serviceCollection = new ServiceCollection();
+			Main = new MainViewModel();
+			var errorService = new ErrorService(Main);
 
 			serviceCollection.AddSingleton<IDispatcherHelper, DispatcherHelper>();
 
 			// Register services
 			serviceCollection.AddSingleton<ErrorService>();
 			serviceCollection.AddSingleton<ProfilesService>();
-			serviceCollection.AddSingleton<Messenger>();
+			serviceCollection.AddSingleton(messenger);
 
-			var profileHandler = new LocalProfileHandler();
-			profileHandler.SetNext(new RestProfileHandler()).SetNext(new RmqProfileHandler());
+			var profileHandler = new LocalProfileHandler(messenger, dispatcher);
+			profileHandler
+				.SetNext(new RestProfileHandler(messenger, dispatcher, errorService))
+				.SetNext(new RmqProfileHandler(messenger, dispatcher, errorService));
 
 			serviceCollection.AddSingleton<IProfileHandler>(profileHandler);
 			serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetSnippetService());
@@ -33,8 +39,6 @@ namespace SnippetStudio.Wpf.ViewModel
 			serviceCollection.AddScoped<MenuViewModel>();
 
 			serviceCollection.AddScoped<AllSnippetsViewModel>();
-
-			Main = new MainViewModel();
 
 			serviceCollection.AddSingleton<INavigationService>(Main);
 

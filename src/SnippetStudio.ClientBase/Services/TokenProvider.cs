@@ -57,7 +57,7 @@ namespace SnippetStudio.ClientBase.Services
 
 						var response = await client.PostAsync("api/Auth", JsonConvert.SerializeObject(request), "application/json");
 						response = response.EnsureSuccessStatusCode();
-						_token = Encoding.UTF8.GetString(response.Body);
+						_token = Encoding.UTF8.GetString(response.Body.ToArray());
 					}
 				}
 

@@ -22,17 +22,22 @@ namespace SnippetStudio.Mobile
 				var loginView = new LoginView();
 				_navigationPage = new NavigationServicePage(loginView);
 
+				var messenger = new Messenger();
+				var dispatcher = new DispatcherHelper();
 				var serviceCollection = new ServiceCollection();
+				var errorService = new ErrorService(_navigationPage);
 
 				serviceCollection.AddSingleton<IDispatcherHelper, DispatcherHelper>();
 
 				// Register services
-				serviceCollection.AddSingleton<ErrorService>();
+				serviceCollection.AddSingleton(errorService);
 				serviceCollection.AddSingleton<ProfilesService>();
-				serviceCollection.AddSingleton<Messenger>();
+				serviceCollection.AddSingleton(messenger);
 
-				var profileHandler = new LocalProfileHandler();
-				profileHandler.SetNext(new RestProfileHandler()).SetNext(new RmqProfileHandler());
+				var profileHandler = new LocalProfileHandler(messenger, dispatcher);
+				profileHandler
+					.SetNext(new RestProfileHandler(messenger, dispatcher, errorService))
+					.SetNext(new RmqProfileHandler(messenger, dispatcher, errorService));
 
 				serviceCollection.AddSingleton<IProfileHandler>(profileHandler);
 				serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetSnippetService());

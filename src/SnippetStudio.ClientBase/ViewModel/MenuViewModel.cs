@@ -7,20 +7,32 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
+		private bool _isBusy = false;
 
 		private readonly AllSnippetsViewModel _allSnippetsViewModel;
 
 		public RelayCommand NavigateToSnippets => new RelayCommand(async () =>
 		{
+			if (_isBusy)
+			{
+				return;
+			}
+
 			try
 			{
+				_isBusy = true;
+
 				var refreshTask = _allSnippetsViewModel.RefreshSnippetsAsync();
-				_navigationService.NavigateForward(_allSnippetsViewModel);
+				await _navigationService.NavigateForward(_allSnippetsViewModel);
 				await refreshTask;
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Could not load...", ex);
+				await _errorService.ShowAlert("Could not load...", ex);
+			}
+			finally
+			{
+				_isBusy = false;
 			}
 		});
 

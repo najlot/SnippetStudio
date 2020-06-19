@@ -6,6 +6,7 @@ using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
+using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
@@ -41,15 +42,16 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_profileHandler = profileHandler;
 			_serviceProvider = serviceProvider;
 			_messenger = messenger;
-			_messenger.Register<LoginProfile>(message => Login(message.Profile));
-			_messenger.Register<EditProfile>(message => _navigationService.NavigateForward(new ProfileViewModel(message.Profile.Clone(), _messenger)));
-			_messenger.Register<DeleteProfile>(message => Delete(message.Profile));
-			_messenger.Register<SaveProfile>(message => Save(message.Profile));
+			
+			_messenger.Register<LoginProfile>(Login);
+			_messenger.Register<EditProfile>(Edit);
+			_messenger.Register<DeleteProfile>(Delete);
+			_messenger.Register<SaveProfile>(Save);
 
-			LoadProfiles();
+			LoadProfiles().ContinueWith(task => Console.WriteLine(task.Exception), TaskContinuationOptions.OnlyOnFaulted);
 		}
 
-		private void LoadProfiles()
+		private async Task LoadProfiles()
 		{
 			try
 			{
@@ -58,12 +60,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Could not load profiles...", ex);
+				await _errorService.ShowAlert("Could not load profiles...", ex);
 			}
 		}
 
-		private async void Delete(ProfileBase profile)
+		private async Task Delete(DeleteProfile obj)
 		{
+			var profile = obj.Profile;
 			var profileVm = LoginProfiles.FirstOrDefault(v => v.Profile.Id == profile.Id);
 
 			if (profileVm == null)
@@ -88,8 +91,16 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		private void Save(ProfileBase profile)
+		private async Task Edit(EditProfile obj)
 		{
+			var profile = obj.Profile;
+			var vm = new ProfileViewModel(profile.Clone(), _messenger);
+			await _navigationService.NavigateForward(vm);
+		}
+
+		private void Save(SaveProfile obj)
+		{
+			var profile = obj.Profile;
 			var profileVm = LoginProfiles.FirstOrDefault(vm => vm.Profile.Id == profile.Id);
 
 			if (profileVm != null)
@@ -102,20 +113,22 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_profilesService.Save(LoginProfiles.Select(vm => vm.Profile).ToList());
 		}
 
-		private void Login(ProfileBase profile)
+		private async Task Login(LoginProfile obj)
 		{
 			try
 			{
+				var profile = obj.Profile;
+
 				_serviceScope?.Dispose();
 				_serviceScope = _serviceProvider.CreateScope();
 
-				_profileHandler.SetProfile(profile);
+				await _profileHandler.SetProfile(profile);
 				var menuViewModel = _serviceScope.ServiceProvider.GetRequiredService<MenuViewModel>();
-				_navigationService.NavigateForward(menuViewModel);
+				await _navigationService.NavigateForward(menuViewModel);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Could not login...", ex);
+				await _errorService.ShowAlert("Could not login...", ex);
 			}
 		}
 	}

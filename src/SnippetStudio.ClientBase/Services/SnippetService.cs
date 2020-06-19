@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cosei.Client.RabbitMq;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
@@ -9,10 +10,37 @@ namespace SnippetStudio.ClientBase.Services
 	public class SnippetService : IDisposable
 	{
 		private IDataStore<SnippetModel> _store;
+		private readonly Messenger _messenger;
+		private readonly IDispatcherHelper _dispatcher;
 
-		public SnippetService(IDataStore<SnippetModel> dataStore)
+		public SnippetService(
+			IDataStore<SnippetModel> dataStore,
+			Messenger messenger,
+			IDispatcherHelper dispatcher,
+			ISubscriber subscriber)
 		{
 			_store = dataStore;
+			_messenger = messenger;
+			_dispatcher = dispatcher;
+			
+			subscriber.Register<SnippetCreated>(Handle);
+			subscriber.Register<SnippetUpdated>(Handle);
+			subscriber.Register<SnippetDeleted>(Handle);
+		}
+
+		private async Task Handle(SnippetCreated message)
+		{
+			await _dispatcher.BeginInvokeOnMainThread(async () => await _messenger.SendAsync(message));
+		}
+
+		private async Task Handle(SnippetUpdated message)
+		{
+			await _dispatcher.BeginInvokeOnMainThread(async () => await _messenger.SendAsync(message));
+		}
+
+		private async Task Handle(SnippetDeleted message)
+		{
+			await _dispatcher.BeginInvokeOnMainThread(async () => await _messenger.SendAsync(message));
 		}
 
 		public SnippetModel CreateSnippet()
@@ -27,29 +55,29 @@ namespace SnippetStudio.ClientBase.Services
 			};
 		}
 
-		public Task<bool> AddItemAsync(SnippetModel item)
+		public async Task<bool> AddItemAsync(SnippetModel item)
 		{
-			return _store.AddItemAsync(item);
+			return await _store.AddItemAsync(item);
 		}
 
-		public Task<bool> DeleteItemAsync(Guid id)
+		public async Task<bool> DeleteItemAsync(Guid id)
 		{
-			return _store.DeleteItemAsync(id);
+			return await _store.DeleteItemAsync(id);
 		}
 
-		public Task<SnippetModel> GetItemAsync(Guid id)
+		public async Task<SnippetModel> GetItemAsync(Guid id)
 		{
-			return _store.GetItemAsync(id);
+			return await _store.GetItemAsync(id);
 		}
 
-		public Task<IEnumerable<SnippetModel>> GetItemsAsync(bool forceRefresh = false)
+		public async Task<IEnumerable<SnippetModel>> GetItemsAsync(bool forceRefresh = false)
 		{
-			return _store.GetItemsAsync(forceRefresh);
+			return await _store.GetItemsAsync(forceRefresh);
 		}
 
-		public Task<bool> UpdateItemAsync(SnippetModel item)
+		public async Task<bool> UpdateItemAsync(SnippetModel item)
 		{
-			return _store.UpdateItemAsync(item);
+			return await _store.UpdateItemAsync(item);
 		}
 
 		#region IDisposable Support

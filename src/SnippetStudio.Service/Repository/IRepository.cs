@@ -1,6 +1,6 @@
 ﻿namespace SnippetStudio.Service.Repository
 {
-	public interface IRepository<TKey, TModel>
+	public interface IRepository<in TKey, TModel>
 		where TModel : class, new()
 	{
 		TModel Get(TKey id);

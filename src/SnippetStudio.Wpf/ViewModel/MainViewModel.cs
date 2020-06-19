@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.Services;
 
@@ -7,8 +8,8 @@ namespace SnippetStudio.Wpf.ViewModel
 	public class MainViewModel : AbstractViewModel, INavigationService
 	{
 		private AbstractViewModel _viewModel;
-		private static readonly Stack<AbstractViewModel> _backViewModels = new Stack<AbstractViewModel>();
-		private static AbstractViewModel _lastViewModel = null;
+		private readonly Stack<AbstractViewModel> _backViewModels = new Stack<AbstractViewModel>();
+		private AbstractViewModel _lastViewModel = null;
 
 		private bool _isPopup = false;
 
@@ -26,10 +27,10 @@ namespace SnippetStudio.Wpf.ViewModel
 
 		public MainViewModel()
 		{
-			NavigateBackCommand = new RelayCommand(NavigateBack, () => _backViewModels.Count > 0 && !_isPopup);
+			NavigateBackCommand = new RelayCommand(() => NavigateBack(), () => _backViewModels.Count > 0 && !_isPopup);
 		}
 
-		public void NavigateForward(AbstractViewModel newViewModel)
+		public Task NavigateForward(AbstractViewModel newViewModel)
 		{
 			if (_lastViewModel != null)
 			{
@@ -41,13 +42,15 @@ namespace SnippetStudio.Wpf.ViewModel
 			ViewModel = newViewModel;
 
 			NavigateBackCommand.RaiseCanExecuteChanged();
+
+			return Task.CompletedTask;
 		}
 
-		public void NavigateBack()
+		public Task NavigateBack()
 		{
 			if (_backViewModels.Count < 1)
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			_lastViewModel = _backViewModels.Pop();
@@ -58,6 +61,8 @@ namespace SnippetStudio.Wpf.ViewModel
 			}
 
 			NavigateBackCommand.RaiseCanExecuteChanged();
+
+			return Task.CompletedTask;
 		}
 	}
 }

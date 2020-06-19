@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using SnippetStudio.ClientBase;
 
 namespace SnippetStudio.Wpf
@@ -7,7 +9,12 @@ namespace SnippetStudio.Wpf
 	{
 		public void BeginInvokeOnMainThread(Action action)
 		{
-			action();
+			Application.Current.Dispatcher.Invoke(action);
+		}
+
+		public async Task BeginInvokeOnMainThread(Func<Task> action)
+		{
+			await Application.Current.Dispatcher.Invoke(action);
 		}
 	}
 }

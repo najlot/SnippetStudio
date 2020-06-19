@@ -4,6 +4,7 @@
 			 xmlns:d="http://xamarin.com/schemas/2014/forms/design"
 			 xmlns:local="clr-namespace:SnippetStudio.Mobile.View"
 			 xmlns:converter="clr-namespace:SnippetStudio.Mobile.Converter"
+			 xmlns:controls="clr-namespace:SnippetStudio.Mobile.Controls"
 			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
 			 x:Class="SnippetStudio.Mobile.View.SnippetView"
 			 Title="Snippet">

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SnippetStudio.ClientBase.Validation
 {
-	public abstract class AbstractValidationModel : INotifyDataErrorInfo
+	public abstract class AbstractValidationModel : INotifyDataErrorInfo, INotifyPropertyChanged
 	{
 		private Action _validateAction = () => { };
 		private IEnumerable<ValidationResult> _errors = new List<ValidationResult>();
@@ -15,15 +15,20 @@ namespace SnippetStudio.ClientBase.Validation
 		protected void RaiseErrorsChanged(string propertyName) => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 
 		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
+		public event PropertyChangedEventHandler PropertyChanged;
+		
 		public void SetValidation<T>(ValidationList<T> validations, bool validate = true) where T : AbstractValidationModel
 		{
 			if (!typeof(T).IsAssignableFrom(GetType()))
 			{
-				throw new Exception($"{typeof(T).FullName} is not assignable from {GetType().FullName}");
+				throw new InvalidOperationException($"{typeof(T).FullName} is not assignable from {GetType().FullName}");
 			}
 
-			_validateAction = async () => Errors = await validations.ValidateAsync((T)this);
+			_validateAction = async () =>
+			{
+				Errors = await validations.ValidateAsync((T)this);
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasErrors)));
+			};
 
 			if (validate)
 			{
@@ -48,7 +53,8 @@ namespace SnippetStudio.ClientBase.Validation
 			_validateAction();
 		}
 
-		public bool HasErrors => Errors.Any();
+		private bool _hasErrors = false;
+		public bool HasErrors { get => Errors.Any() || _hasErrors; set => _hasErrors = value; }
 
 		public IEnumerable GetErrors(string propertyName)
 		{
