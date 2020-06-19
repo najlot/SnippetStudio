@@ -3,6 +3,7 @@ using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
 using SnippetStudio.ClientBase.ViewModel;
+using SnippetStudio.Mobile.Services;
 using SnippetStudio.Mobile.View;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,6 +12,10 @@ using Xamarin.Forms.Xaml;
 
 namespace SnippetStudio.Mobile
 {
+	// // //
+	// Does not work on Android because of https://github.com/dotnet/roslyn/issues/39501
+	// // //
+
 	public partial class App : Application
 	{
 		private static NavigationServicePage _navigationPage;
@@ -34,10 +39,12 @@ namespace SnippetStudio.Mobile
 				serviceCollection.AddSingleton<ProfilesService>();
 				serviceCollection.AddSingleton(messenger);
 
-				var profileHandler = new LocalProfileHandler(messenger, dispatcher);
+				var clipboardService = new ClipboardService();
+
+				var profileHandler = new LocalProfileHandler(messenger, dispatcher, clipboardService);
 				profileHandler
-					.SetNext(new RestProfileHandler(messenger, dispatcher, errorService))
-					.SetNext(new RmqProfileHandler(messenger, dispatcher, errorService));
+					.SetNext(new RestProfileHandler(messenger, dispatcher, errorService, clipboardService))
+					.SetNext(new RmqProfileHandler(messenger, dispatcher, errorService, clipboardService));
 
 				serviceCollection.AddSingleton<IProfileHandler>(profileHandler);
 				serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetSnippetService());

@@ -66,6 +66,10 @@ namespace SnippetStudio.Mobile
 			{
 				cp = new ProfileView();
 			}
+			else if (vm is TextInputViewModel)
+			{
+				cp = new TextInputView();
+			}
 
 			cp.BindingContext = vm;
 

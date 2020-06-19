@@ -11,16 +11,19 @@ namespace SnippetStudio.ClientBase.Services
 	{
 		private IDataStore<SnippetModel> _store;
 		private readonly Messenger _messenger;
+		private readonly CsScriptRunService _csScriptRunService;
 		private readonly IDispatcherHelper _dispatcher;
 
 		public SnippetService(
 			IDataStore<SnippetModel> dataStore,
 			Messenger messenger,
+			CsScriptRunService csScriptRunService,
 			IDispatcherHelper dispatcher,
 			ISubscriber subscriber)
 		{
 			_store = dataStore;
 			_messenger = messenger;
+			_csScriptRunService = csScriptRunService;
 			_dispatcher = dispatcher;
 			
 			subscriber.Register<SnippetCreated>(Handle);
@@ -49,10 +52,24 @@ namespace SnippetStudio.ClientBase.Services
 			{
 				Id = Guid.NewGuid(),
 				Name = "",
-				Language = "",
+				Language = "C#",
 				Template = "",
-				Code = "",
+				Code = @"
+var result = Template;
+
+foreach(var variable in Variables)
+{
+	result = result.Replace(""%"" + variable.Key + ""%"", variable.Value);
+}
+
+return result;",
 			};
+		}
+
+		public async Task<string> Run(string code, string template, Dictionary<string, string> variables)
+		{
+			var result = await Task.Run(async () => await _csScriptRunService.Run(code, template, variables));
+			return result;
 		}
 
 		public async Task<bool> AddItemAsync(SnippetModel item)

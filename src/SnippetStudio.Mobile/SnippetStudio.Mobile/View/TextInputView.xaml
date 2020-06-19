@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SnippetStudio.Mobile.View.TextInputView"
+			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
+			 Title="{Binding Description}">
+
+	<ContentPage.Content>
+		<ScrollView Margin="20">
+			<StackLayout>
+				<Entry Text="{Binding Input}" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<Button Command="{Binding OkCommand}" Text="{x:Static loc:CommonLoc.Ok}" Grid.Column="0" Margin="1"
+							HorizontalOptions="FillAndExpand" BackgroundColor="#212121" TextColor="#ffffff" />
+					<Button Command="{Binding CancelCommand}" Text="{x:Static loc:CommonLoc.Cancel}" Grid.Column="1" Margin="1"
+							HorizontalOptions="FillAndExpand" BackgroundColor="#212121" TextColor="#ffffff" />
+				</Grid>
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>

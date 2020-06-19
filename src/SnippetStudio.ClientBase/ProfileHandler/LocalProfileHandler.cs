@@ -9,11 +9,13 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	{
 		private readonly Messenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
+		private readonly IClipboardService _clipboardService;
 
-		public LocalProfileHandler(Messenger messenger, IDispatcherHelper dispatcher)
+		public LocalProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, IClipboardService clipboardService)
 		{
 			_messenger = messenger;
 			_dispatcher = dispatcher;
+			_clipboardService = clipboardService;
 		}
 
 		protected override async Task ApplyProfile(ProfileBase profile)
@@ -22,7 +24,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 			{
 				var subscriber = new LocalSubscriber();
 				var snippetStore = new LocalSnippetStore(localProfile.FolderName, subscriber);
-				SnippetService = new SnippetService(snippetStore, _messenger, _dispatcher, subscriber);
+				var csScriptRunService = new CsScriptRunService(_clipboardService);
+				SnippetService = new SnippetService(snippetStore, _messenger, csScriptRunService, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
 			}

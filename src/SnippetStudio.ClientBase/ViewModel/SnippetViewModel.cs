@@ -14,13 +14,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private bool _isBusy;
 		private SnippetModel _item;
-
+		private string result;
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
 
 		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
+
+		public RelayCommand RunCommand { get; }
 
 		public SnippetViewModel(
 			ErrorService errorService,
@@ -69,6 +71,59 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 					return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
 				}));
+			}
+
+			RunCommand = new RelayCommand(async () =>
+			{
+				try
+				{
+					Dictionary<string, string> variables = new Dictionary<string, string>();
+
+					Result = "...";
+
+					foreach (var variable in Variables)
+					{
+						var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
+						{
+							Description = variable.Item.RequestName,
+							Input = variable.Item.DefaultValue
+						});
+
+						if (shouldCancel)
+						{
+							return;
+						}
+
+						variables[variable.Item.Name] = input;
+					}
+
+					await _messenger.SendAsync(new RunSnippet(
+						Item.Id,
+						Item.Language,
+						Dependencies.Select(e => e.Item.Name).ToList(),
+						variables,
+						Item.Template,
+						Item.Code));
+				}
+				catch (Exception ex)
+				{
+					await _errorService.ShowAlert("Error running...", ex);
+					Result = "";
+				}
+			});
+		}
+
+		public string Result
+		{
+			get => result;
+			set => Set(nameof(Result), ref result, value);
+		}
+
+		public void Handle(SnippetRun obj)
+		{
+			if (Item.Id == obj.Id)
+			{
+				Result = obj.Result;
 			}
 		}
 

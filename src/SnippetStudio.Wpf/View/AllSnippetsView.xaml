@@ -35,34 +35,42 @@
 		</WrapPanel>
 
 		<ScrollViewer>
-			<ItemsControl ItemsSource="{Binding Snippets}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+			<StackPanel Margin="5,0">
+				<Border Margin="0,1" BorderThickness="0.5" BorderBrush="{StaticResource BackgroundColor}" />
+				
+				<ItemsControl ItemsSource="{Binding Snippets}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Margin="5">
-							<Label Content="{Binding Item.Name}" Padding="5,5,5,0" VerticalContentAlignment="Center">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
-										<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</Label>
-							<Label Content="{Binding Item.Language}" Padding="5,5,5,0" VerticalContentAlignment="Center">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
-										<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</Label>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel>
+								<WrapPanel>
+									<Label Content="{Binding Item.Language}" Padding="5" VerticalContentAlignment="Center">
+										<i:Interaction.Triggers>
+											<i:EventTrigger EventName="MouseDoubleClick">
+												<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
+											</i:EventTrigger>
+										</i:Interaction.Triggers>
+									</Label>
+									<Label Content="{Binding Item.Name}" Padding="5" VerticalContentAlignment="Center">
+										<i:Interaction.Triggers>
+											<i:EventTrigger EventName="MouseDoubleClick">
+												<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
+											</i:EventTrigger>
+										</i:Interaction.Triggers>
+									</Label>
+								</WrapPanel>
+
+								<Border Margin="0,1" BorderThickness="0.5" BorderBrush="{StaticResource BackgroundColor}" />
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>
 </UserControl>

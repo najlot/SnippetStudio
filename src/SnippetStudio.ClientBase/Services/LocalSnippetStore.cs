@@ -78,8 +78,9 @@ namespace SnippetStudio.ClientBase.Services
 
 		private void SaveItems()
 		{
+			var path = Path.Combine(_dataPath, "Snippets.json");
 			var text = Newtonsoft.Json.JsonConvert.SerializeObject(_items);
-			File.WriteAllText(_dataPath, text);
+			File.WriteAllText(path, text);
 		}
 
 		public async Task<bool> UpdateItemAsync(SnippetModel item)

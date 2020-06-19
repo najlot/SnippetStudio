@@ -48,6 +48,17 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_messenger.Register<SnippetCreated>(Handle);
 			_messenger.Register<SnippetUpdated>(Handle);
 			_messenger.Register<SnippetDeleted>(Handle);
+			_messenger.Register<RunSnippet>(Handle);
+		}
+
+		private async Task Handle(RunSnippet obj)
+		{
+			var result = await _snippetService.Run(obj.Code, obj.Template, obj.Variables);
+			await _messenger.SendAsync(new SnippetRun()
+			{
+				Id = obj.Id,
+				Result = result
+			});
 		}
 
 		private void Handle(SnippetCreated obj)
@@ -159,6 +170,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<SaveVariable>(vm.Handle);
 
 				_messenger.Register<SnippetUpdated>(vm.Handle);
+				_messenger.Register<SnippetRun>(vm.Handle);
 
 				await _navigationService.NavigateForward(vm);
 			}
@@ -219,6 +231,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<EditVariable>(itemVm.Handle);
 				_messenger.Register<DeleteVariable>(itemVm.Handle);
 				_messenger.Register<SaveVariable>(itemVm.Handle);
+				_messenger.Register<SnippetRun>(itemVm.Handle);
 
 				await _navigationService.NavigateForward(itemVm);
 			}

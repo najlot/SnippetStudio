@@ -59,9 +59,9 @@ namespace SnippetStudio.ClientBase.Localisation {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Name:.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
             get {

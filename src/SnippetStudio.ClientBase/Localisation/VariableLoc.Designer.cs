@@ -59,27 +59,27 @@ namespace SnippetStudio.ClientBase.Localisation {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to DefaultValue:.
+        ///   Looks up a localized string similar to Default value.
         /// </summary>
         public static string DefaultValue {
             get {
                 return ResourceManager.GetString("DefaultValue", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Name:.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to RequestName:.
+        ///   Looks up a localized string similar to Request name.
         /// </summary>
         public static string RequestName {
             get {

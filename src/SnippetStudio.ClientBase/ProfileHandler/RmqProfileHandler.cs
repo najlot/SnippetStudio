@@ -11,12 +11,14 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 		private readonly Messenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ErrorService _errorService;
+		private readonly IClipboardService _clipboardService;
 
-		public RmqProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, ErrorService errorService)
+		public RmqProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, ErrorService errorService, IClipboardService clipboardService)
 		{
 			_messenger = messenger;
 			_dispatcher = dispatcher;
 			_errorService = errorService;
+			_clipboardService = clipboardService;
 		}
 
 		private IRequestClient CreateRequestClient()
@@ -48,7 +50,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 					});
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
-				SnippetService = new SnippetService(snippetStore, _messenger, _dispatcher, subscriber);
+				var csScriptRunService = new CsScriptRunService(_clipboardService);
+				SnippetService = new SnippetService(snippetStore, _messenger, csScriptRunService, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
 			}

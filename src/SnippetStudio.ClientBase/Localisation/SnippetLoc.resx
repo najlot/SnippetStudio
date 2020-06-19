@@ -121,18 +121,24 @@
     <value>Name:</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="Dependencies" xml:space="preserve">
-    <value>Dependencies:</value>
+    <value>Dependencies</value>
   </data>
   <data name="Variables" xml:space="preserve">
-    <value>Variables:</value>
+    <value>Variables</value>
   </data>
   <data name="Template" xml:space="preserve">
-    <value>Template:</value>
+    <value>Template</value>
   </data>
   <data name="Code" xml:space="preserve">
-    <value>Code:</value>
+    <value>Code</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
   </data>
 </root>

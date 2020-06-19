@@ -28,7 +28,7 @@
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<ViewCell>
-						<StackLayout Padding="10">
+						<StackLayout Padding="10" Orientation="Horizontal">
 							<StackLayout.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding EditSnippetCommand}" />
 							</StackLayout.GestureRecognizers>
