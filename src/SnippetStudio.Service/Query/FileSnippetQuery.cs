@@ -13,7 +13,7 @@ namespace SnippetStudio.Service.Query
 {
 	public class FileSnippetQuery : ISnippetQuery
 	{
-		private string _storagePath;
+		private readonly string _storagePath;
 
 		public FileSnippetQuery(FileConfiguration configuration)
 		{

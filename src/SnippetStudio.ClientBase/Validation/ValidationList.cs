@@ -7,15 +7,6 @@ namespace SnippetStudio.ClientBase.Validation
 {
 	public abstract class ValidationList<T> : List<ValidationBase<T>>
 	{
-		public ValidationList()
-		{
-			Add(new ValueObjectValidation<T>());
-
-			AddRange(GetValidations());
-		}
-
-		protected abstract IEnumerable<ValidationBase<T>> GetValidations();
-
 		public async Task<IEnumerable<ValidationResult>> ValidateAsync(T o)
 		{
 			return await Task.Run(() => Validate(o));

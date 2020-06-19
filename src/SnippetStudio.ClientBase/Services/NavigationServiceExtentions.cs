@@ -8,9 +8,9 @@ namespace SnippetStudio.ClientBase.Services
 		{
 			var taskCompletionSource = new TaskCompletionSource<T>();
 			requestViewModel.SetResult = taskCompletionSource.SetResult;
-			service.NavigateForward(requestViewModel);
+			await service.NavigateForward(requestViewModel);
 			var result = await taskCompletionSource.Task;
-			service.NavigateBack();
+			await service.NavigateBack();
 			return result;
 		}
 	}

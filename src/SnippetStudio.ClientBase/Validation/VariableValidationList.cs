@@ -5,9 +5,9 @@ namespace SnippetStudio.ClientBase.Validation
 {
 	public class VariableValidationList : ValidationList<VariableModel>
 	{
-		protected override IEnumerable<ValidationBase<VariableModel>> GetValidations()
+		public VariableValidationList()
 		{
-			yield return new VariableValidation();
+			Add(new VariableValidation());
 		}
 	}
 }

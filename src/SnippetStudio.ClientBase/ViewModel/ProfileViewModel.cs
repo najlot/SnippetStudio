@@ -19,7 +19,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				if (profile.Source != value)
 				{
-					ProfileBase newProfile = null;
+					ProfileBase newProfile;
 
 					switch (value)
 					{
@@ -34,6 +34,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 						case Source.REST:
 							newProfile = new RestProfile();
 							break;
+
+						default:
+							throw new NotImplementedException(value.ToString());
 					}
 
 					newProfile.Id = Profile.Id;
@@ -69,6 +72,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_messenger = messenger;
 		}
 
-		public RelayCommand SaveCommand => new RelayCommand(() => _messenger.Send(new SaveProfile(Profile)));
+		public RelayCommand SaveCommand => new RelayCommand(async () => await _messenger.SendAsync(new SaveProfile(Profile)));
 	}
 }

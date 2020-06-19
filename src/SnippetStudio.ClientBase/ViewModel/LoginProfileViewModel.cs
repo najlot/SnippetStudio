@@ -1,21 +1,25 @@
 ﻿using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
+using System;
+using System.Windows.Input;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class LoginProfileViewModel : AbstractViewModel
 	{
-		private readonly Messenger _messenger;
-
 		public ProfileBase Profile { get; }
-		public RelayCommand LoginCommand => new RelayCommand(() => _messenger.Send(new LoginProfile(Profile)));
-		public RelayCommand EditCommand => new RelayCommand(() => _messenger.Send(new EditProfile(Profile)));
-		public RelayCommand DeleteCommand => new RelayCommand(() => _messenger.Send(new DeleteProfile(Profile)));
+
+		public ICommand LoginCommand { get; }
+		public ICommand EditCommand { get; }
+		public ICommand DeleteCommand { get; }
 
 		public LoginProfileViewModel(ProfileBase profile, Messenger messenger)
 		{
 			Profile = profile;
-			_messenger = messenger;
+
+			LoginCommand = new AsyncCommand(async () => await messenger.SendAsync(new LoginProfile(profile)));
+			EditCommand = new AsyncCommand(async () => await messenger.SendAsync(new EditProfile(profile)));
+			DeleteCommand = new AsyncCommand(async () => await messenger.SendAsync(new DeleteProfile(profile)));
 		}
 	}
 }

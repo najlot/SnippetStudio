@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cosei.Service.RabbitMq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SnippetStudio.Contracts;
@@ -12,12 +13,15 @@ namespace SnippetStudio.Service.Services
 	{
 		private readonly ISnippetRepository _snippetRepository;
 		private readonly ISnippetQuery _snippetQuery;
+		private readonly IPublisher _publisher;
 
 		public SnippetService(ISnippetRepository snippetRepository,
-			ISnippetQuery snippetQuery)
+			ISnippetQuery snippetQuery,
+			IPublisher publisher)
 		{
 			_snippetRepository = snippetRepository;
 			_snippetQuery = snippetQuery;
+			_publisher = publisher;
 		}
 
 		public void CreateSnippet(CreateSnippet command, string userName)
@@ -34,6 +38,15 @@ namespace SnippetStudio.Service.Services
 			};
 
 			_snippetRepository.Insert(item);
+
+			_publisher.PublishAsync(new SnippetCreated(
+				command.Id,
+				command.Name,
+				command.Language,
+				command.Dependencies,
+				command.Variables,
+				command.Template,
+				command.Code));
 		}
 
 		public void UpdateSnippet(UpdateSnippet command, string userName)
@@ -78,11 +91,22 @@ namespace SnippetStudio.Service.Services
 			}
 
 			_snippetRepository.Update(item);
+
+			_publisher.PublishAsync(new SnippetUpdated(
+				command.Id,
+				command.Name,
+				command.Language,
+				command.Dependencies,
+				command.Variables,
+				command.Template,
+				command.Code));
 		}
 
 		public void DeleteSnippet(Guid id, string userName)
 		{
 			_snippetRepository.Delete(id);
+
+			_publisher.PublishAsync(new SnippetDeleted(id));
 		}
 
 		public Snippet GetItem(Guid id)
@@ -118,6 +142,7 @@ namespace SnippetStudio.Service.Services
 		public void Dispose()
 		{
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion IDisposable Support

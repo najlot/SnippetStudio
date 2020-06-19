@@ -28,11 +28,14 @@ namespace SnippetStudio.ClientBase.Services
 			{
 				var token = await _tokenProvider.GetToken();
 
-				_client.DefaultHeaders.Clear();
-				_client.DefaultHeaders.Add("Authorization", $"Bearer {token}");
+				var headers = new Dictionary<string, string>
+				{
+					{ "Authorization", $"Bearer {token}" }
+				};
 
-				var response = await _client.GetAsync("api/Snippet");
-				var responseString = Encoding.UTF8.GetString(response.Body);
+				var response = await _client.GetAsync("api/Snippet", headers);
+				response = response.EnsureSuccessStatusCode();
+				var responseString = Encoding.UTF8.GetString(response.Body.ToArray());
 
 				items = JsonConvert.DeserializeObject<List<SnippetModel>>(responseString);
 			}
@@ -46,11 +49,14 @@ namespace SnippetStudio.ClientBase.Services
 			{
 				var token = await _tokenProvider.GetToken();
 
-				_client.DefaultHeaders.Clear();
-				_client.DefaultHeaders.Add("Authorization", $"Bearer {token}");
+				var headers = new Dictionary<string, string>
+				{
+					{ "Authorization", $"Bearer {token}" }
+				};
 
-				var response = await _client.GetAsync($"api/Snippet/{id}");
-				var responseString = Encoding.UTF8.GetString(response.Body);
+				var response = await _client.GetAsync($"api/Snippet/{id}", headers);
+				response = response.EnsureSuccessStatusCode();
+				var responseString = Encoding.UTF8.GetString(response.Body.ToArray());
 
 				return JsonConvert.DeserializeObject<SnippetModel>(responseString);
 			}
@@ -67,8 +73,10 @@ namespace SnippetStudio.ClientBase.Services
 
 			var token = await _tokenProvider.GetToken();
 
-			_client.DefaultHeaders.Clear();
-			_client.DefaultHeaders.Add("Authorization", $"Bearer {token}");
+			var headers = new Dictionary<string, string>
+			{
+				{ "Authorization", $"Bearer {token}" }
+			};
 
 			var request = new CreateSnippet(item.Id,
 				item.Name,
@@ -78,7 +86,7 @@ namespace SnippetStudio.ClientBase.Services
 				item.Template,
 				item.Code);
 
-			var response = await _client.PostAsync($"api/Snippet", JsonConvert.SerializeObject(request), "application/json");
+			var response = await _client.PostAsync($"api/Snippet", JsonConvert.SerializeObject(request), "application/json", headers);
 			response.EnsureSuccessStatusCode();
 
 			return true;
@@ -93,8 +101,10 @@ namespace SnippetStudio.ClientBase.Services
 
 			var token = await _tokenProvider.GetToken();
 
-			_client.DefaultHeaders.Clear();
-			_client.DefaultHeaders.Add("Authorization", $"Bearer {token}");
+			var headers = new Dictionary<string, string>
+			{
+				{ "Authorization", $"Bearer {token}" }
+			};
 
 			var request = new UpdateSnippet(item.Id,
 				item.Name,
@@ -104,7 +114,7 @@ namespace SnippetStudio.ClientBase.Services
 				item.Template,
 				item.Code);
 
-			var response = await _client.PutAsync($"api/Snippet", JsonConvert.SerializeObject(request), "application/json");
+			var response = await _client.PutAsync($"api/Snippet", JsonConvert.SerializeObject(request), "application/json", headers);
 			response.EnsureSuccessStatusCode();
 
 			return true;
@@ -119,10 +129,12 @@ namespace SnippetStudio.ClientBase.Services
 
 			var token = await _tokenProvider.GetToken();
 
-			_client.DefaultHeaders.Clear();
-			_client.DefaultHeaders.Add("Authorization", $"Bearer {token}");
+			var headers = new Dictionary<string, string>
+			{
+				{ "Authorization", $"Bearer {token}" }
+			};
 
-			var response = await _client.DeleteAsync($"api/Snippet/{id}");
+			var response = await _client.DeleteAsync($"api/Snippet/{id}", headers);
 			response.EnsureSuccessStatusCode();
 
 			return true;

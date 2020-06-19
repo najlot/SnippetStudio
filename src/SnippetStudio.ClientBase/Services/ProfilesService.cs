@@ -26,31 +26,28 @@ namespace SnippetStudio.ClientBase.Services
 			}
 		}
 
-		private static readonly string _profilesPath;
-		private static readonly JsonSerializerSettings _jsonSerializerSettings;
+		private static readonly string _profilesPath = BuildProfilesPath();
+		private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings()
+		{
+			TypeNameHandling = TypeNameHandling.Objects,
+			SerializationBinder = new KnownTypesBinder()
+			{
+				KnownTypes = new List<Type>
+				{
+					typeof(LocalProfile),
+					typeof(RestProfile),
+					typeof(RmqProfile)
+				}
+			}
+		};
 
 		private List<ProfileBase> _profiles;
 
-		static ProfilesService()
+		private static string BuildProfilesPath()
 		{
 			var appdataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SnippetStudio");
 			Directory.CreateDirectory(appdataDir);
-
-			_profilesPath = Path.Combine(appdataDir, "Profiles.json");
-
-			_jsonSerializerSettings = new JsonSerializerSettings()
-			{
-				TypeNameHandling = TypeNameHandling.Objects,
-				SerializationBinder = new KnownTypesBinder()
-				{
-					KnownTypes = new List<Type>
-					{
-						typeof(LocalProfile),
-						typeof(RestProfile),
-						typeof(RmqProfile)
-					}
-				}
-			};
+			return Path.Combine(appdataDir, "Profiles.json");
 		}
 
 		public List<ProfileBase> Load()

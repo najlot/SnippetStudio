@@ -75,6 +75,7 @@ namespace SnippetStudio.Service
 
 			services.AddScoped<SnippetService>();
 			services.AddScoped<TokenService>();
+			services.AddSignalR();
 
 			var validationParameters = TokenService.GetValidationParameters(serviceConfig.Secret);
 
@@ -102,6 +103,7 @@ namespace SnippetStudio.Service
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
+				endpoints.MapHub<CoseiHub>("/cosei");
 			});
 
 			if (_useCoseiRabbitMq)

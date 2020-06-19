@@ -13,7 +13,7 @@ namespace SnippetStudio.Mobile
 		{
 		}
 
-		public async void NavigateBack()
+		public async Task NavigateBack()
 		{
 			if (Navigation.ModalStack.Count > 0)
 			{
@@ -25,7 +25,7 @@ namespace SnippetStudio.Mobile
 			}
 		}
 
-		public async void NavigateForward(AbstractViewModel vm)
+		public async Task NavigateForward(AbstractViewModel vm)
 		{
 			ContentPage cp = null;
 			bool isPopup = vm is IPopupViewModel;

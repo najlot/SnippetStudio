@@ -10,7 +10,7 @@ namespace SnippetStudio.ClientBase.Models
 
 		public ProfileBase Clone()
 		{
-			return this.MemberwiseClone() as ProfileBase;
+			return MemberwiseClone() as ProfileBase;
 		}
 	}
 }

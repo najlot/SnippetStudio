@@ -5,16 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SnippetStudio.ClientBase.Models;
+using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.Contracts;
 
 namespace SnippetStudio.ClientBase.Services
 {
-	public class LocalSnippetStore : IDataStore<SnippetModel>
+	public sealed class LocalSnippetStore : IDataStore<SnippetModel>
 	{
 		private readonly string _dataPath;
+		private readonly LocalSubscriber _subscriber;
 		private List<SnippetModel> _items = null;
 
-		public LocalSnippetStore(string folderName)
+		public LocalSnippetStore(string folderName, LocalSubscriber localSubscriber)
 		{
 			if (Path.IsPathRooted(folderName))
 			{
@@ -30,6 +32,7 @@ namespace SnippetStudio.ClientBase.Services
 			}
 			
 			_items = GetItems();
+			_subscriber = localSubscriber;
 		}
 
 		private List<SnippetModel> GetItems()
@@ -60,6 +63,15 @@ namespace SnippetStudio.ClientBase.Services
 			_items.Insert(0, item);
 
 			SaveItems();
+
+			await _subscriber.SendAsync(new SnippetCreated(
+				item.Id,
+				item.Name,
+				item.Language,
+				item.Dependencies,
+				item.Variables,
+				item.Template,
+				item.Code));
 
 			return await Task.FromResult(true);
 		}
@@ -93,15 +105,26 @@ namespace SnippetStudio.ClientBase.Services
 
 			SaveItems();
 
+			await _subscriber.SendAsync(new SnippetUpdated(
+				item.Id,
+				item.Name,
+				item.Language,
+				item.Dependencies,
+				item.Variables,
+				item.Template,
+				item.Code));
+
 			return await Task.FromResult(true);
 		}
 
 		public async Task<bool> DeleteItemAsync(Guid id)
 		{
-			var oldItem = _items.Where(arg => arg.Id == id).FirstOrDefault();
+			var oldItem = _items.FirstOrDefault(arg => arg.Id == id);
 			_items.Remove(oldItem);
 
 			SaveItems();
+
+			await _subscriber.SendAsync(new SnippetDeleted(id));
 
 			return await Task.FromResult(true);
 		}

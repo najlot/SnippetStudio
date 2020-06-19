@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -12,7 +13,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public partial class SnippetViewModel
 	{
-		public ObservableCollection<VariableViewModel> Variables { get; set; } = new ObservableCollection<VariableViewModel>();
+		private ObservableCollection<VariableViewModel> _variables = new ObservableCollection<VariableViewModel>();
+		public ObservableCollection<VariableViewModel> Variables { get => _variables; set => Set(nameof(Variables), ref _variables, value); }
 
 		public RelayCommand AddVariableCommand => new RelayCommand(() =>
 		{
@@ -30,7 +32,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			Variables.Add(vm);
 		});
 
-		public void Handle(DeleteVariable obj)
+		public async Task Handle(DeleteVariable obj)
 		{
 			if (Item.Id != obj.ParentId)
 			{
@@ -53,11 +55,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 
-		public void Handle(EditVariable obj)
+		public async Task Handle(EditVariable obj)
 		{
 			if (IsBusy)
 			{
@@ -85,11 +87,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_messenger,
 					Item.Id);
 
-				_navigationService.NavigateForward(vm);
+				await _navigationService.NavigateForward(vm);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlert("Error loading...", ex);
 			}
 			finally
 			{
@@ -97,7 +99,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		public void Handle(SaveVariable obj)
+		public async Task Handle(SaveVariable obj)
 		{
 			if (Item.Id != obj.ParentId)
 			{
@@ -140,7 +142,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 	}

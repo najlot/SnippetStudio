@@ -13,12 +13,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 	public class DependencyViewModel : AbstractViewModel
 	{
 		private bool _isBusy;
+		private DependencyModel _item;
+
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
 		private readonly Guid _parentId;
 
-		public DependencyModel Item { get; }
+		public DependencyModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
 		public DependencyViewModel(
@@ -72,12 +74,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 					}
 				}
 
-				_navigationService.NavigateBack();
-				_messenger.Send(new SaveDependency(_parentId, Item));
+				await _navigationService.NavigateBack();
+				await _messenger.SendAsync(new SaveDependency(_parentId, Item));
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 			finally
 			{
@@ -108,15 +110,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 				{
 					if (navBack)
 					{
-						_navigationService.NavigateBack();
+						await _navigationService.NavigateBack();
 					}
 
-					_messenger.Send(new DeleteDependency(_parentId, Item.Id));
+					await _messenger.SendAsync(new DeleteDependency(_parentId, Item.Id));
 				}
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error deleting...", ex);
+				await _errorService.ShowAlert("Error deleting...", ex);
 			}
 			finally
 			{
@@ -124,7 +126,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		});
 
-		public RelayCommand EditDependencyCommand => new RelayCommand(() =>
+		public RelayCommand EditDependencyCommand => new RelayCommand(async () =>
 		{
 			if (IsBusy)
 			{
@@ -134,11 +136,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				IsBusy = true;
-				_messenger.Send(new EditDependency(_parentId, Item.Id));
+				await _messenger.SendAsync(new EditDependency(_parentId, Item.Id));
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error starting edit...", ex);
+				await _errorService.ShowAlert("Error starting edit...", ex);
 			}
 			finally
 			{

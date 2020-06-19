@@ -8,11 +8,11 @@ using Najlot.Log.Middleware;
 
 namespace SnippetStudio.Service
 {
-	internal class Program
+	internal static class Program
 	{
 		public static void Main(string[] args)
 		{
-			LogAdminitrator.Instance
+			LogAdministrator.Instance
 				.SetLogLevel(Najlot.Log.LogLevel.Debug)
 				.SetExecutionMiddleware<ChannelExecutionMiddleware>()
 				.SetQueueMiddleware<ChannelQueueMiddleware, ConsoleLogDestination>()
@@ -20,7 +20,7 @@ namespace SnippetStudio.Service
 
 			CreateWebHostBuilder(args).Build().Run();
 
-			LogAdminitrator.Instance.Dispose();
+			LogAdministrator.Instance.Dispose();
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -28,7 +28,7 @@ namespace SnippetStudio.Service
 				.ConfigureLogging(builder =>
 				{
 					builder.ClearProviders();
-					builder.AddNajlotLog(LogAdminitrator.Instance);
+					builder.AddNajlotLog(LogAdministrator.Instance);
 				})
 				.UseStartup<Startup>();
 	}

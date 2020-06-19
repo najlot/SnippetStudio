@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -12,7 +13,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public partial class SnippetViewModel
 	{
-		public ObservableCollection<DependencyViewModel> Dependencies { get; set; } = new ObservableCollection<DependencyViewModel>();
+		private ObservableCollection<DependencyViewModel> _dependencies = new ObservableCollection<DependencyViewModel>();
+		public ObservableCollection<DependencyViewModel> Dependencies { get => _dependencies; set => Set(nameof(Dependencies), ref _dependencies, value); }
 
 		public RelayCommand AddDependencyCommand => new RelayCommand(() =>
 		{
@@ -30,7 +32,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			Dependencies.Add(vm);
 		});
 
-		public void Handle(DeleteDependency obj)
+		public async Task Handle(DeleteDependency obj)
 		{
 			if (Item.Id != obj.ParentId)
 			{
@@ -53,11 +55,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 
-		public void Handle(EditDependency obj)
+		public async Task Handle(EditDependency obj)
 		{
 			if (IsBusy)
 			{
@@ -85,11 +87,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_messenger,
 					Item.Id);
 
-				_navigationService.NavigateForward(vm);
+				await _navigationService.NavigateForward(vm);
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlert("Error loading...", ex);
 			}
 			finally
 			{
@@ -97,7 +99,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		public void Handle(SaveDependency obj)
+		public async Task Handle(SaveDependency obj)
 		{
 			if (Item.Id != obj.ParentId)
 			{
@@ -140,7 +142,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 		}
 	}

@@ -6,7 +6,7 @@ namespace SnippetStudio.Service.Configuration
 {
 	public static class ConfigurationReader
 	{
-		private static readonly Logger _logger = LogAdminitrator.Instance
+		private static readonly Logger _logger = LogAdministrator.Instance
 				.GetLogger(typeof(ConfigurationReader));
 
 		public static T ReadConfiguration<T>() where T : class, new()

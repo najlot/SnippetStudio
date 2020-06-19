@@ -1,9 +1,11 @@
-﻿namespace SnippetStudio.ClientBase.Services
+﻿using System.Threading.Tasks;
+
+namespace SnippetStudio.ClientBase.Services
 {
 	public interface INavigationService
 	{
-		void NavigateBack();
+		Task NavigateBack();
 
-		void NavigateForward(AbstractViewModel newViewModel);
+		Task NavigateForward(AbstractViewModel newViewModel);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Cosei.Client.RabbitMq;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
 
@@ -7,6 +8,16 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	public sealed class RmqProfileHandler : AbstractProfileHandler
 	{
 		private RmqProfile _profile;
+		private readonly Messenger _messenger;
+		private readonly IDispatcherHelper _dispatcher;
+		private readonly ErrorService _errorService;
+
+		public RmqProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, ErrorService errorService)
+		{
+			_messenger = messenger;
+			_dispatcher = dispatcher;
+			_errorService = errorService;
+		}
 
 		private IRequestClient CreateRequestClient()
 		{
@@ -18,7 +29,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				"SnippetStudio.Service");
 		}
 
-		protected override void ApplyProfile(ProfileBase profile)
+		protected override async Task ApplyProfile(ProfileBase profile)
 		{
 			if (profile is RmqProfile rmqProfile)
 			{
@@ -26,9 +37,20 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 				var requestClient = CreateRequestClient();
 				var tokenProvider = new TokenProvider(CreateRequestClient, _profile.ServerUser, _profile.ServerPassword);
+				var subscriber = new RabbitMqSubscriber(
+					_profile.RabbitMqHost,
+					_profile.RabbitMqVirtualHost,
+					_profile.RabbitMqUser,
+					_profile.RabbitMqPassword,
+					exception =>
+					{
+						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(exception));
+					});
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
-				SnippetService = new SnippetService(snippetStore);
+				SnippetService = new SnippetService(snippetStore, _messenger, _dispatcher, subscriber);
+
+				await subscriber.StartAsync();
 			}
 		}
 	}

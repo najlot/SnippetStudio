@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase
 {
@@ -14,7 +15,7 @@ namespace SnippetStudio.ClientBase
 
 		private readonly Dictionary<Type, List<TargetAndMethodInfo>> _registrations = new Dictionary<Type, List<TargetAndMethodInfo>>();
 
-		public void Send<T>(T message) where T : class
+		public async Task SendAsync<T>(T message) where T : class
 		{
 			List<TargetAndMethodInfo> list;
 			bool forceClean = false;
@@ -27,20 +28,25 @@ namespace SnippetStudio.ClientBase
 				}
 			}
 
-			var parameters = new object[] { message };
+			TargetAndMethodInfo[] array;
 
 			lock (list)
 			{
-				foreach (var entry in list)
+				array = list.ToArray();
+			}
+
+			foreach (var entry in array)
+			{
+				if (entry.Target.TryGetTarget(out var target))
 				{
-					if (entry.Target.TryGetTarget(out var target))
+					if (entry.MethodInfo.Invoke(target, new object[] { message }) is Task task)
 					{
-						entry.MethodInfo.Invoke(target, parameters);
+						await task;
 					}
-					else
-					{
-						forceClean = true;
-					}
+				}
+				else
+				{
+					forceClean = true;
 				}
 			}
 
@@ -48,6 +54,29 @@ namespace SnippetStudio.ClientBase
 			{
 				lock (list) list.RemoveAll(e => !e.Target.TryGetTarget(out var target));
 			}
+		}
+
+		public void Register<T>(Func<T, Task> handler) where T : class
+		{
+			List<TargetAndMethodInfo> list;
+			var type = typeof(T);
+
+			var entry = new TargetAndMethodInfo()
+			{
+				Target = new WeakReference<object>(handler.Target),
+				MethodInfo = handler.Method
+			};
+
+			lock (_registrations)
+			{
+				if (!_registrations.TryGetValue(type, out list))
+				{
+					list = new List<TargetAndMethodInfo>();
+					_registrations.Add(type, list);
+				}
+			}
+
+			lock (list) list.Add(entry);
 		}
 
 		public void Register<T>(Action<T> handler) where T : class

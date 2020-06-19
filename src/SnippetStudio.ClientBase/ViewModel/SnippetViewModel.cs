@@ -13,11 +13,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 	public partial class SnippetViewModel : AbstractViewModel
 	{
 		private bool _isBusy;
+		private SnippetModel _item;
+
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
 
-		public SnippetModel Item { get; }
+		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
 		public SnippetViewModel(
@@ -39,7 +41,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				Dependencies = new ObservableCollection<DependencyViewModel>(Item.Dependencies.Select(e =>
 				{
-					var model =  new DependencyModel()
+					var model = new DependencyModel()
 					{
 						Id = e.Id,
 						Name = e.Name,
@@ -57,7 +59,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				Variables = new ObservableCollection<VariableViewModel>(Item.Variables.Select(e =>
 				{
-					var model =  new VariableModel()
+					var model = new VariableModel()
 					{
 						Id = e.Id,
 						Name = e.Name,
@@ -68,6 +70,49 @@ namespace SnippetStudio.ClientBase.ViewModel
 					return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
 				}));
 			}
+		}
+
+		public void Handle(SnippetUpdated obj)
+		{
+			if (Item.Id != obj.Id)
+			{
+				return;
+			}
+
+			Item = new SnippetModel()
+			{
+				Id = obj.Id,
+				Name = obj.Name,
+				Language = obj.Language,
+				Dependencies = obj.Dependencies,
+				Variables = obj.Variables,
+				Template = obj.Template,
+				Code = obj.Code,
+			};
+
+			Dependencies = new ObservableCollection<DependencyViewModel>(Item.Dependencies.Select(e =>
+			{
+				var model = new DependencyModel()
+				{
+					Id = e.Id,
+					Name = e.Name,
+				};
+
+				return new DependencyViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
+			}));
+
+			Variables = new ObservableCollection<VariableViewModel>(Item.Variables.Select(e =>
+			{
+				var model = new VariableModel()
+				{
+					Id = e.Id,
+					Name = e.Name,
+					RequestName = e.RequestName,
+					DefaultValue = e.DefaultValue,
+				};
+
+				return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
+			}));
 		}
 
 		public RelayCommand SaveCommand => new RelayCommand(async () =>
@@ -121,12 +166,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 					}
 				}
 
-				_navigationService.NavigateBack();
-				_messenger.Send(new SaveSnippet(Item));
+				await _navigationService.NavigateBack();
+				await _messenger.SendAsync(new SaveSnippet(Item));
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlert("Error saving...", ex);
 			}
 			finally
 			{
@@ -155,13 +200,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 				if (selection)
 				{
-					_navigationService.NavigateBack();
-					_messenger.Send(new DeleteSnippet(Item.Id));
+					await _navigationService.NavigateBack();
+					await _messenger.SendAsync(new DeleteSnippet(Item.Id));
 				}
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error deleting...", ex);
+				await _errorService.ShowAlert("Error deleting...", ex);
 			}
 			finally
 			{
@@ -169,7 +214,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		});
 
-		public RelayCommand EditSnippetCommand => new RelayCommand(() =>
+		public RelayCommand EditSnippetCommand => new RelayCommand(async () =>
 		{
 			if (IsBusy)
 			{
@@ -179,11 +224,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				IsBusy = true;
-				_messenger.Send(new EditSnippet(Item.Id));
+				await _messenger.SendAsync(new EditSnippet(Item.Id));
 			}
 			catch (Exception ex)
 			{
-				_errorService.ShowAlert("Error starting edit...", ex);
+				await _errorService.ShowAlert("Error starting edit...", ex);
 			}
 			finally
 			{
