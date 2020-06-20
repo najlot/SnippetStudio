@@ -161,7 +161,6 @@ namespace SnippetStudio.ClientBase.Services.ObsoleteReader
 	{
 		public static IEnumerable<Models.SnippetModel> ReadAllTemplates(string sourcePath)
 		{
-			int dependencyId = 0;
 			int variableId = 0;
 
 			return Directory
@@ -174,11 +173,6 @@ namespace SnippetStudio.ClientBase.Services.ObsoleteReader
 					// Language = old.CodeLanguage,
 					Code = old.Code,
 					Template = old.TemplateString,
-					Dependencies = old.Dependencies.Select(d => new Contracts.Dependency
-					{
-						Id = ++dependencyId,
-						Name = d.Assembly
-					}).ToList(),
 					Variables = old.Variables.Select(d => new Contracts.Variable
 					{
 						Id = ++variableId,
