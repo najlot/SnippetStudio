@@ -170,7 +170,7 @@ namespace SnippetStudio.ClientBase.Services.ObsoleteReader
 				{
 					Id = Guid.NewGuid(),
 					Name = old.OriginalName,
-					// Language = old.CodeLanguage,
+					Language = old.CodeLanguage,
 					Code = old.Code,
 					Template = old.TemplateString,
 					Variables = old.Variables.Select(d => new Contracts.Variable
