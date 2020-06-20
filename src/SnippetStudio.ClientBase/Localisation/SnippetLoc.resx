@@ -123,9 +123,6 @@
   <data name="Language" xml:space="preserve">
     <value>Language:</value>
   </data>
-  <data name="Dependencies" xml:space="preserve">
-    <value>Dependencies:</value>
-  </data>
   <data name="Variables" xml:space="preserve">
     <value>Variables:</value>
   </data>

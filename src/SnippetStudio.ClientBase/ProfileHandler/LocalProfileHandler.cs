@@ -23,6 +23,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				var subscriber = new LocalSubscriber();
 				var snippetStore = new LocalSnippetStore(localProfile.FolderName, subscriber);
 				SnippetService = new SnippetService(snippetStore, _messenger, _dispatcher, subscriber);
+				var userStore = new LocalUserStore(localProfile.FolderName, subscriber);
+				UserService = new UserService(userStore, _messenger, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
 			}

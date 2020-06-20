@@ -31,11 +31,15 @@ namespace SnippetStudio.Service.Repository
 			modelBuilder.Entity<SnippetModel>(entity =>
 			{
 				entity.HasKey(e => e.Id);
-				entity.OwnsMany(e => e.Dependencies, e => { e.HasKey(e => e.Id); e.ToTable("Snippet_Dependencies"); });
 				entity.OwnsMany(e => e.Variables, e => { e.HasKey(e => e.Id); e.ToTable("Snippet_Variables"); });
+			});
+			modelBuilder.Entity<UserModel>(entity =>
+			{
+				entity.HasKey(e => e.Id);
 			});
 		}
 
 		public DbSet<SnippetModel> Snippets { get; set; }
+		public DbSet<UserModel> Users { get; set; }
 	}
 }

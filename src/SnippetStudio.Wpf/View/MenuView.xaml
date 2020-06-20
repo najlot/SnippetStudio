@@ -10,6 +10,7 @@
 	<DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 		<StackPanel>
 			<Button Content="Snippets" Margin="5" Padding="10,5" Command="{Binding NavigateToSnippets}" />
+			<Button Content="Users" Margin="5" Padding="10,5" Command="{Binding NavigateToUsers}" />
 		</StackPanel>
 	</DockPanel>
 </UserControl>

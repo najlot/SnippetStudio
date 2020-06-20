@@ -7,6 +7,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	public interface IProfileHandler
 	{
 		SnippetService GetSnippetService();
+		UserService GetUserService();
 
 		IProfileHandler SetNext(IProfileHandler handler);
 

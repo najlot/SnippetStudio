@@ -41,12 +41,14 @@ namespace SnippetStudio.Mobile
 
 				serviceCollection.AddSingleton<IProfileHandler>(profileHandler);
 				serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetSnippetService());
+				serviceCollection.AddTransient((c) => c.GetRequiredService<IProfileHandler>().GetUserService());
 
 				// Register viewmodels
 				serviceCollection.AddSingleton<LoginViewModel>();
 				serviceCollection.AddScoped<MenuViewModel>();
 
 				serviceCollection.AddScoped<AllSnippetsViewModel>();
+				serviceCollection.AddScoped<AllUsersViewModel>();
 
 				serviceCollection.AddSingleton<INavigationService>(_navigationPage);
 

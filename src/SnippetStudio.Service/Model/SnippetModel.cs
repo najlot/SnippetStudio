@@ -12,7 +12,6 @@ namespace SnippetStudio.Service.Model
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public string Language { get; set; }
-		public List<Dependency> Dependencies { get; set; }
 		public List<Variable> Variables { get; set; }
 		public string Template { get; set; }
 		public string Code { get; set; }

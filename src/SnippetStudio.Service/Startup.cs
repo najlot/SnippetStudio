@@ -48,13 +48,17 @@ namespace SnippetStudio.Service
 
 				services.AddSingleton(db);
 				services.AddScoped<ISnippetRepository, MongoDbSnippetRepository>();
+				services.AddScoped<IUserRepository, MongoDbUserRepository>();
 				services.AddScoped<ISnippetQuery, MongoDbSnippetQuery>();
+				services.AddScoped<IUserQuery, MongoDbUserQuery>();
 			}
 			else if (mysqlConfig != null)
 			{
 				services.AddSingleton(mysqlConfig);
 				services.AddScoped<ISnippetRepository, MySqlSnippetRepository>();
+				services.AddScoped<IUserRepository, MySqlUserRepository>();
 				services.AddScoped<ISnippetQuery, MySqlSnippetQuery>();
+				services.AddScoped<IUserQuery, MySqlUserQuery>();
 				services.AddScoped<MySqlDbContext>();
 			}
 			else
@@ -63,7 +67,9 @@ namespace SnippetStudio.Service
 
 				services.AddSingleton(fileConfig);
 				services.AddScoped<ISnippetRepository, FileSnippetRepository>();
+				services.AddScoped<IUserRepository, FileUserRepository>();
 				services.AddScoped<ISnippetQuery, FileSnippetQuery>();
+				services.AddScoped<IUserQuery, FileUserQuery>();
 			}
 
 			if (rmqConfig != null)
@@ -74,6 +80,7 @@ namespace SnippetStudio.Service
 			}
 
 			services.AddScoped<SnippetService>();
+			services.AddScoped<UserService>();
 			services.AddScoped<TokenService>();
 			services.AddSignalR();
 

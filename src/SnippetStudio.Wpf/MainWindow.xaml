@@ -28,11 +28,14 @@
 		<DataTemplate DataType="{x:Type vms:AllSnippetsViewModel}">
 			<Views:AllSnippetsView />
 		</DataTemplate>
-		<DataTemplate DataType="{x:Type vms:DependencyViewModel}">
-			<Views:DependencyView />
+		<DataTemplate DataType="{x:Type vms:AllUsersViewModel}">
+			<Views:AllUsersView />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:SnippetViewModel}">
 			<Views:SnippetView />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vms:UserViewModel}">
+			<Views:UserView />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:VariableViewModel}">
 			<Views:VariableView />

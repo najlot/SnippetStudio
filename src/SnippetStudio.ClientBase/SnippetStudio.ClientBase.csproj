@@ -30,15 +30,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SourceLoc.resx</DependentUpon>
     </Compile>
-    <Compile Update="Localisation\DependencyLoc.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DependencyLoc.resx</DependentUpon>
-    </Compile>
     <Compile Update="Localisation\SnippetLoc.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SnippetLoc.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Localisation\UserLoc.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserLoc.resx</DependentUpon>
     </Compile>
     <Compile Update="Localisation\VariableLoc.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -68,13 +68,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SourceLoc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Localisation\DependencyLoc.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DependencyLoc.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="Localisation\SnippetLoc.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SnippetLoc.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localisation\UserLoc.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserLoc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Localisation\VariableLoc.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

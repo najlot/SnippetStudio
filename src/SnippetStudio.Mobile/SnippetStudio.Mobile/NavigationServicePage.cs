@@ -38,17 +38,21 @@ namespace SnippetStudio.Mobile
 			{
 				cp = new AllSnippetsView();
 			}
+			else if (vm is AllUsersViewModel)
+			{
+				cp = new AllUsersView();
+			}
 			else if (vm is YesNoPageViewModel)
 			{
 				cp = new YesNoPageView();
 			}
-			else if (vm is DependencyViewModel)
-			{
-				cp = new DependencyView();
-			}
 			else if (vm is SnippetViewModel)
 			{
 				cp = new SnippetView();
+			}
+			else if (vm is UserViewModel)
+			{
+				cp = new UserView();
 			}
 			else if (vm is VariableViewModel)
 			{

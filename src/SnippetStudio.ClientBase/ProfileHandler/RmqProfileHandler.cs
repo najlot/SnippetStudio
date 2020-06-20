@@ -49,6 +49,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
 				SnippetService = new SnippetService(snippetStore, _messenger, _dispatcher, subscriber);
+				var userStore = new UserStore(requestClient, tokenProvider);
+				UserService = new UserService(userStore, _messenger, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
 			}

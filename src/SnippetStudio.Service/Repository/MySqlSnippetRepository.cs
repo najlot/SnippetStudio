@@ -40,12 +40,6 @@ namespace SnippetStudio.Service.Repository
 		public void Insert(SnippetModel model)
 		{
 
-			foreach (var entry in model.Dependencies)
-			{
-				entry.Id = 0;
-			}
-
-
 			foreach (var entry in model.Variables)
 			{
 				entry.Id = 0;
