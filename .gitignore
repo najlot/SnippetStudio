@@ -327,3 +327,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/src/SnippetStudio.Service/config
+/src/SnippetStudio.Service/Snippets

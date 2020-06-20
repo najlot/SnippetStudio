@@ -8,7 +8,15 @@ namespace SnippetStudio.ClientBase.Validation
 	{
 		public override IEnumerable<ValidationResult> Validate(SnippetModel o)
 		{
-			return Array.Empty<ValidationResult>();
+			if (string.IsNullOrWhiteSpace(o.Name))
+			{
+				yield return Warning(nameof(o.Name), "Name should be provided");
+			}
+
+			if (string.IsNullOrWhiteSpace(o.Code))
+			{
+				yield return Error(nameof(o.Code), "Code should be provided");
+			}
 		}
 	}
 }
