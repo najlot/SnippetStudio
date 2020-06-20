@@ -31,7 +31,6 @@ namespace SnippetStudio.Service.Services
 				Id = command.Id,
 				Name = command.Name,
 				Language = command.Language,
-				Dependencies = command.Dependencies,
 				Variables = command.Variables,
 				Template = command.Template,
 				Code = command.Code,
@@ -43,7 +42,6 @@ namespace SnippetStudio.Service.Services
 				command.Id,
 				command.Name,
 				command.Language,
-				command.Dependencies,
 				command.Variables,
 				command.Template,
 				command.Code));
@@ -57,21 +55,6 @@ namespace SnippetStudio.Service.Services
 			item.Language = command.Language;
 			item.Template = command.Template;
 			item.Code = command.Code;
-
-			while (item.Dependencies.Count > command.Dependencies.Count)
-			{
-				item.Dependencies.RemoveAt(item.Dependencies.Count - 1);
-			}
-
-			while (item.Dependencies.Count < command.Dependencies.Count)
-			{
-				item.Dependencies.Add(new Dependency());
-			}
-
-			for (int i = 0; i < item.Dependencies.Count; i++)
-			{
-				item.Dependencies[i].Name = command.Dependencies[i].Name;
-			}
 
 			while (item.Variables.Count > command.Variables.Count)
 			{
@@ -96,7 +79,6 @@ namespace SnippetStudio.Service.Services
 				command.Id,
 				command.Name,
 				command.Language,
-				command.Dependencies,
 				command.Variables,
 				command.Template,
 				command.Code));

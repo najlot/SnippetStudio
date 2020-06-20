@@ -33,33 +33,6 @@
 				<Entry Text="{Binding Item.Name}" />
 				<Label Text="{x:Static loc:SnippetLoc.Language}" LineBreakMode="NoWrap" />
 				<Entry Text="{Binding Item.Language}" />
-				<!--
-				<Label Text="{x:Static loc:SnippetLoc.Dependencies}" LineBreakMode="NoWrap" />
-				<ListView ItemsSource="{Binding Dependencies}"
-					VerticalOptions="FillAndExpand"
-					HasUnevenRows="true"
-					CachingStrategy="RecycleElement">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<ViewCell>
-								<StackLayout Padding="10">
-									<StackLayout.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding EditDependencyCommand}" />
-									</StackLayout.GestureRecognizers>
-									<StackLayout Orientation="Horizontal">
-										<Label Text="{Binding Item.Name}" VerticalOptions="FillAndExpand" />
-									</StackLayout>
-								</StackLayout>
-							</ViewCell>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-					<ListView.Footer>
-						<Button Command="{Binding AddDependencyCommand}" Margin="1" HeightRequest="36" WidthRequest="36" BackgroundColor="#004d40"
-							ImageSource="{Binding Converter={StaticResource StringToImageSourceConverter},
-							ConverterParameter='M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'}" />
-					</ListView.Footer>
-				</ListView>
-				-->
 				
 				<Label Text="{x:Static loc:SnippetLoc.Template}" LineBreakMode="NoWrap" />
 				<Entry Text="{Binding Item.Template}" />

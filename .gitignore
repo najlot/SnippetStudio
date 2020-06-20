@@ -329,3 +329,4 @@ ASALocalRun/
 .mfractor/
 /src/SnippetStudio.Service/config
 /src/SnippetStudio.Service/Snippets
+/src/SnippetStudio.Service/Users

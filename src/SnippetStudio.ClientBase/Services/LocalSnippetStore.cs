@@ -68,7 +68,6 @@ namespace SnippetStudio.ClientBase.Services
 				item.Id,
 				item.Name,
 				item.Language,
-				item.Dependencies,
 				item.Variables,
 				item.Template,
 				item.Code));
@@ -110,7 +109,6 @@ namespace SnippetStudio.ClientBase.Services
 				item.Id,
 				item.Name,
 				item.Language,
-				item.Dependencies,
 				item.Variables,
 				item.Template,
 				item.Code));

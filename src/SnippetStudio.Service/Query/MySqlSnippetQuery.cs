@@ -26,7 +26,6 @@ namespace SnippetStudio.Service.Query
 		{
 			using var db = new MySqlConnection(_connectionString);
 			var item = db.QueryFirst<Snippet>("SELECT * FROM Snippets WHERE Id=@id", new { id });
-			item.Dependencies = db.Query<Dependency>("SELECT * FROM Snippet_Dependencies WHERE SnippetModelId=@id", new { id }).ToList();
 			item.Variables = db.Query<Variable>("SELECT * FROM Snippet_Variables WHERE SnippetModelId=@id", new { id }).ToList();
 			return item;
 		}

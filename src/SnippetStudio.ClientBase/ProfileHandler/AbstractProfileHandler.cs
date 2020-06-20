@@ -9,8 +9,10 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 		private IProfileHandler _handler = null;
 
 		protected SnippetService SnippetService { get; set; }
+		protected UserService UserService { get; set; }
 
 		public SnippetService GetSnippetService() => SnippetService ?? _handler?.GetSnippetService();
+		public UserService GetUserService() => UserService ?? _handler?.GetUserService();
 
 		public IProfileHandler SetNext(IProfileHandler handler) => _handler = handler;
 
@@ -18,6 +20,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 		{
 			SnippetService?.Dispose();
 			SnippetService = null;
+			UserService?.Dispose();
+			UserService = null;
 
 			await ApplyProfile(profile);
 

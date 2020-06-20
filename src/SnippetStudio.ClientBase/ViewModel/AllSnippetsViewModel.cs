@@ -71,7 +71,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 					Id = obj.Id,
 					Name = obj.Name,
 					Language = obj.Language,
-					Dependencies = obj.Dependencies,
 					Variables = obj.Variables,
 					Template = obj.Template,
 					Code = obj.Code,
@@ -108,7 +107,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 					Id = obj.Id,
 					Name = obj.Name,
 					Language = obj.Language,
-					Dependencies = obj.Dependencies,
 					Variables = obj.Variables,
 					Template = obj.Template,
 					Code = obj.Code,
@@ -162,9 +160,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_navigationService,
 					_messenger);
 
-				_messenger.Register<EditDependency>(vm.Handle);
-				_messenger.Register<DeleteDependency>(vm.Handle);
-				_messenger.Register<SaveDependency>(vm.Handle);
 				_messenger.Register<EditVariable>(vm.Handle);
 				_messenger.Register<DeleteVariable>(vm.Handle);
 				_messenger.Register<SaveVariable>(vm.Handle);
@@ -225,9 +220,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_navigationService,
 					_messenger);
 
-				_messenger.Register<EditDependency>(itemVm.Handle);
-				_messenger.Register<DeleteDependency>(itemVm.Handle);
-				_messenger.Register<SaveDependency>(itemVm.Handle);
 				_messenger.Register<EditVariable>(itemVm.Handle);
 				_messenger.Register<DeleteVariable>(itemVm.Handle);
 				_messenger.Register<SaveVariable>(itemVm.Handle);

@@ -70,16 +70,7 @@ namespace SnippetStudio.ClientBase.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dependencies.
-        /// </summary>
-        public static string Dependencies {
-            get {
-                return ResourceManager.GetString("Dependencies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language.
+        ///   Looks up a localized string similar to Language:.
         /// </summary>
         public static string Language {
             get {

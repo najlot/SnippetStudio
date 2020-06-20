@@ -26,6 +26,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				var snippetStore = new LocalSnippetStore(localProfile.FolderName, subscriber);
 				var csScriptRunService = new CsScriptRunService(_clipboardService);
 				SnippetService = new SnippetService(snippetStore, _messenger, csScriptRunService, _dispatcher, subscriber);
+				var userStore = new LocalUserStore(localProfile.FolderName, subscriber);
+				UserService = new UserService(userStore, _messenger, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
 			}

@@ -35,24 +35,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_navigationService = navigationService;
 			_messenger = messenger;
 
-			if (Item.Dependencies == null)
-			{
-				Dependencies = new ObservableCollection<DependencyViewModel>();
-			}
-			else
-			{
-				Dependencies = new ObservableCollection<DependencyViewModel>(Item.Dependencies.Select(e =>
-				{
-					var model = new DependencyModel()
-					{
-						Id = e.Id,
-						Name = e.Name,
-					};
-
-					return new DependencyViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
-				}));
-			}
-
 			if (Item.Variables == null)
 			{
 				Variables = new ObservableCollection<VariableViewModel>();
@@ -139,22 +121,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 				Id = obj.Id,
 				Name = obj.Name,
 				Language = obj.Language,
-				Dependencies = obj.Dependencies,
 				Variables = obj.Variables,
 				Template = obj.Template,
 				Code = obj.Code,
 			};
-
-			Dependencies = new ObservableCollection<DependencyViewModel>(Item.Dependencies.Select(e =>
-			{
-				var model = new DependencyModel()
-				{
-					Id = e.Id,
-					Name = e.Name,
-				};
-
-				return new DependencyViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
-			}));
 
 			Variables = new ObservableCollection<VariableViewModel>(Item.Variables.Select(e =>
 			{
@@ -180,12 +150,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				IsBusy = true;
-
-				Item.Dependencies = Dependencies.Select(e => new Dependency()
-				{
-					Id = e.Item.Id,
-					Name = e.Item.Name,
-				}).ToList();
 
 				Item.Variables = Variables.Select(e => new Variable()
 				{
