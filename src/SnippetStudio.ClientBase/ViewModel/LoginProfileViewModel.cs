@@ -2,24 +2,39 @@
 using SnippetStudio.ClientBase.Models;
 using System;
 using System.Windows.Input;
+using Todo.ClientBase.Services;
+using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class LoginProfileViewModel : AbstractViewModel
 	{
-		public ProfileBase Profile { get; }
+		private ProfileBase _profile;
+		private readonly ErrorService _errorService;
+		private readonly IDispatcherHelper _dispatcherHelper;
+
+		public ProfileBase Profile
+		{
+			get => _profile;
+			set => Set(nameof(_profile), ref _profile, value);
+		}
 
 		public ICommand LoginCommand { get; }
 		public ICommand EditCommand { get; }
 		public ICommand DeleteCommand { get; }
 
-		public LoginProfileViewModel(ProfileBase profile, Messenger messenger)
+		public LoginProfileViewModel(Messenger messenger, ErrorService errorService, IDispatcherHelper dispatcherHelper)
 		{
-			Profile = profile;
+			LoginCommand = new AsyncCommand(async () => await messenger.SendAsync(new LoginProfile(Profile)), DisplayErrorAsync);
+			EditCommand = new AsyncCommand(async () => await messenger.SendAsync(new EditProfile(Profile)), DisplayErrorAsync);
+			DeleteCommand = new AsyncCommand(async () => await messenger.SendAsync(new DeleteProfile(Profile)), DisplayErrorAsync);
+			_errorService = errorService;
+			_dispatcherHelper = dispatcherHelper;
+		}
 
-			LoginCommand = new AsyncCommand(async () => await messenger.SendAsync(new LoginProfile(profile)));
-			EditCommand = new AsyncCommand(async () => await messenger.SendAsync(new EditProfile(profile)));
-			DeleteCommand = new AsyncCommand(async () => await messenger.SendAsync(new DeleteProfile(profile)));
+		private async Task DisplayErrorAsync(Task task)
+		{
+			await _dispatcherHelper.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(task.Exception));
 		}
 	}
 }

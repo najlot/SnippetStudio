@@ -8,6 +8,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	public sealed class RmqProfileHandler : AbstractProfileHandler
 	{
 		private RmqProfile _profile;
+		private RabbitMqSubscriber _subscriber;
 		private readonly Messenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ErrorService _errorService;
@@ -33,6 +34,12 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 		protected override async Task ApplyProfile(ProfileBase profile)
 		{
+			if (_subscriber != null)
+			{
+				await _subscriber.DisposeAsync();
+				_subscriber = null;
+			}
+
 			if (profile is RmqProfile rmqProfile)
 			{
 				_profile = rmqProfile;
@@ -56,6 +63,8 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				UserService = new UserService(userStore, _messenger, _dispatcher, subscriber);
 
 				await subscriber.StartAsync();
+
+				_subscriber = subscriber;
 			}
 		}
 	}

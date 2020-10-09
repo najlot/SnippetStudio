@@ -41,24 +41,17 @@ namespace SnippetStudio.ClientBase.Services
 					return _token;
 				}
 
-				var serverPasswordBytes = Encoding.UTF8.GetBytes(_password);
-
-				using (var sha = SHA256.Create())
+				using (var client = _clientFactory())
 				{
-					var passwordHash = sha.ComputeHash(serverPasswordBytes);
-
-					using (var client = _clientFactory())
+					var request = new AuthRequest
 					{
-						var request = new AuthRequest
-						{
-							Username = _userName,
-							PasswordHash = passwordHash
-						};
+						Username = _userName,
+						Password = _password
+					};
 
-						var response = await client.PostAsync("api/Auth", JsonConvert.SerializeObject(request), "application/json");
-						response = response.EnsureSuccessStatusCode();
-						_token = Encoding.UTF8.GetString(response.Body.ToArray());
-					}
+					var response = await client.PostAsync("api/Auth", JsonConvert.SerializeObject(request), "application/json");
+					response = response.EnsureSuccessStatusCode();
+					_token = Encoding.UTF8.GetString(response.Body.ToArray());
 				}
 
 				_tokenValidUntil = DateTime.Now.AddHours(1);

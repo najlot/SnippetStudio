@@ -13,6 +13,7 @@ namespace SnippetStudio.ClientBase.Services
 		private readonly Messenger _messenger;
 		private readonly CsScriptRunService _csScriptRunService;
 		private readonly IDispatcherHelper _dispatcher;
+		private readonly ISubscriber _subscriber;
 
 		public SnippetService(
 			IDataStore<SnippetModel> dataStore,
@@ -25,7 +26,8 @@ namespace SnippetStudio.ClientBase.Services
 			_messenger = messenger;
 			_csScriptRunService = csScriptRunService;
 			_dispatcher = dispatcher;
-			
+			_subscriber = subscriber;
+
 			subscriber.Register<SnippetCreated>(Handle);
 			subscriber.Register<SnippetUpdated>(Handle);
 			subscriber.Register<SnippetDeleted>(Handle);
@@ -109,6 +111,7 @@ return result;",
 
 				if (disposing)
 				{
+					_subscriber.Unregister(this);
 					_store?.Dispose();
 					_store = null;
 				}

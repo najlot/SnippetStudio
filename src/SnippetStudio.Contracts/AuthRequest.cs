@@ -3,6 +3,6 @@
 	public class AuthRequest
 	{
 		public string Username { get; set; }
-		public byte[] PasswordHash { get; set; }
+		public string Password { get; set; }
 	}
 }

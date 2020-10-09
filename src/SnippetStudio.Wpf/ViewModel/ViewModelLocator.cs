@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
@@ -40,6 +41,8 @@ namespace SnippetStudio.Wpf.ViewModel
 
 			// Register viewmodels
 			serviceCollection.AddSingleton<LoginViewModel>();
+			serviceCollection.AddTransient<LoginProfileViewModel>();
+			serviceCollection.AddSingleton<Func<LoginProfileViewModel>>(c => () => c.GetRequiredService<LoginProfileViewModel>());
 			serviceCollection.AddScoped<MenuViewModel>();
 
 			serviceCollection.AddScoped<AllSnippetsViewModel>();
