@@ -3,7 +3,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SnippetStudio.ClientBase.Messages;
-using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
 using System.Threading.Tasks;
@@ -18,6 +17,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly IProfileHandler _profileHandler;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly Messenger _messenger;
+		private readonly Func<LoginProfileViewModel> _createLoginProfileViewModel;
 		private IServiceScope _serviceScope;
 		private ObservableCollection<LoginProfileViewModel> _loginProfiles = new ObservableCollection<LoginProfileViewModel>();
 
@@ -34,7 +34,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			ProfilesService profilesService,
 			IProfileHandler profileHandler,
 			IServiceProvider serviceProvider,
-			Messenger messenger)
+			Messenger messenger,
+			Func<LoginProfileViewModel> createLoginProfileViewModel)
 		{
 			_errorService = errorService;
 			_navigationService = navigationService;
@@ -42,7 +43,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_profileHandler = profileHandler;
 			_serviceProvider = serviceProvider;
 			_messenger = messenger;
-			
+			_createLoginProfileViewModel = createLoginProfileViewModel;
+
 			_messenger.Register<LoginProfile>(Login);
 			_messenger.Register<EditProfile>(Edit);
 			_messenger.Register<DeleteProfile>(Delete);
@@ -56,7 +58,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				var profiles = _profilesService.Load();
-				LoginProfiles = new ObservableCollection<LoginProfileViewModel>(profiles.Select(p => new LoginProfileViewModel(p, _messenger)));
+				LoginProfiles = new ObservableCollection<LoginProfileViewModel>(profiles.Select(p =>
+				{
+					var vm = _createLoginProfileViewModel();
+					vm.Profile = p;
+					return vm;
+				}));
 			}
 			catch (Exception ex)
 			{
@@ -108,7 +115,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 				LoginProfiles.Remove(profileVm);
 			}
 
-			LoginProfiles.Add(new LoginProfileViewModel(profile, _messenger));
+			profileVm = _createLoginProfileViewModel();
+			profileVm.Profile = profile;
+			LoginProfiles.Add(profileVm);
 
 			_profilesService.Save(LoginProfiles.Select(vm => vm.Profile).ToList());
 		}

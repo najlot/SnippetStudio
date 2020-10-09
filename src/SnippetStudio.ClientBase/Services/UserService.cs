@@ -12,6 +12,7 @@ namespace SnippetStudio.ClientBase.Services
 		private IDataStore<UserModel> _store;
 		private readonly Messenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
+		private readonly ISubscriber _subscriber;
 
 		public UserService(
 			IDataStore<UserModel> dataStore,
@@ -22,7 +23,8 @@ namespace SnippetStudio.ClientBase.Services
 			_store = dataStore;
 			_messenger = messenger;
 			_dispatcher = dispatcher;
-			
+			_subscriber = subscriber;
+
 			subscriber.Register<UserCreated>(Handle);
 			subscriber.Register<UserUpdated>(Handle);
 			subscriber.Register<UserDeleted>(Handle);
@@ -91,6 +93,7 @@ namespace SnippetStudio.ClientBase.Services
 
 				if (disposing)
 				{
+					_subscriber.Unregister(this);
 					_store?.Dispose();
 					_store = null;
 				}

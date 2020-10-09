@@ -25,7 +25,7 @@ namespace SnippetStudio.Service.Controllers
 				return BadRequest();
 			}
 
-			var token = _tokenService.GetToken(request.Username, request.PasswordHash);
+			var token = _tokenService.GetToken(request.Username, request.Password);
 
 			if (token == null)
 			{

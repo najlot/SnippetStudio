@@ -40,8 +40,18 @@ namespace SnippetStudio.Service
 
 			if (mongoDbConfig != null)
 			{
-				var connectionString = $"mongodb://{mongoDbConfig.User}:{mongoDbConfig.Password}" +
-					$"@{mongoDbConfig.Host}:{mongoDbConfig.Port}/{mongoDbConfig.Database}";
+				string connectionString;
+
+				if (mongoDbConfig.UseDnsSrv)
+				{
+					connectionString = $"mongodb+srv://{mongoDbConfig.User}:{mongoDbConfig.Password}" +
+						$"@{mongoDbConfig.Host}/{mongoDbConfig.Database}";
+				}
+				else
+				{
+					connectionString = $"mongodb://{mongoDbConfig.User}:{mongoDbConfig.Password}" +
+						$"@{mongoDbConfig.Host}:{mongoDbConfig.Port}/{mongoDbConfig.Database}";
+				}
 
 				var client = new MongoDB.Driver.MongoClient(connectionString);
 				var db = client.GetDatabase(mongoDbConfig.Database);
@@ -103,6 +113,13 @@ namespace SnippetStudio.Service
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app)
 		{
+			app.UseCors(c =>
+			{
+				c.AllowAnyOrigin();
+				c.AllowAnyMethod();
+				c.AllowAnyHeader();
+			});
+
 			app.UseAuthentication();
 			// app.UseHttpsRedirection();
 			app.UseRouting();

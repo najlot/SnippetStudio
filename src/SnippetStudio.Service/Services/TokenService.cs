@@ -43,11 +43,11 @@ namespace SnippetStudio.Service.Services
 			return GetValidationParameters(_serviceConfiguration.Secret);
 		}
 
-		public string GetToken(string username, byte[] passwordHash)
+		public string GetToken(string username, string password)
 		{
 			/*
 			// TODO: Implement
-			if (!_userService.CheckUser(username, passwordHash))
+			if (!_userService.CheckUser(username, password))
 			{
 				return null;
 			}

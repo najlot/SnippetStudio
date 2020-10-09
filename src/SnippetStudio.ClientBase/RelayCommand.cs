@@ -23,21 +23,21 @@ namespace SnippetStudio.ClientBase
 
 		public event EventHandler CanExecuteChanged;
 
+		public RelayCommand(Action<T> action, Func<T, bool> canExecute = null)
+		{
+			_action = action;
+			
+			if (canExecute != null)
+				_canExecute = canExecute;
+			else
+				_canExecute = ReturnTrue;
+		}
+
+		private static bool ReturnTrue(T param) => true;
+
 		public void RaiseCanExecuteChanged()
 		{
 			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		public RelayCommand(Action<T> action)
-		{
-			_action = action;
-			_canExecute = _ => true;
-		}
-
-		public RelayCommand(Action<T> action, Func<T, bool> canExecute)
-		{
-			_action = action;
-			_canExecute = canExecute;
 		}
 
 		public bool CanExecute(object parameter)
