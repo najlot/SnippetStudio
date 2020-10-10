@@ -45,20 +45,20 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Margin="5">
-							<Label Content="{Binding Item.Name}" Padding="5,5,5,0" VerticalContentAlignment="Center">
+							<TextBlock Text="{Binding Item.Name}" Padding="5,5,5,0">
 								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
+									<i:EventTrigger EventName="MouseLeftButtonUp">
 										<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-							</Label>
-							<Label Content="{Binding Item.Language}" Padding="5,5,5,0" VerticalContentAlignment="Center">
+							</TextBlock>
+							<TextBlock Text="{Binding Item.Language}" Padding="5,5,5,0">
 								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
+									<i:EventTrigger EventName="MouseLeftButtonUp">
 										<i:InvokeCommandAction Command="{Binding EditSnippetCommand}" />
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-							</Label>
+							</TextBlock>
 						</StackPanel>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
