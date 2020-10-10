@@ -19,9 +19,9 @@
 					</Grid.ColumnDefinitions>
 
 					<Button Command="{Binding YesCommand}" Text="{x:Static loc:CommonLoc.Yes}" Grid.Column="0" Margin="1"
-							HorizontalOptions="FillAndExpand" BackgroundColor="#212121" TextColor="#ffffff" />
+							HorizontalOptions="FillAndExpand" BackgroundColor="#002419" TextColor="#ffffff" />
 					<Button Command="{Binding NoCommand}" Text="{x:Static loc:CommonLoc.No}" Grid.Column="1" Margin="1"
-							HorizontalOptions="FillAndExpand" BackgroundColor="#212121" TextColor="#ffffff" />
+							HorizontalOptions="FillAndExpand" BackgroundColor="#002419" TextColor="#ffffff" />
 				</Grid>
 			</StackLayout>
 		</ScrollView>
