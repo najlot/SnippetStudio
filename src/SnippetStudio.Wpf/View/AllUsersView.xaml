@@ -45,20 +45,20 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Margin="5">
-							<Label Content="{Binding Item.Username}" Padding="5,5,5,0" VerticalContentAlignment="Center">
+							<TextBlock Text="{Binding Item.Username}" Padding="5,5,5,0">
 								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
+									<i:EventTrigger EventName="MouseLeftButtonUp">
 										<i:InvokeCommandAction Command="{Binding EditUserCommand}" />
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-							</Label>
-							<Label Content="{Binding Item.EMail}" Padding="5,5,5,0" VerticalContentAlignment="Center">
+							</TextBlock>
+							<TextBlock Text="{Binding Item.EMail}" Padding="5,5,5,0">
 								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="MouseDoubleClick">
+									<i:EventTrigger EventName="MouseLeftButtonUp">
 										<i:InvokeCommandAction Command="{Binding EditUserCommand}" />
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-							</Label>
+							</TextBlock>
 						</StackPanel>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
