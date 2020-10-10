@@ -138,4 +138,7 @@
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
+  <data name="Snippets" xml:space="preserve">
+    <value>Snippets</value>
+  </data>
 </root>

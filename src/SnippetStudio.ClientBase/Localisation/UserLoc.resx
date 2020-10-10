@@ -126,4 +126,7 @@
   <data name="Password" xml:space="preserve">
     <value>Password:</value>
   </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
 </root>

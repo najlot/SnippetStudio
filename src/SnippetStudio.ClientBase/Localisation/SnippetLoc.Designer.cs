@@ -70,7 +70,7 @@ namespace SnippetStudio.ClientBase.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language:.
+        ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Language {
             get {
@@ -102,6 +102,15 @@ namespace SnippetStudio.ClientBase.Localisation {
         public static string Run {
             get {
                 return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snippets.
+        /// </summary>
+        public static string Snippets {
+            get {
+                return ResourceManager.GetString("Snippets", resourceCulture);
             }
         }
         
