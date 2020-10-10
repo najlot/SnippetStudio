@@ -2,7 +2,7 @@
 using SnippetStudio.ClientBase.Models;
 using System;
 using System.Windows.Input;
-using Todo.ClientBase.Services;
+using SnippetStudio.ClientBase.Services;
 using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase.ViewModel
