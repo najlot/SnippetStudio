@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:SnippetStudio.Wpf"
 					xmlns:base="clr-namespace:SnippetStudio.ClientBase.Validation;assembly=SnippetStudio.ClientBase">
 
-	<SolidColorBrush x:Key="BackgroundColor" Color="#212121" />
+	<SolidColorBrush x:Key="BackgroundColor" Color="#002419" />
 	<SolidColorBrush x:Key="ForegroundColor" Color="#ffffff" />
 
 	<Style TargetType="{x:Type Button}">
