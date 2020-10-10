@@ -60,7 +60,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
 				var csScriptRunService = new CsScriptRunService(_clipboardService);
-				SnippetService = new SnippetService(snippetStore, _messenger, csScriptRunService, _dispatcher, subscriber);
+				SnippetService = new SnippetService(snippetStore, _messenger, csScriptRunService, _dispatcher, subscriber, _profile.ServerUser);
 				var userStore = new UserStore(requestClient, tokenProvider);
 				UserService = new UserService(userStore, _messenger, _dispatcher, subscriber);
 

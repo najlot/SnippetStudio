@@ -64,5 +64,23 @@ namespace SnippetStudio.Service.Query
 
 			return items;
 		}
+
+		public IEnumerable<Snippet> GetAllForUser(string username)
+		{
+			var items = _collection
+				.AsQueryable()
+				.Where(m => m.CreatedBy == username)
+				.Select(e => new Snippet()
+				{
+					Id = e.Id,
+					Name = e.Name,
+					Language = e.Language,
+					Variables = e.Variables,
+					Template = e.Template,
+					Code = e.Code,
+				});
+
+			return items;
+		}
 	}
 }

@@ -25,6 +25,11 @@ namespace SnippetStudio.Service.Repository
 			return _collection.Find(item => item.Id == id).FirstOrDefault();
 		}
 
+		public UserModel Get(string username)
+		{
+			return _collection.Find(item => item.IsActive && item.Username == username).FirstOrDefault();
+		}
+
 		public IEnumerable<UserModel> GetAll()
 		{
 			return _collection.AsQueryable();

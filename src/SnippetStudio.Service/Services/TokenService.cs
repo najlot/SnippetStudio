@@ -4,18 +4,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using SnippetStudio.Service.Configuration;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace SnippetStudio.Service.Services
 {
 	public class TokenService
 	{
-		// private readonly UserService _userService;
+		private readonly UserService _userService;
 		private readonly ServiceConfiguration _serviceConfiguration;
 
-		public TokenService(// UserService userService,
+		public TokenService(
+			UserService userService,
 			ServiceConfiguration serviceConfiguration)
 		{
-			// _userService = userService;
+			_userService = userService;
 			_serviceConfiguration = serviceConfiguration;
 		}
 
@@ -45,17 +48,27 @@ namespace SnippetStudio.Service.Services
 
 		public string GetToken(string username, string password)
 		{
-			/*
-			// TODO: Implement
-			if (!_userService.CheckUser(username, password))
+			var user = _userService.GetUserModelFromName(username);
+
+			if (user == null)
 			{
 				return null;
 			}
-			*/
+
+			using (var sha = SHA256.Create())
+			{
+				var bytes = Encoding.UTF8.GetBytes(password);
+				var userUasswordHash = sha.ComputeHash(bytes);
+
+				if (!Enumerable.SequenceEqual(user.PasswordHash, userUasswordHash))
+				{
+					return null;
+				}
+			}
 
 			var claim = new[]
 			{
-				new Claim(ClaimTypes.Name, username)
+				new Claim(ClaimTypes.Name, user.Username)
 			};
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_serviceConfiguration.Secret));

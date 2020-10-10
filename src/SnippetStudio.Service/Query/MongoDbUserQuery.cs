@@ -30,19 +30,17 @@ namespace SnippetStudio.Service.Query
 			{
 				Id = e.Id,
 				Username = e.Username,
-				EMail = e.EMail,
-				Password = e.Password,
+				EMail = e.EMail
 			};
 		}
 
 		public IEnumerable<User> GetAll()
 		{
-			return _collection.AsQueryable().Select(e => new User()
+			return _collection.AsQueryable().Where(m => m.IsActive).Select(e => new User()
 			{
 				Id = e.Id,
 				Username = e.Username,
-				EMail = e.EMail,
-				Password = e.Password,
+				EMail = e.EMail
 			});
 		}
 
@@ -52,8 +50,7 @@ namespace SnippetStudio.Service.Query
 			{
 				Id = e.Id,
 				Username = e.Username,
-				EMail = e.EMail,
-				Password = e.Password,
+				EMail = e.EMail
 			}).Where(predicate);
 
 			return items;

@@ -14,19 +14,22 @@ namespace SnippetStudio.ClientBase.Services
 		private readonly CsScriptRunService _csScriptRunService;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ISubscriber _subscriber;
+		private readonly string _myName;
 
 		public SnippetService(
 			IDataStore<SnippetModel> dataStore,
 			Messenger messenger,
 			CsScriptRunService csScriptRunService,
 			IDispatcherHelper dispatcher,
-			ISubscriber subscriber)
+			ISubscriber subscriber,
+			string myName)
 		{
 			_store = dataStore;
 			_messenger = messenger;
 			_csScriptRunService = csScriptRunService;
 			_dispatcher = dispatcher;
 			_subscriber = subscriber;
+			_myName = myName;
 
 			subscriber.Register<SnippetCreated>(Handle);
 			subscriber.Register<SnippetUpdated>(Handle);
@@ -68,11 +71,13 @@ return result;",
 			};
 		}
 
-		public async Task<string> Run(string code, string template, Dictionary<string, string> variables)
+		public async Task<string> Run(string language, string code, string template, Dictionary<string, string> variables)
 		{
 			var result = await Task.Run(async () => await _csScriptRunService.Run(code, template, variables));
 			return result;
 		}
+
+		public string GetMyName() => _myName;
 
 		public async Task<bool> AddItemAsync(SnippetModel item)
 		{

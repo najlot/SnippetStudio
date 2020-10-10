@@ -34,6 +34,7 @@ namespace SnippetStudio.Service.Services
 				Variables = command.Variables,
 				Template = command.Template,
 				Code = command.Code,
+				CreatedBy = userName
 			};
 
 			_snippetRepository.Insert(item);
@@ -44,7 +45,8 @@ namespace SnippetStudio.Service.Services
 				command.Language,
 				command.Variables,
 				command.Template,
-				command.Code));
+				command.Code,
+				userName));
 		}
 
 		public void UpdateSnippet(UpdateSnippet command, string userName)
@@ -98,7 +100,7 @@ namespace SnippetStudio.Service.Services
 
 		public List<Snippet> GetItemsForUser(string userName)
 		{
-			IEnumerable<Snippet> items = _snippetQuery.GetAll();
+			IEnumerable<Snippet> items = _snippetQuery.GetAllForUser(userName);
 
 			return items.ToList();
 		}

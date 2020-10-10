@@ -32,7 +32,7 @@ namespace SnippetStudio.Service.Query
 		public IEnumerable<User> GetAll()
 		{
 			using var db = new MySqlConnection(_connectionString);
-			return db.Query<User>("SELECT * FROM Users");
+			return db.Query<User>("SELECT * FROM Users WHERE IsActive = True");
 		}
 
 		public IEnumerable<User> GetAll(Expression<Func<User, bool>> predicate)

@@ -15,5 +15,6 @@ namespace SnippetStudio.Service.Model
 		public List<Variable> Variables { get; set; }
 		public string Template { get; set; }
 		public string Code { get; set; }
+		public string CreatedBy { get; set; }
 	}
 }

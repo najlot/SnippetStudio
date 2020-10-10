@@ -70,7 +70,8 @@ namespace SnippetStudio.ClientBase.Services
 				item.Language,
 				item.Variables,
 				item.Template,
-				item.Code));
+				item.Code,
+				"Me"));
 
 			return await Task.FromResult(true);
 		}

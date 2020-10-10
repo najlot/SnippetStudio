@@ -11,6 +11,7 @@ namespace SnippetStudio.Contracts
 		public List<Variable> Variables { get; set; }
 		public string Template { get; set; }
 		public string Code { get; set; }
+		public string CreatedBy { get; set; }
 
 		private SnippetCreated(){}
 
@@ -20,7 +21,8 @@ namespace SnippetStudio.Contracts
 			string language,
 			List<Variable> variables,
 			string template,
-			string code)
+			string code,
+			string createdBy)
 		{
 			Id = id;
 			Name = name;
@@ -28,6 +30,7 @@ namespace SnippetStudio.Contracts
 			Variables = variables;
 			Template = template;
 			Code = code;
+			CreatedBy = createdBy;
 		}
 	}
 }

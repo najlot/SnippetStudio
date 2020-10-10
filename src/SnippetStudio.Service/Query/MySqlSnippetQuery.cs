@@ -41,5 +41,12 @@ namespace SnippetStudio.Service.Query
 			using var db = new MySqlConnection(_connectionString);
 			return db.Query<Snippet>("SELECT * FROM Snippets").Where(predicate.Compile());
 		}
+
+		public IEnumerable<Snippet> GetAllForUser(string username)
+		{
+			using var db = new MySqlConnection(_connectionString);
+			return db.Query<Snippet>("SELECT * FROM Snippets WHERE CreatedBy = @user",
+				new { user = username });
+		}
 	}
 }

@@ -53,7 +53,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task Handle(RunSnippet obj)
 		{
-			var result = await _snippetService.Run(obj.Code, obj.Template, obj.Variables);
+			var result = await _snippetService.Run(obj.Language, obj.Code, obj.Template, obj.Variables);
 			await _messenger.SendAsync(new SnippetRun()
 			{
 				Id = obj.Id,
@@ -63,6 +63,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private void Handle(SnippetCreated obj)
 		{
+			if (_snippetService.GetMyName() != obj.CreatedBy)
+			{
+				return;
+			}
 
 			Snippets.Insert(0, new SnippetViewModel(
 				_errorService,

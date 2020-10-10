@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Configuration;
+using SnippetStudio.Service.Model;
 
 namespace SnippetStudio.Service.Query
 {
@@ -50,6 +51,26 @@ namespace SnippetStudio.Service.Query
 		public IEnumerable<Snippet> GetAll(Expression<Func<Snippet, bool>> predicate)
 		{
 			return GetAll().Where(predicate.Compile());
+		}
+
+		public IEnumerable<Snippet> GetAllForUser(string username)
+		{
+			var items = Directory.GetFiles(_storagePath)
+				.Select(path => File.ReadAllBytes(path))
+				.Select(bytes => Encoding.UTF8.GetString(bytes))
+				.Select(text => JsonConvert.DeserializeObject<SnippetModel>(text))
+				.Where(m => m.CreatedBy == username)
+				.Select(e => new Snippet
+				{
+					Id = e.Id,
+					Name = e.Name,
+					Language = e.Language,
+					Variables = e.Variables,
+					Template = e.Template,
+					Code = e.Code,
+				});
+
+			return items;
 		}
 	}
 }

@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Configuration;
+using SnippetStudio.Service.Model;
 
 namespace SnippetStudio.Service.Query
 {
@@ -42,7 +43,14 @@ namespace SnippetStudio.Service.Query
 			var items = Directory.GetFiles(_storagePath)
 				.Select(path => File.ReadAllBytes(path))
 				.Select(bytes => Encoding.UTF8.GetString(bytes))
-				.Select(text => JsonConvert.DeserializeObject<User>(text));
+				.Select(text => JsonConvert.DeserializeObject<UserModel>(text))
+				.Where(u => u.IsActive)
+				.Select(m => new User
+				{
+					Id = m.Id,
+					Username = m.Username,
+					EMail = m.EMail
+				});
 
 			return items;
 		}
