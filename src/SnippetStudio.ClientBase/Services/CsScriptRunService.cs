@@ -28,6 +28,7 @@ namespace SnippetStudio.ClientBase.Services
 				typeof(System.Text.RegularExpressions.Regex),
 				typeof(System.Collections.Concurrent.ConcurrentDictionary<,>),
 				typeof(Newtonsoft.Json.JsonConvert),
+				typeof(System.Data.Odbc.OdbcConnection),
 			};
 
 			var references = types.Select(type => type.Assembly).ToArray();
