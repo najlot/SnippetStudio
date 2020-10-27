@@ -11,5 +11,10 @@ namespace SnippetStudio.Wpf.View
 		{
 			InitializeComponent();
 		}
+
+		private void TextEditor_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+		{
+			ContentScrollViewer.ScrollToVerticalOffset(ContentScrollViewer.ContentVerticalOffset + e.Delta * -1);
+		}
 	}
 }
