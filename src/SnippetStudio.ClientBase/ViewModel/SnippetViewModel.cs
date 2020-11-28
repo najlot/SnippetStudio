@@ -14,7 +14,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private bool _isBusy;
 		private SnippetModel _item;
-		private string result;
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
@@ -61,8 +60,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 				{
 					Dictionary<string, string> variables = new Dictionary<string, string>();
 
-					Result = "...";
-
 					foreach (var variable in Variables)
 					{
 						var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
@@ -90,23 +87,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 				catch (Exception ex)
 				{
 					await _errorService.ShowAlert("Error running...", ex);
-					Result = "";
 				}
 			});
-		}
-
-		public string Result
-		{
-			get => result;
-			set => Set(nameof(Result), ref result, value);
-		}
-
-		public void Handle(SnippetRun obj)
-		{
-			if (Item.Id == obj.Id)
-			{
-				Result = obj.Result;
-			}
 		}
 
 		public void Handle(SnippetUpdated obj)
