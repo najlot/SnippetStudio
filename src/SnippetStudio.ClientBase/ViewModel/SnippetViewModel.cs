@@ -23,7 +23,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
-		public RelayCommand RunCommand { get; }
+		public AsyncCommand RunCommand { get; }
 
 		public SnippetViewModel(
 			ErrorService errorService,
@@ -56,44 +56,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 				}));
 			}
 
-			RunCommand = new RelayCommand(async () =>
-			{
-				try
-				{
-					Dictionary<string, string> variables = new Dictionary<string, string>();
-
-					Result = "...";
-
-					foreach (var variable in Variables)
-					{
-						var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
-						{
-							Description = variable.Item.RequestName,
-							Input = variable.Item.DefaultValue
-						});
-
-						if (shouldCancel)
-						{
-							return;
-						}
-
-						variables[variable.Item.Name] = input;
-					}
-
-					await _messenger.SendAsync(new RunSnippet(
-						Item.Id,
-						Item.Language,
-						new List<string>(),
-						variables,
-						Item.Template,
-						Item.Code));
-				}
-				catch (Exception ex)
-				{
-					await _errorService.ShowAlert("Error running...", ex);
-					Result = "";
-				}
-			});
+			RunCommand = new AsyncCommand(RunAsync, DisplayError);
 
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
@@ -109,6 +72,45 @@ namespace SnippetStudio.ClientBase.ViewModel
 		{
 			get => result;
 			set => Set(nameof(Result), ref result, value);
+		}
+
+		private async Task RunAsync()
+		{
+			try
+			{
+				Dictionary<string, string> variables = new Dictionary<string, string>();
+
+				Result = "...";
+
+				foreach (var variable in Variables)
+				{
+					var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
+					{
+						Description = variable.Item.RequestName,
+						Input = variable.Item.DefaultValue
+					});
+
+					if (shouldCancel)
+					{
+						return;
+					}
+
+					variables[variable.Item.Name] = input;
+				}
+
+				await _messenger.SendAsync(new RunSnippet(
+					Item.Id,
+					Item.Language,
+					new List<string>(),
+					variables,
+					Item.Template,
+					Item.Code));
+			}
+			catch (Exception ex)
+			{
+				await _errorService.ShowAlert("Error running...", ex);
+				Result = "";
+			}
 		}
 
 		public void Handle(SnippetRun obj)
