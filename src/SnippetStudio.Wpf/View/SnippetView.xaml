@@ -9,7 +9,6 @@
 			 xmlns:behaviours="clr-namespace:SnippetStudio.Wpf.Behaviours"
 			 xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-			 xmlns:s="clr-namespace:System;assembly=System.Runtime"
 			 mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600">
 
@@ -122,11 +121,7 @@
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<Button ToolTip="Delete" Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Padding="2">
-											<Button.CommandParameter>
-												<s:Boolean>
-													False
-												</s:Boolean>
-											</Button.CommandParameter>
+											<Button.CommandParameter>False</Button.CommandParameter>
 											<Button.Content>
 												<Path
 													Width="14"

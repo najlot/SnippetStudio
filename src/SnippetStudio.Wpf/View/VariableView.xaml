@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SnippetStudio.Wpf.View"
 			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
 			 xmlns:converter="clr-namespace:SnippetStudio.Wpf.Converter"
-			 xmlns:s="clr-namespace:System;assembly=System.Runtime"
 			 mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600">
 
@@ -19,11 +18,7 @@
 	<DockPanel>
 		<WrapPanel FlowDirection="RightToLeft" DockPanel.Dock="Top">
 			<Button ToolTip="{x:Static loc:CommonLoc.Delete}" Command="{Binding DeleteCommand}" Margin="5">
-				<Button.CommandParameter>
-					<s:Boolean>
-						True
-					</s:Boolean>
-				</Button.CommandParameter>
+				<Button.CommandParameter>True</Button.CommandParameter>
 				<Button.Content>
 					<Path
 						Width="18"

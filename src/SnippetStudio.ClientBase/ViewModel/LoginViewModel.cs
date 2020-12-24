@@ -27,7 +27,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 			private set => Set(nameof(LoginProfiles), ref _loginProfiles, value);
 		}
 
-		public RelayCommand CreateProfileCommand => new RelayCommand(() => _navigationService.NavigateForward(new ProfileViewModel(_messenger)));
+		public AsyncCommand CreateProfileCommand { get; }
+		private async Task CreateProfileAsync()
+		{
+			await _navigationService.NavigateForward(new ProfileViewModel(_messenger, _errorService, _navigationService));
+		}
 
 		public LoginViewModel(ErrorService errorService,
 			INavigationService navigationService,
@@ -50,7 +54,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_messenger.Register<DeleteProfile>(Delete);
 			_messenger.Register<SaveProfile>(Save);
 
+			CreateProfileCommand = new AsyncCommand(CreateProfileAsync, DisplayError);
+
 			LoadProfiles().ContinueWith(task => Console.WriteLine(task.Exception), TaskContinuationOptions.OnlyOnFaulted);
+		}
+
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 
 		private async Task LoadProfiles()
@@ -101,7 +112,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private async Task Edit(EditProfile obj)
 		{
 			var profile = obj.Profile;
-			var vm = new ProfileViewModel(profile.Clone(), _messenger);
+			var vm = new ProfileViewModel(profile.Clone(), _messenger, _errorService, _navigationService);
 			await _navigationService.NavigateForward(vm);
 		}
 

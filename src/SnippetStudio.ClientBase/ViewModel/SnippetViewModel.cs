@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -82,7 +83,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 					await _messenger.SendAsync(new RunSnippet(
 						Item.Id,
 						Item.Language,
-						Dependencies.Select(e => e.Item.Name).ToList(),
+						new List<string>(),
 						variables,
 						Item.Template,
 						Item.Code));
@@ -93,6 +94,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 					Result = "";
 				}
 			});
+
+			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
+			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
+			EditSnippetCommand = new AsyncCommand(EditSnippetAsync, DisplayError, () => !IsBusy);
+		}
+
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 
 		public string Result
@@ -140,7 +150,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}));
 		}
 
-		public RelayCommand SaveCommand => new RelayCommand(async () =>
+		public AsyncCommand SaveCommand { get; }
+		public async Task SaveAsync()
 		{
 			if (IsBusy)
 			{
@@ -196,9 +207,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		});
+		}
 
-		public RelayCommand DeleteCommand => new RelayCommand(async () =>
+		public AsyncCommand DeleteCommand { get; }
+		public async Task DeleteAsync()
 		{
 			if (IsBusy)
 			{
@@ -231,9 +243,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		});
+		}
 
-		public RelayCommand EditSnippetCommand => new RelayCommand(async () =>
+		public AsyncCommand EditSnippetCommand { get; }
+		public async Task EditSnippetAsync()
 		{
 			if (IsBusy)
 			{
@@ -253,6 +266,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		}, () => !IsBusy);
+		}
 	}
 }

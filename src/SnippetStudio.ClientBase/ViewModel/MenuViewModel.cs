@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Services;
 
 namespace SnippetStudio.ClientBase.ViewModel
@@ -12,7 +13,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly AllSnippetsViewModel _allSnippetsViewModel;
 		private readonly AllUsersViewModel _allUsersViewModel;
 
-		public RelayCommand NavigateToSnippets => new RelayCommand(async () =>
+		public AsyncCommand NavigateToSnippets { get; }
+		public async Task NavigateToSnippetsAsync()
 		{
 			if (_isBusy)
 			{
@@ -35,8 +37,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				_isBusy = false;
 			}
-		});
-		public RelayCommand NavigateToUsers => new RelayCommand(async () =>
+		}
+
+		public AsyncCommand NavigateToUsers { get; }
+		public async Task NavigateToUsersAsync()
 		{
 			if (_isBusy)
 			{
@@ -59,7 +63,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				_isBusy = false;
 			}
-		});
+		}
 
 		public MenuViewModel(ErrorService errorService,
 			AllSnippetsViewModel allSnippetsViewModel,
@@ -70,6 +74,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_allSnippetsViewModel = allSnippetsViewModel;
 			_allUsersViewModel = allUsersViewModel;
 			_navigationService = navigationService;
+
+			NavigateToSnippets = new AsyncCommand(NavigateToSnippetsAsync, DisplayError);
+			NavigateToUsers = new AsyncCommand(NavigateToUsersAsync, DisplayError);
+		}
+
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 	}
 }

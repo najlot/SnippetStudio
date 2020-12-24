@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.Services;
@@ -13,7 +14,7 @@ namespace SnippetStudio.Wpf.ViewModel
 
 		private bool _isPopup = false;
 
-		public RelayCommand NavigateBackCommand { get; }
+		public AsyncCommand NavigateBackCommand { get; }
 
 		public AbstractViewModel ViewModel
 		{
@@ -27,7 +28,14 @@ namespace SnippetStudio.Wpf.ViewModel
 
 		public MainViewModel()
 		{
-			NavigateBackCommand = new RelayCommand(() => NavigateBack(), () => _backViewModels.Count > 0 && !_isPopup);
+			NavigateBackCommand = new AsyncCommand(NavigateBack, DebugFailExceptionAsync, () => _backViewModels.Count > 0 && !_isPopup);
+		}
+
+		private Task DebugFailExceptionAsync(Task task)
+		{
+			var exception = task.Exception;
+			Debug.Fail(exception.ToString());
+			return Task.CompletedTask;
 		}
 
 		public Task NavigateForward(AbstractViewModel newViewModel)

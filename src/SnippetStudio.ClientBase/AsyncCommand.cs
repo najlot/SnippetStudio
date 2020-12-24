@@ -45,6 +45,17 @@ namespace SnippetStudio.ClientBase
 
 		public bool CanExecute(object parameter)
 		{
+			if (parameter == null)
+			{
+				return _canExecute(default);
+			}
+
+			if (!typeof(T).IsAssignableFrom(parameter.GetType()))
+			{
+				var typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
+				parameter = typeConverter.ConvertFrom(parameter);
+			}
+
 			return _canExecute((T)parameter);
 		}
 
@@ -52,16 +63,28 @@ namespace SnippetStudio.ClientBase
 		{
 			if (CanExecute(parameter))
 			{
-				ExecuteAsync(parameter).ContinueWith(_errorCallback, TaskContinuationOptions.OnlyOnFaulted);
+				if (parameter == null)
+				{
+					ExecuteAsync(default)
+						.ContinueWith(_errorCallback, TaskContinuationOptions.OnlyOnFaulted);
+
+					return;
+				}
+
+				if (!typeof(T).IsAssignableFrom(parameter.GetType()))
+				{
+					var typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
+					parameter = typeConverter.ConvertFrom(parameter);
+				}
+
+				ExecuteAsync((T)parameter)
+					.ContinueWith(_errorCallback, TaskContinuationOptions.OnlyOnFaulted);
 			}
 		}
 
-		public async Task ExecuteAsync(object parameter)
+		public async Task ExecuteAsync(T parameter)
 		{
-			if (CanExecute(parameter))
-			{
-				await _action(parameter == null ? default : (T)parameter);
-			}
+			await _action(parameter);
 		}
 	}
 }

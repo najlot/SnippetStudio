@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="de.Najlot.SnippetStudio.Mobile" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="28" />
-	<application android:label="SnippetStudio" android:icon="@mipmap/icon"></application>
+	<application android:label="SnippetStudio" android:icon="@mipmap/icon" android:usesCleartextTraffic="true"></application>
 </manifest>

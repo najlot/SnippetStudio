@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
+using SnippetStudio.ClientBase.Services;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
@@ -9,6 +11,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private ProfileBase profile;
 		private readonly Messenger _messenger;
+		private readonly ErrorService _errorService;
+		private readonly INavigationService _navigationService;
 
 		public ProfileBase Profile { get => profile; private set => Set(nameof(Profile), ref profile, value); }
 
@@ -52,7 +56,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		public List<Source> PossibleSources { get; } = new List<Source>(Enum.GetValues(typeof(Source)) as Source[]);
 
-		public ProfileViewModel(Messenger messenger)
+		public ProfileViewModel(Messenger messenger, ErrorService errorService, INavigationService navigationService)
 		{
 			var id = Guid.NewGuid();
 
@@ -64,14 +68,32 @@ namespace SnippetStudio.ClientBase.ViewModel
 			};
 
 			_messenger = messenger;
+			_errorService = errorService;
+			_navigationService = navigationService;
+
+			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 		}
 
-		public ProfileViewModel(ProfileBase profile, Messenger messenger)
+		public ProfileViewModel(ProfileBase profile, Messenger messenger, ErrorService errorService, INavigationService navigationService)
 		{
 			Profile = profile;
 			_messenger = messenger;
+			_errorService = errorService;
+			_navigationService = navigationService;
+
+			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 		}
 
-		public RelayCommand SaveCommand => new RelayCommand(async () => await _messenger.SendAsync(new SaveProfile(Profile)));
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
+		}
+
+		public AsyncCommand SaveCommand { get; }
+		public async Task SaveAsync()
+		{
+			await _messenger.SendAsync(new SaveProfile(Profile));
+			await _navigationService.NavigateBack();
+		}
 	}
 }

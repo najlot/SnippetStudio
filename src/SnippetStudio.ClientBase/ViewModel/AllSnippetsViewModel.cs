@@ -48,7 +48,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_messenger.Register<SnippetCreated>(Handle);
 			_messenger.Register<SnippetUpdated>(Handle);
 			_messenger.Register<SnippetDeleted>(Handle);
+
+			AddSnippetCommand = new AsyncCommand(AddSnippetAsync, DisplayError);
+			RefreshSnippetsCommand = new AsyncCommand(RefreshSnippetsAsync, DisplayError);
 			_messenger.Register<RunSnippet>(Handle);
+		}
+
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 
 		private async Task Handle(RunSnippet obj)
@@ -202,7 +210,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		public RelayCommand AddSnippetCommand => new RelayCommand(async () =>
+		public AsyncCommand AddSnippetCommand { get; }
+		public async Task AddSnippetAsync()
 		{
 			if (IsBusy)
 			{
@@ -239,8 +248,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		});
+		}
 
+		public AsyncCommand RefreshSnippetsCommand { get; }
 		public async Task RefreshSnippetsAsync()
 		{
 			if (IsBusy)
@@ -271,8 +281,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 				IsBusy = false;
 			}
 		}
-
-		public RelayCommand RefreshSnippetsCommand => new RelayCommand(async () => await RefreshSnippetsAsync());
 
 		#region IDisposable Support
 

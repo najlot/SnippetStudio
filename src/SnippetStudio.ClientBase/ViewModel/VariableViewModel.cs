@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -35,9 +36,19 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_navigationService = navigationService;
 			_messenger = messenger;
 			_parentId = parentId;
+
+			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
+			DeleteCommand = new AsyncCommand<bool>(DeleteAsync, DisplayError);
+			EditVariableCommand = new AsyncCommand(EditVariableAsync, DisplayError, () => !IsBusy);
 		}
 
-		public RelayCommand SaveCommand => new RelayCommand(async () =>
+		private async Task DisplayError(Task task)
+		{
+			await _errorService.ShowAlert("Error...", task.Exception);
+		}
+
+		public AsyncCommand SaveCommand { get; }
+		public async Task SaveAsync()
 		{
 			if (IsBusy)
 			{
@@ -85,9 +96,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		});
+		}
 
-		public RelayCommand<bool> DeleteCommand => new RelayCommand<bool>(async navBack =>
+		public AsyncCommand<bool> DeleteCommand { get; }
+		public async Task DeleteAsync(bool navBack)
 		{
 			if (IsBusy)
 			{
@@ -124,9 +136,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		});
+		}
 
-		public RelayCommand EditVariableCommand => new RelayCommand(async () =>
+		public AsyncCommand EditVariableCommand { get; }
+		public async Task EditVariableAsync()
 		{
 			if (IsBusy)
 			{
@@ -146,6 +159,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = false;
 			}
-		}, () => !IsBusy);
+		}
 	}
 }
