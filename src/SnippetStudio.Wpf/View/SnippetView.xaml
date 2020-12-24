@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SnippetStudio.Wpf.View"
 			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
 			 xmlns:converter="clr-namespace:SnippetStudio.Wpf.Converter"
-			 xmlns:s="clr-namespace:System;assembly=System.Runtime"
 			 mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="600">
 
@@ -131,11 +130,7 @@
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<Button ToolTip="Delete" Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Padding="2">
-											<Button.CommandParameter>
-												<s:Boolean>
-													False
-												</s:Boolean>
-											</Button.CommandParameter>
+											<Button.CommandParameter>False</Button.CommandParameter>
 											<Button.Content>
 												<Path
 													Width="14"

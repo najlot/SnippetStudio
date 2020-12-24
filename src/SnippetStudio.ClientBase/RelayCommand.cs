@@ -42,6 +42,17 @@ namespace SnippetStudio.ClientBase
 
 		public bool CanExecute(object parameter)
 		{
+			if (parameter == null)
+			{
+				return _canExecute(default);
+			}
+
+			if (!typeof(T).IsAssignableFrom(parameter.GetType()))
+			{
+				var typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
+				parameter = typeConverter.ConvertFrom(parameter);
+			}
+
 			return _canExecute((T)parameter);
 		}
 
@@ -49,7 +60,19 @@ namespace SnippetStudio.ClientBase
 		{
 			if (CanExecute(parameter))
 			{
-				_action(parameter == null ? default : (T)parameter);
+				if (parameter == null)
+				{
+					_action(default);
+					return;
+				}
+
+				if (!typeof(T).IsAssignableFrom(parameter.GetType()))
+				{
+					var typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
+					parameter = typeConverter.ConvertFrom(parameter);
+				}
+
+				_action((T)parameter);
 			}
 		}
 	}
