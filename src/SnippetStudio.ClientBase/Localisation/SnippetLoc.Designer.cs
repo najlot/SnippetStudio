@@ -59,7 +59,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Code:.
         /// </summary>
@@ -68,7 +68,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("Code", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Language:.
         /// </summary>
@@ -77,7 +77,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("Language", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
@@ -86,7 +86,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Template:.
         /// </summary>
@@ -95,7 +95,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("Template", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Variables:.
         /// </summary>

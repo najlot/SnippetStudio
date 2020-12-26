@@ -59,7 +59,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to EMail:.
         /// </summary>
@@ -68,7 +68,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("EMail", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Password:.
         /// </summary>
@@ -77,7 +77,7 @@ namespace SnippetStudio.ClientBase.Localisation {
                 return ResourceManager.GetString("Password", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Username:.
         /// </summary>
