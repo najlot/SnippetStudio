@@ -34,7 +34,7 @@ namespace SnippetStudio.Mobile.Converter
 					(int)(Math.Ceiling(pict.CullRect.Height) * scale)
 				);
 
-				var matrix = SKMatrix.MakeScale(scale, scale);
+				var matrix = SKMatrix.CreateScale(scale, scale);
 				var img = SKImage.FromPicture(pict, dimen, matrix);
 
 				// convert to PNG
