@@ -7,6 +7,6 @@ namespace SnippetStudio.Service.Query
 {
 	public interface ISnippetQuery : IAsyncQuery<Guid, SnippetModel>
 	{
-		IEnumerable<Snippet> GetAllForUser(string username);
+		IAsyncEnumerable<SnippetModel> GetAllForUserAsync(string username);
 	}
 }

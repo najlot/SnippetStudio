@@ -63,24 +63,9 @@ namespace SnippetStudio.Service.Query
 			}
 		}
 
-		public IEnumerable<Snippet> GetAllForUser(string username)
+		public IAsyncEnumerable<SnippetModel> GetAllForUserAsync(string username)
 		{
-			var items = Directory.GetFiles(_storagePath)
-				.Select(path => File.ReadAllBytes(path))
-				.Select(bytes => Encoding.UTF8.GetString(bytes))
-				.Select(text => JsonConvert.DeserializeObject<SnippetModel>(text))
-				.Where(m => m.CreatedBy == username)
-				.Select(e => new Snippet
-				{
-					Id = e.Id,
-					Name = e.Name,
-					Language = e.Language,
-					Variables = e.Variables,
-					Template = e.Template,
-					Code = e.Code,
-				});
-
-			return items;
+			return GetAllAsync(m => m.CreatedBy == username);
 		}
 	}
 }

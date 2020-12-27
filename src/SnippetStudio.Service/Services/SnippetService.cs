@@ -116,7 +116,7 @@ namespace SnippetStudio.Service.Services
 
 		public async IAsyncEnumerable<Snippet> GetItemsForUserAsync(string userName)
 		{
-			await foreach (var item in _snippetQuery.GetAllAsync())
+			await foreach (var item in _snippetQuery.GetAllForUserAsync(userName))
 			{
 				yield return new Snippet
 				{

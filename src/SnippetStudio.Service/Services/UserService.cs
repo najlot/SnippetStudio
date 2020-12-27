@@ -29,7 +29,7 @@ namespace SnippetStudio.Service.Services
 
 		public void CreateUser(CreateUser command, string userName)
 		{
-			if (_userQuery.GetAll(u => u.Username == command.Username).Any())
+			if (_userRepository.Get(command.Username) != null)
 			{
 				throw new InvalidOperationException("User already exists!");
 			}
@@ -107,7 +107,6 @@ namespace SnippetStudio.Service.Services
 				Id = item.Id,
 				Username = item.Username,
 				EMail = item.EMail,
-				Password = item.Password,
 			};
 		}
 
@@ -120,7 +119,6 @@ namespace SnippetStudio.Service.Services
 					Id = item.Id,
 					Username = item.Username,
 					EMail = item.EMail,
-					Password = item.Password,
 				};
 			}
 		}

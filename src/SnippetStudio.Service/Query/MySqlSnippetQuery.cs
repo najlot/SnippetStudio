@@ -63,11 +63,15 @@ namespace SnippetStudio.Service.Query
 			}
 		}
 
-		public IEnumerable<Snippet> GetAllForUser(string username)
+		public async IAsyncEnumerable<SnippetModel> GetAllForUserAsync(string username)
 		{
 			using var db = new MySqlConnection(_connectionString);
-			return db.Query<Snippet>("SELECT * FROM Snippets WHERE CreatedBy = @user",
-				new { user = username });
+			var items = await db.QueryAsync<SnippetModel>("SELECT * FROM Snippets WHERE CreatedBy = @user", new { user = username });
+
+			foreach (var item in items)
+			{
+				yield return item;
+			}
 		}
 	}
 }
