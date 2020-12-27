@@ -62,11 +62,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private async Task Handle(RunSnippet obj)
 		{
 			var result = await _snippetService.Run(obj.Language, obj.Code, obj.Template, obj.Variables);
-			await _messenger.SendAsync(new SnippetRun()
+
+			var vw = new ResultViewModel
 			{
-				Id = obj.Id,
 				Result = result
-			});
+			};
+
+			await _navigationService.RequestInputAsync(vw);
 		}
 
 		private void Handle(SnippetCreated obj)
@@ -177,7 +179,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<SaveVariable>(vm.Handle);
 
 				_messenger.Register<SnippetUpdated>(vm.Handle);
-				_messenger.Register<SnippetRun>(vm.Handle);
 
 				await _navigationService.NavigateForward(vm);
 			}
@@ -236,7 +237,6 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<EditVariable>(itemVm.Handle);
 				_messenger.Register<DeleteVariable>(itemVm.Handle);
 				_messenger.Register<SaveVariable>(itemVm.Handle);
-				_messenger.Register<SnippetRun>(itemVm.Handle);
 
 				await _navigationService.NavigateForward(itemVm);
 			}

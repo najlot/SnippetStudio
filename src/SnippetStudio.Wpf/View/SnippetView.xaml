@@ -151,10 +151,6 @@
 						</i:Interaction.Behaviors>
 					</AvalonEdit:TextEditor>
 				</DockPanel>
-				<DockPanel Margin="5">
-					<Label Content="{x:Static loc:SnippetLoc.Result}" DockPanel.Dock="Top" Foreground="{StaticResource ForegroundColor}" Background="{StaticResource BackgroundColor}" />
-					<TextBox Text="{Binding Result}" AcceptsReturn="True" AcceptsTab="True" />
-				</DockPanel>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

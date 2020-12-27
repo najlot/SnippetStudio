@@ -40,9 +40,6 @@
 				<Label Text="{x:Static loc:SnippetLoc.Code}" LineBreakMode="NoWrap" />
 				<Entry Text="{Binding Item.Code}" />
 				
-				<Label Text="{x:Static loc:SnippetLoc.Result}" LineBreakMode="NoWrap" />
-				<Entry Text="{Binding Result}" />
-
 				<Label Text="{x:Static loc:SnippetLoc.Variables}" LineBreakMode="NoWrap" />
 				<ListView ItemsSource="{Binding Variables}"
 					VerticalOptions="FillAndExpand"

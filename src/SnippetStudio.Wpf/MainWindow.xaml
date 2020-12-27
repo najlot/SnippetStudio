@@ -46,6 +46,9 @@
 		<DataTemplate DataType="{x:Type vms:TextInputViewModel}">
 			<Views:TextInputView />
 		</DataTemplate>
+		<DataTemplate DataType="{x:Type vms:ResultViewModel}">
+			<Views:ResultView />
+		</DataTemplate>
 	</Window.Resources>
 
 	<DockPanel Focusable="False">
