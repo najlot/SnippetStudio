@@ -67,25 +67,19 @@ namespace SnippetStudio.ClientBase.ViewModel
 			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 
-		public string Result
-		{
-			get => result;
-			set => Set(nameof(Result), ref result, value);
-		}
-
 		private async Task RunAsync()
 		{
 			try
 			{
 				Dictionary<string, string> variables = new Dictionary<string, string>();
 
-					foreach (var variable in Variables)
+				foreach (var variable in Variables)
+				{
+					var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
 					{
-						var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
-						{
-							Description = variable.Item.RequestName,
-							Input = variable.Item.DefaultValue
-						});
+						Description = variable.Item.RequestName,
+						Input = variable.Item.DefaultValue
+					});
 
 					if (shouldCancel)
 					{
@@ -95,19 +89,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 					variables[variable.Item.Name] = input;
 				}
 
-					await _messenger.SendAsync(new RunSnippet(
-						Item.Id,
-						Item.Language,
-						Dependencies.Select(e => e.Item.Name).ToList(),
-						variables,
-						Item.Template,
-						Item.Code));
-				}
-				catch (Exception ex)
-				{
-					await _errorService.ShowAlert("Error running...", ex);
-				}
-			});
+				await _messenger.SendAsync(new RunSnippet(
+					Item.Id,
+					Item.Language,
+					new List<string>(),
+					variables,
+					Item.Template,
+					Item.Code));
+			}
+			catch (Exception ex)
+			{
+				await _errorService.ShowAlert("Error running...", ex);
+			}
 		}
 
 		public void Handle(SnippetUpdated obj)
