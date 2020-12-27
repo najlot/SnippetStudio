@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Model;
 using SnippetStudio.Service.Query;
@@ -92,17 +93,36 @@ namespace SnippetStudio.Service.Services
 			_publisher.PublishAsync(new UserDeleted(id));
 		}
 
-		public User GetItem(Guid id)
+		public async Task<User> GetItemAsync(Guid id)
 		{
-			var user = _userQuery.Get(id);
-			return user;
+			var item = await _userQuery.GetAsync(id);
+
+			if (item == null)
+			{
+				return null;
+			}
+
+			return new User
+			{
+				Id = item.Id,
+				Username = item.Username,
+				EMail = item.EMail,
+				Password = item.Password,
+			};
 		}
 
-		public List<User> GetItemsForUser(string userName)
+		public async IAsyncEnumerable<User> GetItemsForUserAsync(string userName)
 		{
-			IEnumerable<User> items = _userQuery.GetAll();
-
-			return items.ToList();
+			await foreach (var item in _userQuery.GetAllAsync())
+			{
+				yield return new User
+				{
+					Id = item.Id,
+					Username = item.Username,
+					EMail = item.EMail,
+					Password = item.Password,
+				};
+			}
 		}
 
 		public UserModel GetUserModelFromName(string userName)

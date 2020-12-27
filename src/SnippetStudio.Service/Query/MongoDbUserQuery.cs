@@ -3,6 +3,7 @@ using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Model;
 
@@ -17,43 +18,43 @@ namespace SnippetStudio.Service.Query
 			_collection = database.GetCollection<UserModel>(nameof(UserModel)[0..^5]);
 		}
 
-		public User Get(Guid id)
+		public async Task<UserModel> GetAsync(Guid id)
 		{
-			var e = _collection.Find(item => item.Id == id).FirstOrDefault();
+			var result = await _collection.FindAsync(item => item.Id == id);
+			var item = result.FirstOrDefault();
 
-			if (e == null)
+			if (item == null)
 			{
 				return null;
 			}
 
-			return new User()
-			{
-				Id = e.Id,
-				Username = e.Username,
-				EMail = e.EMail
-			};
+			return item;
 		}
 
-		public IEnumerable<User> GetAll()
+		public async IAsyncEnumerable<UserModel> GetAllAsync()
 		{
-			return _collection.AsQueryable().Where(m => m.IsActive).Select(e => new User()
+			var items = await _collection.FindAsync(FilterDefinition<UserModel>.Empty);
+			
+			while (await items.MoveNextAsync())
 			{
-				Id = e.Id,
-				Username = e.Username,
-				EMail = e.EMail
-			});
+				foreach (var item in items.Current)
+				{
+					yield return item;
+				}
+			}
 		}
 
-		public IEnumerable<User> GetAll(Expression<Func<User, bool>> predicate)
+		public async IAsyncEnumerable<UserModel> GetAllAsync(Expression<Func<UserModel, bool>> predicate)
 		{
-			var items = _collection.AsQueryable().Select(e => new User()
-			{
-				Id = e.Id,
-				Username = e.Username,
-				EMail = e.EMail
-			}).Where(predicate);
+			var items = await _collection.FindAsync(predicate);
 
-			return items;
+			while (await items.MoveNextAsync())
+			{
+				foreach (var item in items.Current)
+				{
+					yield return item;
+				}
+			}
 		}
 	}
 }
