@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Configuration;
+using SnippetStudio.Service.Model;
 
 namespace SnippetStudio.Service.Query
 {
@@ -22,23 +24,42 @@ namespace SnippetStudio.Service.Query
 				$"password={_configuration.Password}";
 		}
 
-		public User Get(Guid id)
+		public async Task<UserModel> GetAsync(Guid id)
 		{
 			using var db = new MySqlConnection(_connectionString);
-			var item = db.QueryFirst<User>("SELECT * FROM Users WHERE Id=@id", new { id });
+			var item = await db.QueryFirstOrDefaultAsync<UserModel>("SELECT * FROM Users WHERE Id=@id", new { id });
+			
+			if (item == null)
+			{
+				return null;
+			}
+
+
 			return item;
 		}
 
-		public IEnumerable<User> GetAll()
+		public async IAsyncEnumerable<UserModel> GetAllAsync()
 		{
 			using var db = new MySqlConnection(_connectionString);
-			return db.Query<User>("SELECT * FROM Users");
+			var items = await db.QueryAsync<UserModel>("SELECT * FROM Users");
+
+			foreach (var item in items)
+			{
+				yield return item;
+			}
 		}
 
-		public IEnumerable<User> GetAll(Expression<Func<User, bool>> predicate)
+		public async IAsyncEnumerable<UserModel> GetAllAsync(Expression<Func<UserModel, bool>> predicate)
 		{
-			using var db = new MySqlConnection(_connectionString);
-			return db.Query<User>("SELECT * FROM Users").Where(predicate.Compile());
+			var check = predicate.Compile();
+			
+			await foreach (var item in GetAllAsync())
+			{
+				if (check(item))
+				{
+					yield return item;
+				}
+			}
 		}
 	}
 }

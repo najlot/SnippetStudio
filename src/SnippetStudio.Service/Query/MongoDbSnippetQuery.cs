@@ -3,6 +3,7 @@ using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Model;
 
@@ -17,52 +18,43 @@ namespace SnippetStudio.Service.Query
 			_collection = database.GetCollection<SnippetModel>(nameof(SnippetModel)[0..^5]);
 		}
 
-		public Snippet Get(Guid id)
+		public async Task<SnippetModel> GetAsync(Guid id)
 		{
-			var e = _collection.Find(item => item.Id == id).FirstOrDefault();
+			var result = await _collection.FindAsync(item => item.Id == id);
+			var item = result.FirstOrDefault();
 
-			if (e == null)
+			if (item == null)
 			{
 				return null;
 			}
 
-			return new Snippet()
-			{
-				Id = e.Id,
-				Name = e.Name,
-				Language = e.Language,
-				Variables = e.Variables,
-				Template = e.Template,
-				Code = e.Code,
-			};
+			return item;
 		}
 
-		public IEnumerable<Snippet> GetAll()
+		public async IAsyncEnumerable<SnippetModel> GetAllAsync()
 		{
-			return _collection.AsQueryable().Select(e => new Snippet()
+			var items = await _collection.FindAsync(FilterDefinition<SnippetModel>.Empty);
+			
+			while (await items.MoveNextAsync())
 			{
-				Id = e.Id,
-				Name = e.Name,
-				Language = e.Language,
-				Variables = e.Variables,
-				Template = e.Template,
-				Code = e.Code,
-			});
+				foreach (var item in items.Current)
+				{
+					yield return item;
+				}
+			}
 		}
 
-		public IEnumerable<Snippet> GetAll(Expression<Func<Snippet, bool>> predicate)
+		public async IAsyncEnumerable<SnippetModel> GetAllAsync(Expression<Func<SnippetModel, bool>> predicate)
 		{
-			var items = _collection.AsQueryable().Select(e => new Snippet()
-			{
-				Id = e.Id,
-				Name = e.Name,
-				Language = e.Language,
-				Variables = e.Variables,
-				Template = e.Template,
-				Code = e.Code,
-			}).Where(predicate);
+			var items = await _collection.FindAsync(predicate);
 
-			return items;
+			while (await items.MoveNextAsync())
+			{
+				foreach (var item in items.Current)
+				{
+					yield return item;
+				}
+			}
 		}
 	}
 }

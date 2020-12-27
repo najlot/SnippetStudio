@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Model;
 using SnippetStudio.Service.Query;
@@ -91,16 +92,40 @@ namespace SnippetStudio.Service.Services
 			_publisher.PublishAsync(new SnippetDeleted(id));
 		}
 
-		public Snippet GetItem(Guid id)
+		public async Task<Snippet> GetItemAsync(Guid id)
 		{
-			return _snippetQuery.Get(id);
+			var item = await _snippetQuery.GetAsync(id);
+
+			if (item == null)
+			{
+				return null;
+			}
+
+			return new Snippet
+			{
+				Id = item.Id,
+				Name = item.Name,
+				Language = item.Language,
+				Variables = item.Variables,
+				Template = item.Template,
+				Code = item.Code,
+			};
 		}
 
-		public List<Snippet> GetItemsForUser(string userName)
+		public async IAsyncEnumerable<Snippet> GetItemsForUserAsync(string userName)
 		{
-			IEnumerable<Snippet> items = _snippetQuery.GetAll();
-
-			return items.ToList();
+			await foreach (var item in _snippetQuery.GetAllAsync())
+			{
+				yield return new Snippet
+				{
+					Id = item.Id,
+					Name = item.Name,
+					Language = item.Language,
+					Variables = item.Variables,
+					Template = item.Template,
+					Code = item.Code,
+				};
+			}
 		}
 
 		#region IDisposable Support

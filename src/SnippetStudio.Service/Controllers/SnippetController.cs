@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Services;
 
@@ -20,16 +22,16 @@ namespace SnippetStudio.Service.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult<List<Snippet>> List()
+		public async Task<ActionResult<List<Snippet>>> List()
 		{
-			var items = _snippetService.GetItemsForUser(User.Identity.Name);
+			var items = await _snippetService.GetItemsForUserAsync(User.Identity.Name).ToListAsync();
 			return Ok(items);
 		}
 
 		[HttpGet("{id}")]
-		public ActionResult<Snippet> GetItem(Guid id)
+		public async Task<ActionResult<Snippet>> GetItem(Guid id)
 		{
-			var item = _snippetService.GetItem(id);
+			var item = await _snippetService.GetItemAsync(id);
 			if (item == null)
 			{
 				return NotFound();
