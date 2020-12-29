@@ -37,7 +37,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			if (Item.Variables == null)
 			{
+				_messenger.Register<SnippetLoaded>(Handle);
 				Variables = new ObservableCollection<VariableViewModel>();
+				RunCommand = new AsyncCommand(LoadAndRunAsync, DisplayError);
 			}
 			else
 			{
@@ -53,9 +55,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 					return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
 				}));
-			}
 
-			RunCommand = new AsyncCommand(RunAsync, DisplayError);
+				RunCommand = new AsyncCommand(RunAsync, DisplayError);
+			}
 
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
@@ -67,11 +69,17 @@ namespace SnippetStudio.ClientBase.ViewModel
 			await _errorService.ShowAlert("Error...", task.Exception);
 		}
 
+		private async Task LoadAndRunAsync()
+		{
+			await _messenger.SendAsync(new LoadSnippet(Item.Id));
+			await RunAsync();
+		}
+
 		private async Task RunAsync()
 		{
 			try
 			{
-				Dictionary<string, string> variables = new Dictionary<string, string>();
+				var variables = new Dictionary<string, string>();
 
 				foreach (var variable in Variables)
 				{
@@ -102,6 +110,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 				await _errorService.ShowAlert("Error running...", ex);
 			}
 		}
+
+		public void Handle(SnippetLoaded obj) => Handle((SnippetUpdated)obj);
 
 		public void Handle(SnippetUpdated obj)
 		{

@@ -43,6 +43,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			_messenger.Register<SaveSnippet>(Handle);
 			_messenger.Register<EditSnippet>(Handle);
+			_messenger.Register<LoadSnippet>(Handle);
 			_messenger.Register<DeleteSnippet>(Handle);
 
 			_messenger.Register<SnippetCreated>(Handle);
@@ -181,6 +182,36 @@ namespace SnippetStudio.ClientBase.ViewModel
 				_messenger.Register<SnippetUpdated>(vm.Handle);
 
 				await _navigationService.NavigateForward(vm);
+			}
+			catch (Exception ex)
+			{
+				await _errorService.ShowAlert("Error loading...", ex);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+		
+		private async Task Handle(LoadSnippet obj)
+		{
+			if (IsBusy)
+			{
+				return;
+			}
+
+			try
+			{
+				IsBusy = true;
+
+				var item = await _snippetService.GetItemAsync(obj.Id);
+				await _messenger.SendAsync(new SnippetLoaded(
+					item.Id,
+					item.Name,
+					item.Language,
+					item.Variables,
+					item.Template,
+					item.Code));
 			}
 			catch (Exception ex)
 			{
