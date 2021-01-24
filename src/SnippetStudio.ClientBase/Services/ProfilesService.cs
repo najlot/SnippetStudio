@@ -69,27 +69,15 @@ namespace SnippetStudio.ClientBase.Services
 			var id = Guid.NewGuid();
 
 			var list = new List<ProfileBase>()
+			{
+				new LocalProfile()
 				{
-					new LocalProfile()
-					{
-						Id = id,
-						Name = "Local",
-						FolderName = id.ToString(),
-						Source = Source.Local
-					},
-					new RestProfile()
-					{
-						Id = Guid.NewGuid(),
-						Name = "Rest",
-						Source = Source.REST
-					},
-					new RmqProfile()
-					{
-						Id = Guid.NewGuid(),
-						Name = "RMQ",
-						Source = Source.RMQ
-					}
-				};
+					Id = id,
+					Name = "Local",
+					FolderName = id.ToString(),
+					Source = Source.Local
+				}
+			};
 
 			Save(list);
 

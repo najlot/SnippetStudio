@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.ProfileHandler;
@@ -32,7 +33,7 @@ namespace SnippetStudio.ClientBase.Services
 			if (File.Exists(_dataPath))
 			{
 				var data = File.ReadAllText(_dataPath);
-				items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SnippetModel>>(data);
+				items = JsonSerializer.Deserialize<List<SnippetModel>>(data, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 			}
 			else
 			{
@@ -61,7 +62,7 @@ namespace SnippetStudio.ClientBase.Services
 
 		private void SaveItems()
 		{
-			var text = Newtonsoft.Json.JsonConvert.SerializeObject(_items);
+			var text = JsonSerializer.Serialize(_items);
 			File.WriteAllText(_dataPath, text);
 		}
 
