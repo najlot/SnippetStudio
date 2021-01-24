@@ -9,13 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cosei.Service.RabbitMq" Version="0.0.7" />
+    <PackageReference Include="Cosei.Service.RabbitMq" Version="0.0.10" />
     <PackageReference Include="Dapper" Version="2.0.78" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
-		<PackageReference Include="MongoDB.Driver" Version="2.11.5" />
+		<PackageReference Include="MongoDB.Driver" Version="2.11.6" />
 		<PackageReference Include="Najlot.Log.Extensions.Logging" Version="3.1.4" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
 		<PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />

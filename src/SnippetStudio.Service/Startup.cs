@@ -13,8 +13,6 @@ namespace SnippetStudio.Service
 {
 	public class Startup
 	{
-		private bool _useCoseiRabbitMq = false;
-
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -85,9 +83,10 @@ namespace SnippetStudio.Service
 			if (rmqConfig != null)
 			{
 				rmqConfig.QueueName = "SnippetStudio.Service";
-				services.AddCosei(rmqConfig);
-				_useCoseiRabbitMq = true;
+				services.AddCoseiRabbitMq(rmqConfig);
 			}
+
+			services.AddCosei();
 
 			services.AddScoped<SnippetService>();
 			services.AddScoped<UserService>();
@@ -130,10 +129,7 @@ namespace SnippetStudio.Service
 				endpoints.MapHub<CoseiHub>("/cosei");
 			});
 
-			if (_useCoseiRabbitMq)
-			{
-				app.UseCosei();
-			}
+			app.UseCosei();
 
 			using var scope = app.ApplicationServices.CreateScope();
 			scope.ServiceProvider.GetService<MySqlDbContext>()?.Database?.EnsureCreated();

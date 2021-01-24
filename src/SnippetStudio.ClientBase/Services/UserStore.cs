@@ -1,8 +1,8 @@
 ﻿using Cosei.Client.RabbitMq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.Contracts;
@@ -33,11 +33,7 @@ namespace SnippetStudio.ClientBase.Services
 					{ "Authorization", $"Bearer {token}" }
 				};
 
-				var response = await _client.GetAsync("api/User", headers);
-				response = response.EnsureSuccessStatusCode();
-				var responseString = Encoding.UTF8.GetString(response.Body.ToArray());
-
-				items = JsonConvert.DeserializeObject<List<UserModel>>(responseString);
+				items = await _client.GetAsync<List<UserModel>>("api/User", headers);
 			}
 
 			return items;
@@ -54,11 +50,7 @@ namespace SnippetStudio.ClientBase.Services
 					{ "Authorization", $"Bearer {token}" }
 				};
 
-				var response = await _client.GetAsync($"api/User/{id}", headers);
-				response = response.EnsureSuccessStatusCode();
-				var responseString = Encoding.UTF8.GetString(response.Body.ToArray());
-
-				return JsonConvert.DeserializeObject<UserModel>(responseString);
+				return await _client.GetAsync<UserModel>($"api/User/{id}", headers);
 			}
 
 			return null;
@@ -83,8 +75,7 @@ namespace SnippetStudio.ClientBase.Services
 				item.EMail,
 				item.Password);
 
-			var response = await _client.PostAsync($"api/User", JsonConvert.SerializeObject(request), "application/json", headers);
-			response.EnsureSuccessStatusCode();
+			await _client.PostAsync($"api/User", request, headers);
 
 			return true;
 		}
@@ -108,8 +99,7 @@ namespace SnippetStudio.ClientBase.Services
 				item.EMail,
 				item.Password);
 
-			var response = await _client.PutAsync($"api/User", JsonConvert.SerializeObject(request), "application/json", headers);
-			response.EnsureSuccessStatusCode();
+			await _client.PutAsync($"api/User", request, headers);
 
 			return true;
 		}

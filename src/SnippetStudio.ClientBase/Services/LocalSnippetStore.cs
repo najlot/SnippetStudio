@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SnippetStudio.ClientBase.Models;
@@ -43,7 +44,7 @@ namespace SnippetStudio.ClientBase.Services
 			if (File.Exists(path))
 			{
 				var data = File.ReadAllText(path);
-				items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SnippetModel>>(data);
+				items = JsonSerializer.Deserialize<List<SnippetModel>>(data, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 			}
 			else if (Directory.Exists(_dataPath))
 			{
@@ -79,7 +80,7 @@ namespace SnippetStudio.ClientBase.Services
 		private void SaveItems()
 		{
 			var path = Path.Combine(_dataPath, "Snippets.json");
-			var text = Newtonsoft.Json.JsonConvert.SerializeObject(_items);
+			var text = JsonSerializer.Serialize(_items);
 			File.WriteAllText(path, text);
 		}
 

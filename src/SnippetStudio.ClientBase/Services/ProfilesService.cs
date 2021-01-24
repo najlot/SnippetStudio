@@ -90,15 +90,15 @@ namespace SnippetStudio.ClientBase.Services
 			var id = Guid.NewGuid();
 
 			var list = new List<ProfileBase>()
+			{
+				new LocalProfile()
 				{
-					new LocalProfile()
-					{
-						Id = id,
-						Name = "Local",
-						FolderName = id.ToString(),
-						Source = Source.Local
-					}
-				};
+					Id = id,
+					Name = "Local",
+					FolderName = id.ToString(),
+					Source = Source.Local
+				}
+			};
 
 			Save(list);
 

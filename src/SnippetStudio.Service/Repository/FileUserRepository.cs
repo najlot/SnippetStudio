@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using SnippetStudio.Service.Configuration;
 using SnippetStudio.Service.Model;
 using System.Linq;
@@ -34,8 +34,7 @@ namespace SnippetStudio.Service.Repository
 			}
 
 			var bytes = File.ReadAllBytes(path);
-			var text = Encoding.UTF8.GetString(bytes);
-			var item = JsonConvert.DeserializeObject<UserModel>(text);
+			var item = JsonSerializer.Deserialize<UserModel>(bytes, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
 			return item;
 		}
@@ -57,8 +56,7 @@ namespace SnippetStudio.Service.Repository
 		public void Update(UserModel model)
 		{
 			var path = Path.Combine(_storagePath, model.Id.ToString());
-			var str = JsonConvert.SerializeObject(model);
-			var bytes = Encoding.UTF8.GetBytes(str);
+			var bytes = JsonSerializer.SerializeToUtf8Bytes(model);
 			File.WriteAllBytes(path, bytes);
 		}
 	}

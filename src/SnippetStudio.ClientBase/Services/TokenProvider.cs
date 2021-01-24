@@ -1,8 +1,8 @@
 ﻿using Cosei.Client.RabbitMq;
-using Newtonsoft.Json;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using SnippetStudio.Contracts;
@@ -49,7 +49,7 @@ namespace SnippetStudio.ClientBase.Services
 						Password = _password
 					};
 
-					var response = await client.PostAsync("api/Auth", JsonConvert.SerializeObject(request), "application/json");
+					var response = await client.PostAsync("api/Auth", JsonSerializer.Serialize(request), "application/json");
 					response = response.EnsureSuccessStatusCode();
 					_token = Encoding.UTF8.GetString(response.Body.ToArray());
 				}

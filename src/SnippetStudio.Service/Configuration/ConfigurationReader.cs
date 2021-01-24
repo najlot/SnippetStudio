@@ -1,6 +1,6 @@
 ﻿using Najlot.Log;
-using Newtonsoft.Json;
 using System.IO;
+using System.Text.Json;
 
 namespace SnippetStudio.Service.Configuration
 {
@@ -28,7 +28,7 @@ namespace SnippetStudio.Service.Configuration
 						Directory.CreateDirectory(configDir);
 					}
 
-					File.WriteAllText(configPath + ".example", JsonConvert.SerializeObject(new T()));
+					File.WriteAllText(configPath + ".example", JsonSerializer.Serialize(new T()));
 				}
 
 				return null;
@@ -36,7 +36,7 @@ namespace SnippetStudio.Service.Configuration
 
 			var configContent = File.ReadAllText(configPath);
 
-			return JsonConvert.DeserializeObject<T>(configContent);
+			return JsonSerializer.Deserialize<T>(configContent, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 		}
 	}
 }

@@ -1,11 +1,11 @@
 ﻿using MongoDB.Driver.Linq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Configuration;
@@ -34,7 +34,7 @@ namespace SnippetStudio.Service.Query
 
 			var bytes = await File.ReadAllBytesAsync(path);
 			var text = Encoding.UTF8.GetString(bytes);
-			var item = JsonConvert.DeserializeObject<SnippetModel>(text);
+			var item = JsonSerializer.Deserialize<SnippetModel>(text, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
 			return item;
 		}
@@ -45,7 +45,7 @@ namespace SnippetStudio.Service.Query
 			{
 				var bytes = await File.ReadAllBytesAsync(path);
 				var text = Encoding.UTF8.GetString(bytes);
-				var item = JsonConvert.DeserializeObject<SnippetModel>(text);
+				var item = JsonSerializer.Deserialize<SnippetModel>(text, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 				yield return item;
 			}
 		}
