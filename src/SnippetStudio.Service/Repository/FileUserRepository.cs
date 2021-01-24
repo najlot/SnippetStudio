@@ -44,7 +44,7 @@ namespace SnippetStudio.Service.Repository
 			return Directory.GetFiles(_storagePath)
 				.Select(path => File.ReadAllBytes(path))
 				.Select(bytes => Encoding.UTF8.GetString(bytes))
-				.Select(text => JsonConvert.DeserializeObject<UserModel>(text))
+				.Select(text => JsonSerializer.Deserialize<UserModel>(text, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }))
 				.FirstOrDefault(u => u.IsActive && u.Username == username);
 		}
 
