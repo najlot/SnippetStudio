@@ -1,4 +1,6 @@
-﻿using Cosei.Service.RabbitMq;
+﻿using Cosei.Service.Base;
+using Cosei.Service.Http;
+using Cosei.Service.RabbitMq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -86,7 +88,7 @@ namespace SnippetStudio.Service
 				services.AddCoseiRabbitMq(rmqConfig);
 			}
 
-			services.AddCosei();
+			services.AddCoseiHttp();
 
 			services.AddScoped<SnippetService>();
 			services.AddScoped<UserService>();

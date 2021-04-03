@@ -1,4 +1,5 @@
-﻿using Cosei.Client.RabbitMq;
+﻿using Cosei.Client.Base;
+using Cosei.Client.RabbitMq;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -9,6 +10,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	{
 		private RmqProfile _profile;
 		private RabbitMqSubscriber _subscriber;
+		private RabbitMqModelFactory _rabbitMqModelFactory;
 		private readonly Messenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ErrorService _errorService;
@@ -24,12 +26,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 		private IRequestClient CreateRequestClient()
 		{
-			return new RabbitMqClient(
-				_profile.RabbitMqHost,
-				_profile.RabbitMqVirtualHost,
-				_profile.RabbitMqUser,
-				_profile.RabbitMqPassword,
-				"SnippetStudio.Service");
+			return new RabbitMqClient(_rabbitMqModelFactory, "SnippetStudio.Service");
 		}
 
 		protected override async Task ApplyProfile(ProfileBase profile)
@@ -40,17 +37,26 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 				_subscriber = null;
 			}
 
+			if (_rabbitMqModelFactory != null)
+			{
+				_rabbitMqModelFactory.Dispose();
+				_rabbitMqModelFactory = null;
+			}
+
 			if (profile is RmqProfile rmqProfile)
 			{
 				_profile = rmqProfile;
 
-				var requestClient = CreateRequestClient();
-				var tokenProvider = new TokenProvider(CreateRequestClient, _profile.ServerUser, _profile.ServerPassword);
-				var subscriber = new RabbitMqSubscriber(
+				_rabbitMqModelFactory = new RabbitMqModelFactory(
 					_profile.RabbitMqHost,
 					_profile.RabbitMqVirtualHost,
 					_profile.RabbitMqUser,
-					_profile.RabbitMqPassword,
+					_profile.RabbitMqPassword);
+
+				var requestClient = CreateRequestClient();
+				var tokenProvider = new TokenProvider(CreateRequestClient, _profile.ServerUser, _profile.ServerPassword);
+				var subscriber = new RabbitMqSubscriber(
+					_rabbitMqModelFactory,
 					exception =>
 					{
 						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(exception));

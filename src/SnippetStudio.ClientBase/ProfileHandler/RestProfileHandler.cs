@@ -1,4 +1,6 @@
-﻿using Cosei.Client.RabbitMq;
+﻿using Cosei.Client.Base;
+using Cosei.Client.Http;
+using Cosei.Client.RabbitMq;
 using System;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
