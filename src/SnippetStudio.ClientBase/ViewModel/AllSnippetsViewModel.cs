@@ -48,7 +48,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_navigationService = navigationService;
 			_messenger = messenger;
 
-			SnippetsView = new ObservableCollectionView<SnippetViewModel>(Snippets, FilterSnippet);
+			SnippetsView = new ObservableCollectionView<SnippetViewModel>(Snippets, FilterSnippet, vm => vm.Item.Name);
 
 			_messenger.Register<SaveSnippet>(Handle);
 			_messenger.Register<EditSnippet>(Handle);

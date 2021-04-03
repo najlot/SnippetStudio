@@ -1,17 +1,21 @@
-﻿namespace SnippetStudio.ClientBase.ViewModel
+﻿using SnippetStudio.ClientBase.Models;
+using System.Collections.Generic;
+
+namespace SnippetStudio.ClientBase.ViewModel
 {
-	public class TextInputViewModel : AbstractPopupViewModel<(bool shouldCancel, string input)>
+	public class TextInputViewModel : AbstractPopupViewModel<bool>
 	{
-		public string Description { get; set; }
-		public string Input { get; set; }
+		public IEnumerable<VariableModel> Variables { get; }
 
 		public RelayCommand OkCommand { get; }
 		public RelayCommand CancelCommand { get; }
-
-		public TextInputViewModel()
+		
+		public TextInputViewModel(IEnumerable<VariableModel> variables)
 		{
-			OkCommand = new RelayCommand(() => SetResult((shouldCancel: false, input: Input)));
-			CancelCommand = new RelayCommand(() => SetResult((shouldCancel: true, input: Input)));
+			Variables = variables;
+
+			OkCommand = new RelayCommand(() => SetResult(true));
+			CancelCommand = new RelayCommand(() => SetResult(false));
 		}
 	}
 }

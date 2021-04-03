@@ -80,21 +80,30 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				var variables = new Dictionary<string, string>();
-
-				foreach (var variable in Variables)
+				var models = new ObservableCollection<VariableModel>(Variables.Select(v =>
 				{
-					var (shouldCancel, input) = await _navigationService.RequestInputAsync(new TextInputViewModel()
+					return new VariableModel
 					{
-						Description = variable.Item.RequestName,
-						Input = variable.Item.DefaultValue
-					});
+						Id = v.Item.Id,
+						DefaultValue = v.Item.DefaultValue,
+						Name = v.Item.Name,
+						RequestName = v.Item.RequestName
+					};
+				}));
 
-					if (shouldCancel)
+				if (models.Any())
+				{
+					var requestOk = await _navigationService.RequestInputAsync(new TextInputViewModel(models));
+
+					if (!requestOk)
 					{
 						return;
 					}
+				}
 
-					variables[variable.Item.Name] = input;
+				foreach (var variable in models)
+				{
+					variables[variable.Name] = variable.DefaultValue;
 				}
 
 				await _messenger.SendAsync(new RunSnippet(
