@@ -10,11 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cosei.Client.RabbitMq" Version="0.0.10" />
+    <PackageReference Include="Cosei.Client.Http" Version="0.0.11" />
+    <PackageReference Include="Cosei.Client.RabbitMq" Version="0.0.11" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.Extended" Version="1.60.0" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1905" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1931" />
   </ItemGroup>
 
   <ItemGroup>

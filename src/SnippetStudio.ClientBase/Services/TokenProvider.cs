@@ -1,4 +1,4 @@
-﻿using Cosei.Client.RabbitMq;
+﻿using Cosei.Client.Base;
 using System;
 using System.Security.Cryptography;
 using System.Text;
