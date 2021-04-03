@@ -18,26 +18,33 @@
 	</ContentPage.ToolbarItems>
 
 	<ContentPage.Content>
-		<ListView ItemsSource="{Binding Users}"
-				  VerticalOptions="FillAndExpand"
-				  HasUnevenRows="true"
-				  RefreshCommand="{Binding RefreshUsersCommand}"
-				  IsPullToRefreshEnabled="true"
-				  IsRefreshing="{Binding IsBusy}"
-				  CachingStrategy="RecycleElement">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<ViewCell>
-						<StackLayout Padding="10">
-							<StackLayout.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding EditUserCommand}" />
-							</StackLayout.GestureRecognizers>
-							<Label Text="{Binding Item.Username}" />
-							<Label Text="{Binding Item.EMail}" />
-						</StackLayout>
-					</ViewCell>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+		<StackLayout>
+			<StackLayout Orientation="Horizontal" Padding="10,5">
+				<Label Text="Filter:" VerticalOptions="Center" />
+				<Entry Text="{Binding Filter}" HorizontalOptions="FillAndExpand" />
+			</StackLayout>
+
+			<ListView ItemsSource="{Binding UsersView}"
+					VerticalOptions="FillAndExpand"
+					HasUnevenRows="true"
+					RefreshCommand="{Binding RefreshUsersCommand}"
+					IsPullToRefreshEnabled="true"
+					IsRefreshing="{Binding IsBusy}"
+					CachingStrategy="RecycleElement">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Padding="10">
+								<StackLayout.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding EditUserCommand}" />
+								</StackLayout.GestureRecognizers>
+								<Label Text="{Binding Item.Username}" />
+								<Label Text="{Binding Item.EMail}" />
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
