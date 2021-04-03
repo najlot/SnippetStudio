@@ -17,7 +17,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly ErrorService _errorService;
 
 		private bool _isBusy;
-		private ObservableCollection<SnippetViewModel> _snippets = new ObservableCollection<SnippetViewModel>();
+		private string _filter;
 
 		public bool IsBusy
 		{
@@ -25,11 +25,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 			private set => Set(nameof(IsBusy), ref _isBusy, value);
 		}
 
-		public ObservableCollection<SnippetViewModel> Snippets
+		public string Filter
 		{
-			get => _snippets;
-			private set => Set(nameof(Snippets), ref _snippets, value);
+			get => _filter;
+			set
+			{
+				Set(nameof(Filter), ref _filter, value);
+				SnippetsView.Refresh();
+			}
 		}
+
+		public ObservableCollectionView<SnippetViewModel> SnippetsView { get; }
+		public ObservableCollection<SnippetViewModel> Snippets { get; } = new ObservableCollection<SnippetViewModel>();
 
 		public AllSnippetsViewModel(ErrorService errorService,
 			SnippetService snippetService,
@@ -40,6 +47,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_snippetService = snippetService;
 			_navigationService = navigationService;
 			_messenger = messenger;
+
+			SnippetsView = new ObservableCollectionView<SnippetViewModel>(Snippets, FilterSnippet);
 
 			_messenger.Register<SaveSnippet>(Handle);
 			_messenger.Register<EditSnippet>(Handle);
@@ -53,6 +62,38 @@ namespace SnippetStudio.ClientBase.ViewModel
 			AddSnippetCommand = new AsyncCommand(AddSnippetAsync, DisplayError);
 			RefreshSnippetsCommand = new AsyncCommand(RefreshSnippetsAsync, DisplayError);
 			_messenger.Register<RunSnippet>(Handle);
+		}
+
+		private bool FilterSnippet(SnippetViewModel arg)
+		{
+			if (string.IsNullOrEmpty(Filter))
+			{
+				return true;
+			}
+
+			var item = arg.Item;
+
+			if (!string.IsNullOrEmpty(item.Name) && item.Name.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			if (!string.IsNullOrEmpty(item.Language) && item.Language.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			if (!string.IsNullOrEmpty(item.Template) && item.Template.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			if (!string.IsNullOrEmpty(item.Code) && item.Code.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private async Task DisplayError(Task task)
@@ -292,16 +333,23 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				IsBusy = true;
+				SnippetsView.Disable();
+				Filter = "";
+
 				Snippets.Clear();
 
 				var snippets = await _snippetService.GetItemsAsync(true);
 
-				Snippets = new ObservableCollection<SnippetViewModel>(snippets
-					.Select(item => new SnippetViewModel(
+				foreach (var item in snippets)
+				{
+					var vm = new SnippetViewModel(
 						_errorService,
 						item,
 						_navigationService,
-						_messenger)));
+						_messenger);
+
+					Snippets.Add(vm);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -309,6 +357,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			finally
 			{
+				SnippetsView.Enable();
 				IsBusy = false;
 			}
 		}

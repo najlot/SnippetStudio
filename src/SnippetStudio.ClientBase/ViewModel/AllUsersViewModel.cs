@@ -17,7 +17,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly ErrorService _errorService;
 
 		private bool _isBusy;
-		private ObservableCollection<UserViewModel> _users = new ObservableCollection<UserViewModel>();
+		private string _filter;
 
 		public bool IsBusy
 		{
@@ -25,11 +25,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 			private set => Set(nameof(IsBusy), ref _isBusy, value);
 		}
 
-		public ObservableCollection<UserViewModel> Users
+		public string Filter
 		{
-			get => _users;
-			private set => Set(nameof(Users), ref _users, value);
+			get => _filter;
+			set
+			{
+				Set(nameof(Filter), ref _filter, value);
+				UsersView.Refresh();
+			}
 		}
+
+		public ObservableCollectionView<UserViewModel> UsersView { get; }
+		public ObservableCollection<UserViewModel> Users { get; } = new ObservableCollection<UserViewModel>();
 
 		public AllUsersViewModel(ErrorService errorService,
 			UserService userService,
@@ -41,6 +48,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_navigationService = navigationService;
 			_messenger = messenger;
 
+			UsersView = new ObservableCollectionView<UserViewModel>(Users, FilterUser);
+
 			_messenger.Register<SaveUser>(Handle);
 			_messenger.Register<EditUser>(Handle);
 			_messenger.Register<DeleteUser>(Handle);
@@ -51,6 +60,33 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			AddUserCommand = new AsyncCommand(AddUserAsync, DisplayError);
 			RefreshUsersCommand = new AsyncCommand(RefreshUsersAsync, DisplayError);
+		}
+
+		private bool FilterUser(UserViewModel arg)
+		{
+			if (string.IsNullOrEmpty(Filter))
+			{
+				return true;
+			}
+
+			var item = arg.Item;
+
+			if (!string.IsNullOrEmpty(item.Username) && item.Username.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			if (!string.IsNullOrEmpty(item.EMail) && item.EMail.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			if (!string.IsNullOrEmpty(item.Password) && item.Password.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private async Task DisplayError(Task task)
@@ -234,16 +270,23 @@ namespace SnippetStudio.ClientBase.ViewModel
 			try
 			{
 				IsBusy = true;
+				UsersView.Disable();
+				Filter = "";
+
 				Users.Clear();
 
 				var users = await _userService.GetItemsAsync(true);
 
-				Users = new ObservableCollection<UserViewModel>(users
-					.Select(item => new UserViewModel(
+				foreach (var item in users)
+				{
+					var vm = new UserViewModel(
 						_errorService,
 						item,
 						_navigationService,
-						_messenger)));
+						_messenger);
+
+					Users.Add(vm);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -251,6 +294,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			finally
 			{
+				UsersView.Enable();
 				IsBusy = false;
 			}
 		}
