@@ -38,12 +38,14 @@ namespace SnippetStudio.Wpf.Behaviours
 
 		private void AssociatedObjectOnTextChanged(object sender, EventArgs eventArgs)
 		{
-			var textEditor = sender as TextEditor;
-			if (textEditor != null)
+			if (sender is TextEditor textEditor)
 			{
 				if (textEditor.Document != null)
 				{
-					BindedText = textEditor.Document.Text;
+					if (BindedText != textEditor.Document.Text)
+					{
+						BindedText = textEditor.Document.Text;
+					}
 				}
 			}
 		}
@@ -59,9 +61,13 @@ namespace SnippetStudio.Wpf.Behaviours
 				if (editor.Document != null)
 				{
 					var caretOffset = editor.CaretOffset;
-					var text = dependencyPropertyChangedEventArgs.NewValue?.ToString();
-					editor.Document.Text = text ?? "";
+					var text = dependencyPropertyChangedEventArgs.NewValue?.ToString() ?? "";
 
+					if (editor.Document.Text != text)
+					{
+						editor.Document.Text = text;
+					}
+					
 					try 
 					{
 						editor.CaretOffset = caretOffset;

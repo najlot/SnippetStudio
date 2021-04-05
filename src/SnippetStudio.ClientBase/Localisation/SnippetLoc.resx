@@ -141,4 +141,10 @@
   <data name="Snippets" xml:space="preserve">
     <value>Snippets</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
 </root>

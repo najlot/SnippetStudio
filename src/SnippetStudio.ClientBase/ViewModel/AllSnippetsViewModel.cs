@@ -6,6 +6,11 @@ using SnippetStudio.Contracts;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Services;
 using SnippetStudio.ClientBase.Validation;
+using System.IO;
+using System.IO.Compression;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
@@ -14,6 +19,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly SnippetService _snippetService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
+		private readonly IDiskSearcher _diskSearcher;
 		private readonly ErrorService _errorService;
 
 		private bool _isBusy;
@@ -41,12 +47,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public AllSnippetsViewModel(ErrorService errorService,
 			SnippetService snippetService,
 			INavigationService navigationService,
-			Messenger messenger)
+			Messenger messenger,
+			IDiskSearcher diskSearcher)
 		{
 			_errorService = errorService;
 			_snippetService = snippetService;
 			_navigationService = navigationService;
 			_messenger = messenger;
+			_diskSearcher = diskSearcher;
 
 			SnippetsView = new ObservableCollectionView<SnippetViewModel>(Snippets, FilterSnippet, vm => vm.Item.Name);
 
@@ -59,6 +67,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_messenger.Register<SnippetUpdated>(Handle);
 			_messenger.Register<SnippetDeleted>(Handle);
 
+			ImportSnippetCommand = new AsyncCommand(ImportSnippetAsync, DisplayError);
 			AddSnippetCommand = new AsyncCommand(AddSnippetAsync, DisplayError);
 			RefreshSnippetsCommand = new AsyncCommand(RefreshSnippetsAsync, DisplayError);
 			_messenger.Register<RunSnippet>(Handle);
@@ -132,7 +141,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 					Code = obj.Code,
 				},
 				_navigationService,
-				_messenger));
+				_messenger,
+				_diskSearcher));
 		}
 
 		private void Handle(SnippetUpdated obj)
@@ -168,7 +178,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 					Code = obj.Code,
 				},
 				_navigationService,
-				_messenger));
+				_messenger,
+				_diskSearcher));
 		}
 
 		private void Handle(SnippetDeleted obj)
@@ -214,7 +225,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_errorService,
 					item,
 					_navigationService,
-					_messenger);
+					_messenger,
+					_diskSearcher);
 
 				_messenger.Register<EditVariable>(vm.Handle);
 				_messenger.Register<DeleteVariable>(vm.Handle);
@@ -283,6 +295,76 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
+		public AsyncCommand ImportSnippetCommand { get; }
+		public async Task ImportSnippetAsync()
+		{
+			if (IsBusy)
+			{
+				return;
+			}
+
+			try
+			{
+				IsBusy = true;
+
+				var path = await _diskSearcher.SelectFileAsync("SnippetStudio-File (*.SnippetStudio)|*.SnippetStudio");
+
+				if (!string.IsNullOrEmpty(path))
+				{
+					var dictionary = new Dictionary<string, string>();
+
+					using (var input = File.OpenRead(path))
+					{
+						using (var za = new ZipArchive(input))
+						{
+							foreach (var entry in za.Entries)
+							{
+								using (var zipStream = entry.Open())
+								{
+									using (var memstr = new MemoryStream())
+									{
+										await zipStream.CopyToAsync(memstr);
+										dictionary[entry.Name] = Encoding.UTF8.GetString(memstr.ToArray());
+									}
+								}
+							}
+						}
+					}
+
+					var item = _snippetService.CreateSnippet();
+					item.Name = dictionary[nameof(item.Name)];
+					item.Language = dictionary[nameof(item.Language)];
+					item.Template = dictionary[nameof(item.Template)];
+					item.Variables = JsonSerializer.Deserialize<List<Variable>>(dictionary[nameof(item.Variables)]);
+					item.Code = dictionary[nameof(item.Code)];
+
+					// Prevalidate
+					item.SetValidation(new SnippetValidationList(), true);
+
+					var itemVm = new SnippetViewModel(
+						_errorService,
+						item,
+						_navigationService,
+						_messenger,
+						_diskSearcher);
+
+					_messenger.Register<EditVariable>(itemVm.Handle);
+					_messenger.Register<DeleteVariable>(itemVm.Handle);
+					_messenger.Register<SaveVariable>(itemVm.Handle);
+
+					await _navigationService.NavigateForward(itemVm);
+				}
+			}
+			catch (Exception ex)
+			{
+				await _errorService.ShowAlert("Error adding...", ex);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+		
 		public AsyncCommand AddSnippetCommand { get; }
 		public async Task AddSnippetAsync()
 		{
@@ -304,7 +386,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 					_errorService,
 					item,
 					_navigationService,
-					_messenger);
+					_messenger,
+					_diskSearcher);
 
 				_messenger.Register<EditVariable>(itemVm.Handle);
 				_messenger.Register<DeleteVariable>(itemVm.Handle);
@@ -346,7 +429,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 						_errorService,
 						item,
 						_navigationService,
-						_messenger);
+						_messenger,
+						_diskSearcher);
 
 					Snippets.Add(vm);
 				}

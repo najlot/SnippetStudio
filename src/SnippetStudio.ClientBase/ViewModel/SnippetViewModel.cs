@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
@@ -18,6 +22,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly ErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly Messenger _messenger;
+		private readonly IDiskSearcher _diskSearcher;
 
 		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
@@ -28,12 +33,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 			ErrorService errorService,
 			SnippetModel snippetModel,
 			INavigationService navigationService,
-			Messenger messenger)
+			Messenger messenger,
+			IDiskSearcher diskSearcher)
 		{
 			Item = snippetModel;
 			_errorService = errorService;
 			_navigationService = navigationService;
 			_messenger = messenger;
+			_diskSearcher = diskSearcher;
 
 			if (Item.Variables == null)
 			{
@@ -62,6 +69,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
 			EditSnippetCommand = new AsyncCommand(EditSnippetAsync, DisplayError, () => !IsBusy);
+			ExportSnippetCommand = new AsyncCommand(ExportSnippetAsync, DisplayError, () => !IsBusy);
 		}
 
 		private async Task DisplayError(Task task)
@@ -264,6 +272,61 @@ namespace SnippetStudio.ClientBase.ViewModel
 			catch (Exception ex)
 			{
 				await _errorService.ShowAlert("Error starting edit...", ex);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+
+		public AsyncCommand ExportSnippetCommand { get; }
+		public async Task ExportSnippetAsync()
+		{
+			if (IsBusy)
+			{
+				return;
+			}
+
+			try
+			{
+				IsBusy = true;
+
+				var path = await _diskSearcher.SelectSaveFileAsync(Item.Name, "SnippetStudio-File (*.SnippetStudio)|*.SnippetStudio", ".SnippetStudio");
+
+				if (!string.IsNullOrEmpty(path))
+				{
+					using (var stream = File.OpenWrite(path))
+					{
+						using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+						{
+							var entries = new List<(string name, string data)>(6);
+							entries.Add((nameof(Item.Name), Item.Name));
+							entries.Add((nameof(Item.Language), Item.Language));
+							entries.Add((nameof(Item.Template), Item.Template));
+							entries.Add((nameof(Item.Variables), JsonSerializer.Serialize(Item.Variables)));
+							entries.Add((nameof(Item.Code), Item.Code));
+							
+							foreach (var (name, data) in entries)
+							{
+								var dataEntry = archive.CreateEntry(name, CompressionLevel.Optimal);
+
+								using (var entryStream = dataEntry.Open())
+								{
+									var bytes = Encoding.UTF8.GetBytes(data);
+
+									using (var memstr = new MemoryStream(bytes))
+									{
+										memstr.CopyTo(entryStream);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				await _errorService.ShowAlert("Error exporting...", ex);
 			}
 			finally
 			{

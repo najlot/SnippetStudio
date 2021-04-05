@@ -21,6 +21,7 @@ namespace SnippetStudio.Wpf.ViewModel
 			Main = new MainViewModel();
 			var errorService = new ErrorService(Main);
 
+			serviceCollection.AddSingleton<IDiskSearcher, DiskSearcher>();
 			serviceCollection.AddSingleton<IDispatcherHelper, DispatcherHelper>();
 
 			// Register services
