@@ -12,9 +12,16 @@
 		xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
 
+	<Window.InputBindings>
+		<KeyBinding Key="Esc" Command="{Binding NavigateBackCommand}" />
+	</Window.InputBindings>
+	
 	<Window.Resources>
 		<DataTemplate DataType="{x:Type vms:MenuViewModel}">
 			<Views:MenuView />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vms:LanguageInputViewModel}">
+			<Views:LanguageInputView />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:LoginViewModel}">
 			<Views:LoginView />

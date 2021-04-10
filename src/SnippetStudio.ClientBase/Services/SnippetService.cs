@@ -12,6 +12,7 @@ namespace SnippetStudio.ClientBase.Services
 		private IDataStore<SnippetModel> _store;
 		private readonly Messenger _messenger;
 		private readonly CsScriptRunService _csScriptRunService;
+		private readonly PyScriptRunService _pyScriptRunService;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ISubscriber _subscriber;
 		private readonly string _myName;
@@ -20,6 +21,7 @@ namespace SnippetStudio.ClientBase.Services
 			IDataStore<SnippetModel> dataStore,
 			Messenger messenger,
 			CsScriptRunService csScriptRunService,
+			PyScriptRunService pyScriptRunService,
 			IDispatcherHelper dispatcher,
 			ISubscriber subscriber,
 			string myName)
@@ -27,6 +29,7 @@ namespace SnippetStudio.ClientBase.Services
 			_store = dataStore;
 			_messenger = messenger;
 			_csScriptRunService = csScriptRunService;
+			_pyScriptRunService = pyScriptRunService;
 			_dispatcher = dispatcher;
 			_subscriber = subscriber;
 			_myName = myName;
@@ -51,15 +54,14 @@ namespace SnippetStudio.ClientBase.Services
 			await _dispatcher.BeginInvokeOnMainThread(async () => await _messenger.SendAsync(message));
 		}
 
-		public SnippetModel CreateSnippet()
+		public SnippetModel CreateSnippet(string language)
 		{
-			return new SnippetModel()
+			string code = "";
+
+			switch (language)
 			{
-				Id = Guid.NewGuid(),
-				Name = "",
-				Language = "C#",
-				Template = "",
-				Code = @"
+				case "C#":
+					code = @"
 var result = Template;
 
 foreach(var variable in Variables)
@@ -67,14 +69,42 @@ foreach(var variable in Variables)
 	result = result.Replace(""%"" + variable.Key + ""%"", variable.Value);
 }
 
-return result;",
+return result;";
+					break;
+
+				case "Python":
+					code = @"
+result = template
+
+for key in variables:
+	result = result.replace(""%"" + key + ""%"", variables[key])";
+					break;
+			}
+
+			return new SnippetModel()
+			{
+				Id = Guid.NewGuid(),
+				Name = "",
+				Language = language,
+				Template = "",
+				Code = code,
+				Variables = new List<Variable>()
 			};
 		}
 
 		public async Task<string> Run(string language, string code, string template, Dictionary<string, string> variables)
 		{
-			var result = await Task.Run(async () => await _csScriptRunService.Run(code, template, variables));
-			return result;
+			switch (language)
+			{
+				case "C#":
+					return await Task.Run(async () => await _csScriptRunService.Run(code, template, variables));
+
+				case "Python":
+					await PyScriptRunService.PyInitAsync();
+					return _pyScriptRunService.Run(code, template, variables);
+			}
+
+			throw new NotImplementedException($"Language '{language}' not implemented!");
 		}
 
 		public string GetMyName() => _myName;

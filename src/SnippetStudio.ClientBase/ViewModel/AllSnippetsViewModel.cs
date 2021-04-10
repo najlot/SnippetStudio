@@ -331,7 +331,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 						}
 					}
 
-					var item = _snippetService.CreateSnippet();
+					var item = _snippetService.CreateSnippet("C#");
 					item.Name = dictionary[nameof(item.Name)];
 					item.Language = dictionary[nameof(item.Language)];
 					item.Template = dictionary[nameof(item.Template)];
@@ -377,7 +377,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 			{
 				IsBusy = true;
 
-				var item = _snippetService.CreateSnippet();
+				var vm = new LanguageInputViewModel();
+				var language = await _navigationService.RequestInputAsync(vm);
+
+				if (string.IsNullOrEmpty(language))
+				{
+					return;
+				}
+
+				var item = _snippetService.CreateSnippet(language);
 
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);

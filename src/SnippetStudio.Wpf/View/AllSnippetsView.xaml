@@ -9,6 +9,12 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
 
+	<UserControl.InputBindings>
+		<KeyBinding Modifiers="Ctrl" Key="I" Command="{Binding ImportSnippetCommand}" />
+		<KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding AddSnippetCommand}" />
+		<KeyBinding Key="F5" Command="{Binding RefreshSnippetsCommand}" />
+	</UserControl.InputBindings>
+
 	<DockPanel>
 		<DockPanel DockPanel.Dock="Top">
 			<WrapPanel FlowDirection="RightToLeft" DockPanel.Dock="Right">
@@ -48,7 +54,7 @@
 
 			<DockPanel DockPanel.Dock="Left">
 				<Label Content="Filter:" VerticalAlignment="Center" />
-				<TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" Margin="5" VerticalAlignment="Center" />
+				<TextBox Name="FilterTextBox" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" Margin="5" VerticalAlignment="Center" />
 			</DockPanel>
 		</DockPanel>
 

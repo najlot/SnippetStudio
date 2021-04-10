@@ -7,9 +7,10 @@
 			  xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
 	<DockPanel Margin="0,1">
 		<WrapPanel FlowDirection="RightToLeft" DockPanel.Dock="Bottom">
-			<Button Command="{Binding OkCommand}" Content="{x:Static loc:CommonLoc.Ok}" Margin="5" Padding="10,5" MinWidth="100" />
+			<Button Command="{Binding OkCommand}" Content="{x:Static loc:CommonLoc.Ok}" Margin="5" Padding="10,5" MinWidth="100" Name="OkButton" />
 		</WrapPanel>
 
 		<ScrollViewer Padding="30,10">

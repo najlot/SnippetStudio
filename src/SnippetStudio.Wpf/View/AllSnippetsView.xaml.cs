@@ -10,6 +10,8 @@ namespace SnippetStudio.Wpf.View
 		public AllSnippetsView()
 		{
 			InitializeComponent();
+
+			Loaded += (sender, e) => FilterTextBox.Focus();
 		}
 	}
 }

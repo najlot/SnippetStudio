@@ -7,9 +7,10 @@
 			 xmlns:loc="clr-namespace:SnippetStudio.ClientBase.Localisation;assembly=SnippetStudio.ClientBase"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+
 	<DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 		<WrapPanel>
-			<Button Command="{Binding NavigateToSnippets}" Margin="5" MinWidth="95">
+			<Button Command="{Binding NavigateToSnippets}" Margin="5" MinWidth="95" Name="SnippetsButton">
 				<Button.Content>
 					<StackPanel>
 						<Path

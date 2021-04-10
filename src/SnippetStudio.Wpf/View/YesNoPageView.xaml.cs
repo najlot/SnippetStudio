@@ -10,6 +10,8 @@ namespace SnippetStudio.Wpf.View
 		public YesNoPageView()
 		{
 			InitializeComponent();
+
+			Loaded += (sender, e) => YesButton.Focus();
 		}
 	}
 }

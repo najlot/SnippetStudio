@@ -10,6 +10,8 @@ namespace SnippetStudio.Wpf.View
 		public SnippetView()
 		{
 			InitializeComponent();
+
+			Loaded += (sender, e) => NameTextBox.Focus();
 		}
 
 		private void TextEditor_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)

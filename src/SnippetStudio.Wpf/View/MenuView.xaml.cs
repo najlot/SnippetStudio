@@ -10,6 +10,8 @@ namespace SnippetStudio.Wpf.View
 		public MenuView()
 		{
 			InitializeComponent();
+
+			Loaded += (sender, e) => SnippetsButton.Focus();
 		}
 	}
 }
