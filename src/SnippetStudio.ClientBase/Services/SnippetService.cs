@@ -79,6 +79,19 @@ result = template
 for key in variables:
 	result = result.replace(""%"" + key + ""%"", variables[key])";
 					break;
+
+				case "NodeJS":
+					code = @"
+module.exports = (callback, template, variables) =>
+{
+	for (var key in variables)
+	{
+		template = template.replace(""%"" + key + ""%"", variables[key]);
+	}
+	
+	callback(null, template);
+}";
+					break;
 			}
 
 			return new SnippetModel()
@@ -102,6 +115,14 @@ for key in variables:
 				case "Python":
 					await PyScriptRunService.PyInitAsync();
 					return _pyScriptRunService.Run(code, template, variables);
+
+				case "NodeJS":
+					return await Jering.Javascript.NodeJS.StaticNodeJSService.InvokeFromStringAsync<string>(code,
+						args: new object[]
+						{
+							template,
+							variables
+						});
 			}
 
 			throw new NotImplementedException($"Language '{language}' not implemented!");

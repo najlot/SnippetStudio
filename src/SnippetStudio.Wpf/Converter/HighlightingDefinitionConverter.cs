@@ -11,6 +11,11 @@ namespace SnippetStudio.Wpf.Converter
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			if (value.ToString() == "NodeJS")
+			{
+				value = "JavaScript";
+			}
+
 			return _converter.ConvertFrom(value);
 		}
 
