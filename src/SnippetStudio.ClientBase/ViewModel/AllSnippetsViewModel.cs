@@ -11,10 +11,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class AllSnippetsViewModel : AbstractViewModel, IDisposable
 	{
-		private readonly SnippetService _snippetService;
+		private readonly ISnippetService _snippetService;
 		private readonly INavigationService _navigationService;
-		private readonly Messenger _messenger;
-		private readonly ErrorService _errorService;
+		private readonly IMessenger _messenger;
+		private readonly IErrorService _errorService;
 
 		private bool _isBusy;
 		private string _filter;
@@ -38,10 +38,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public ObservableCollectionView<SnippetViewModel> SnippetsView { get; }
 		public ObservableCollection<SnippetViewModel> Snippets { get; } = new ObservableCollection<SnippetViewModel>();
 
-		public AllSnippetsViewModel(ErrorService errorService,
-			SnippetService snippetService,
+		public AllSnippetsViewModel(IErrorService errorService,
+			ISnippetService snippetService,
 			INavigationService navigationService,
-			Messenger messenger)
+			IMessenger messenger)
 		{
 			_errorService = errorService;
 			_snippetService = snippetService;
@@ -71,22 +71,26 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			var item = arg.Item;
 
-			if (!string.IsNullOrEmpty(item.Name) && item.Name.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var name = item.Name;
+			if (!string.IsNullOrEmpty(name) && name.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
 
-			if (!string.IsNullOrEmpty(item.Language) && item.Language.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var language = item.Language;
+			if (!string.IsNullOrEmpty(language) && language.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
 
-			if (!string.IsNullOrEmpty(item.Template) && item.Template.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var template = item.Template;
+			if (!string.IsNullOrEmpty(template) && template.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
 
-			if (!string.IsNullOrEmpty(item.Code) && item.Code.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var code = item.Code;
+			if (!string.IsNullOrEmpty(code) && code.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
@@ -96,7 +100,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 
 		private void Handle(SnippetCreated obj)
@@ -171,7 +175,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlertAsync("Error saving...", ex);
 			}
 		}
 
@@ -208,7 +212,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlertAsync("Error loading...", ex);
 			}
 			finally
 			{
@@ -231,7 +235,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlertAsync("Error saving...", ex);
 			}
 		}
 
@@ -266,7 +270,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error adding...", ex);
+				await _errorService.ShowAlertAsync("Error adding...", ex);
 			}
 			finally
 			{
@@ -305,7 +309,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error loading data...", ex);
+				await _errorService.ShowAlertAsync("Error loading data...", ex);
 			}
 			finally
 			{

@@ -6,7 +6,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class MenuViewModel : AbstractViewModel
 	{
-		private readonly ErrorService _errorService;
+		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private bool _isBusy = false;
 
@@ -31,7 +31,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Could not load...", ex);
+				await _errorService.ShowAlertAsync("Could not load...", ex);
 			}
 			finally
 			{
@@ -57,7 +57,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Could not load...", ex);
+				await _errorService.ShowAlertAsync("Could not load...", ex);
 			}
 			finally
 			{
@@ -65,7 +65,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 		}
 
-		public MenuViewModel(ErrorService errorService,
+		public MenuViewModel(IErrorService errorService,
 			AllSnippetsViewModel allSnippetsViewModel,
 			AllUsersViewModel allUsersViewModel,
 			INavigationService navigationService)
@@ -81,7 +81,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 	}
 }

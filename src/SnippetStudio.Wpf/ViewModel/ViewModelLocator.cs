@@ -3,6 +3,7 @@ using System;
 using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
+using SnippetStudio.ClientBase.Services.Implementation;
 using SnippetStudio.ClientBase.ViewModel;
 
 namespace SnippetStudio.Wpf.ViewModel
@@ -23,9 +24,9 @@ namespace SnippetStudio.Wpf.ViewModel
 			serviceCollection.AddSingleton<IDispatcherHelper, DispatcherHelper>();
 
 			// Register services
-			serviceCollection.AddSingleton<ErrorService>();
-			serviceCollection.AddSingleton<ProfilesService>();
-			serviceCollection.AddSingleton(messenger);
+			serviceCollection.AddSingleton<IErrorService>(errorService);
+			serviceCollection.AddSingleton<IProfilesService, ProfilesService>();
+			serviceCollection.AddSingleton<IMessenger>(messenger);
 
 			var profileHandler = new LocalProfileHandler(messenger, dispatcher);
 			profileHandler

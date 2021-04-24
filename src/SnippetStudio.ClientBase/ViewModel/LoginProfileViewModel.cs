@@ -10,7 +10,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 	public class LoginProfileViewModel : AbstractViewModel
 	{
 		private ProfileBase _profile;
-		private readonly ErrorService _errorService;
+		private readonly IErrorService _errorService;
 		private readonly IDispatcherHelper _dispatcherHelper;
 
 		public ProfileBase Profile
@@ -23,7 +23,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public ICommand EditCommand { get; }
 		public ICommand DeleteCommand { get; }
 
-		public LoginProfileViewModel(Messenger messenger, ErrorService errorService, IDispatcherHelper dispatcherHelper)
+		public LoginProfileViewModel(IMessenger messenger, IErrorService errorService, IDispatcherHelper dispatcherHelper)
 		{
 			LoginCommand = new AsyncCommand(async () => await messenger.SendAsync(new LoginProfile(Profile)), DisplayErrorAsync);
 			EditCommand = new AsyncCommand(async () => await messenger.SendAsync(new EditProfile(Profile)), DisplayErrorAsync);
@@ -34,7 +34,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayErrorAsync(Task task)
 		{
-			await _dispatcherHelper.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(task.Exception));
+			await _dispatcherHelper.BeginInvokeOnMainThread(async () => await _errorService.ShowAlertAsync(task.Exception));
 		}
 	}
 }

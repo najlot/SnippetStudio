@@ -1,9 +1,8 @@
-﻿using Cosei.Client.Base;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SnippetStudio.ClientBase.ProfileHandler
 {
-	public sealed class LocalSubscriber : Messenger, ISubscriber
+	public sealed class LocalSubscriber : Messenger, ILocalSubscriber
 	{
 		public LocalSubscriber()
 		{

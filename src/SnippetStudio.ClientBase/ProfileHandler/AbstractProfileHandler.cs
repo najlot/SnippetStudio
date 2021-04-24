@@ -1,6 +1,7 @@
 ﻿using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
 using System.Threading.Tasks;
+using Cosei.Client.Base;
 
 namespace SnippetStudio.ClientBase.ProfileHandler
 {
@@ -8,16 +9,24 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 	{
 		private IProfileHandler _handler = null;
 
-		protected SnippetService SnippetService { get; set; }
-		protected UserService UserService { get; set; }
+		protected ISubscriber Subscriber { get; set; }
 
-		public SnippetService GetSnippetService() => SnippetService ?? _handler?.GetSnippetService();
-		public UserService GetUserService() => UserService ?? _handler?.GetUserService();
+		protected ISnippetService SnippetService { get; set; }
+		protected IUserService UserService { get; set; }
+
+		public ISnippetService GetSnippetService() => SnippetService ?? _handler?.GetSnippetService();
+		public IUserService GetUserService() => UserService ?? _handler?.GetUserService();
 
 		public IProfileHandler SetNext(IProfileHandler handler) => _handler = handler;
 
 		public async Task SetProfile(ProfileBase profile)
 		{
+			if (Subscriber != null)
+			{
+				await Subscriber.DisposeAsync();
+				Subscriber = null;
+			}
+
 			SnippetService?.Dispose();
 			SnippetService = null;
 			UserService?.Dispose();

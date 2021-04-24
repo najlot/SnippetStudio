@@ -1,22 +1,21 @@
 ﻿using Cosei.Client.Base;
 using Cosei.Client.Http;
-using Cosei.Client.RabbitMq;
 using System;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
+using SnippetStudio.ClientBase.Services.Implementation;
 
 namespace SnippetStudio.ClientBase.ProfileHandler
 {
 	public sealed class RestProfileHandler : AbstractProfileHandler
 	{
 		private RestProfile _profile;
-		private SignalRSubscriber _subscriber;
-		private readonly Messenger _messenger;
+		private readonly IMessenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
-		private readonly ErrorService _errorService;
+		private readonly IErrorService _errorService;
 
-		public RestProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, ErrorService errorService)
+		public RestProfileHandler(IMessenger messenger, IDispatcherHelper dispatcher, IErrorService errorService)
 		{
 			_messenger = messenger;
 			_dispatcher = dispatcher;
@@ -30,12 +29,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 		protected override async Task ApplyProfile(ProfileBase profile)
 		{
-			if (_subscriber != null)
-			{
-				await _subscriber.DisposeAsync();
-				_subscriber = null;
-			}
-
 			if (profile is RestProfile restProfile)
 			{
 				_profile = restProfile;
@@ -55,7 +48,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 					},
 					exception =>
 					{
-						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(exception));
+						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlertAsync(exception));
 					});
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
@@ -65,7 +58,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 				await subscriber.StartAsync();
 
-				_subscriber = subscriber;
+				Subscriber = subscriber;
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 
 namespace SnippetStudio.ClientBase.Services
 {
-	public static class NavigationServiceExtentions
+	public static class NavigationServiceExtensions
 	{
 		public static async Task<T> RequestInputAsync<T>(this INavigationService service, AbstractPopupViewModel<T> requestViewModel)
 		{

@@ -3,6 +3,7 @@ using System;
 using SnippetStudio.ClientBase;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.ClientBase.Services;
+using SnippetStudio.ClientBase.Services.Implementation;
 using SnippetStudio.ClientBase.ViewModel;
 using SnippetStudio.Mobile.View;
 using Xamarin.Forms;
@@ -31,9 +32,9 @@ namespace SnippetStudio.Mobile
 				serviceCollection.AddSingleton<IDispatcherHelper, DispatcherHelper>();
 
 				// Register services
-				serviceCollection.AddSingleton(errorService);
-				serviceCollection.AddSingleton<ProfilesService>();
-				serviceCollection.AddSingleton(messenger);
+				serviceCollection.AddSingleton<IErrorService>(errorService);
+				serviceCollection.AddSingleton<IProfilesService, ProfilesService>();
+				serviceCollection.AddSingleton<IMessenger>(messenger);
 
 				var profileHandler = new LocalProfileHandler(messenger, dispatcher);
 				profileHandler

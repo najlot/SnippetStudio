@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.ViewModel;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class ErrorService
+	public class ErrorService : IErrorService
 	{
 		private readonly INavigationService _navigationService;
 
@@ -13,17 +13,17 @@ namespace SnippetStudio.ClientBase.Services
 			_navigationService = navigationService;
 		}
 
-		public async Task ShowAlert(string message, Exception ex)
+		public async Task ShowAlertAsync(string message, Exception ex)
 		{
-			await ShowAlert(message, ex.Message);
+			await ShowAlertAsync(message, ex.Message);
 		}
 
-		public async Task ShowAlert(Exception ex)
+		public async Task ShowAlertAsync(Exception ex)
 		{
-			await ShowAlert(ex.GetType().Name, ex.Message);
+			await ShowAlertAsync(ex.GetType().Name, ex.Message);
 		}
 
-		public async Task ShowAlert(string title, string message)
+		public async Task ShowAlertAsync(string title, string message)
 		{
 			var vm = new AlertViewModel()
 			{

@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.Contracts;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class SnippetService : IDisposable
+	public class SnippetService : ISnippetService
 	{
-		private IDataStore<SnippetModel> _store;
-		private readonly Messenger _messenger;
+		private ISnippetStore _store;
+		private readonly IMessenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
 		private readonly ISubscriber _subscriber;
 
 		public SnippetService(
-			IDataStore<SnippetModel> dataStore,
-			Messenger messenger,
+			ISnippetStore dataStore,
+			IMessenger messenger,
 			IDispatcherHelper dispatcher,
 			ISubscriber subscriber)
 		{

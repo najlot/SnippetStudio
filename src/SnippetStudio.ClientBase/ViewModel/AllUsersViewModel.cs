@@ -11,10 +11,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class AllUsersViewModel : AbstractViewModel, IDisposable
 	{
-		private readonly UserService _userService;
+		private readonly IUserService _userService;
 		private readonly INavigationService _navigationService;
-		private readonly Messenger _messenger;
-		private readonly ErrorService _errorService;
+		private readonly IMessenger _messenger;
+		private readonly IErrorService _errorService;
 
 		private bool _isBusy;
 		private string _filter;
@@ -38,10 +38,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public ObservableCollectionView<UserViewModel> UsersView { get; }
 		public ObservableCollection<UserViewModel> Users { get; } = new ObservableCollection<UserViewModel>();
 
-		public AllUsersViewModel(ErrorService errorService,
-			UserService userService,
+		public AllUsersViewModel(IErrorService errorService,
+			IUserService userService,
 			INavigationService navigationService,
-			Messenger messenger)
+			IMessenger messenger)
 		{
 			_errorService = errorService;
 			_userService = userService;
@@ -71,17 +71,20 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			var item = arg.Item;
 
-			if (!string.IsNullOrEmpty(item.Username) && item.Username.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var username = item.Username;
+			if (!string.IsNullOrEmpty(username) && username.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
 
-			if (!string.IsNullOrEmpty(item.EMail) && item.EMail.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var eMail = item.EMail;
+			if (!string.IsNullOrEmpty(eMail) && eMail.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
 
-			if (!string.IsNullOrEmpty(item.Password) && item.Password.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
+			var password = item.Password;
+			if (!string.IsNullOrEmpty(password) && password.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				return true;
 			}
@@ -91,7 +94,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 
 		private void Handle(UserCreated obj)
@@ -162,7 +165,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlertAsync("Error saving...", ex);
 			}
 		}
 
@@ -196,7 +199,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlertAsync("Error loading...", ex);
 			}
 			finally
 			{
@@ -219,7 +222,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlertAsync("Error saving...", ex);
 			}
 		}
 
@@ -251,7 +254,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error adding...", ex);
+				await _errorService.ShowAlertAsync("Error adding...", ex);
 			}
 			finally
 			{
@@ -290,7 +293,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error loading data...", ex);
+				await _errorService.ShowAlertAsync("Error loading data...", ex);
 			}
 			finally
 			{
