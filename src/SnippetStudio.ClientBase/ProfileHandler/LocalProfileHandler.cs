@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
+using SnippetStudio.ClientBase.Services;
 using SnippetStudio.ClientBase.Services.Implementation;
 
 namespace SnippetStudio.ClientBase.ProfileHandler

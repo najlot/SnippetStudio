@@ -273,7 +273,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error loading...", ex);
+				await _errorService.ShowAlertAsync("Error loading...", ex);
 			}
 			finally
 			{
@@ -362,7 +362,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error adding...", ex);
+				await _errorService.ShowAlertAsync("Error adding...", ex);
 			}
 			finally
 			{

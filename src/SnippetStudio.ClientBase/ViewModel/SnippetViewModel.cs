@@ -126,7 +126,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error running...", ex);
+				await _errorService.ShowAlertAsync("Error running...", ex);
 			}
 		}
 
@@ -328,7 +328,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error exporting...", ex);
+				await _errorService.ShowAlertAsync("Error exporting...", ex);
 			}
 			finally
 			{
