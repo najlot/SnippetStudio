@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using SnippetStudio.ClientBase.Models;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class ProfilesService
+	public class ProfilesService : IProfilesService
 	{
 		public class KnownTypesBinder : ISerializationBinder
 		{

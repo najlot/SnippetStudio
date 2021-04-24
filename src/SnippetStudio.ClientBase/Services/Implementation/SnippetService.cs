@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.Contracts;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class SnippetService : IDisposable
+	public class SnippetService : ISnippetService
 	{
-		private IDataStore<SnippetModel> _store;
-		private readonly Messenger _messenger;
+		private ISnippetStore _store;
+		private readonly IMessenger _messenger;
 		private readonly CsScriptRunService _csScriptRunService;
 		private readonly PyScriptRunService _pyScriptRunService;
 		private readonly IDispatcherHelper _dispatcher;
@@ -18,8 +18,8 @@ namespace SnippetStudio.ClientBase.Services
 		private readonly string _myName;
 
 		public SnippetService(
-			IDataStore<SnippetModel> dataStore,
-			Messenger messenger,
+			ISnippetStore dataStore,
+			IMessenger messenger,
 			CsScriptRunService csScriptRunService,
 			PyScriptRunService pyScriptRunService,
 			IDispatcherHelper dispatcher,

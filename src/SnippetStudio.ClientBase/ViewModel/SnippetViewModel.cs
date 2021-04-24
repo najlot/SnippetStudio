@@ -19,9 +19,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private bool _isBusy;
 		private SnippetModel _item;
-		private readonly ErrorService _errorService;
+
+		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
-		private readonly Messenger _messenger;
+		private readonly IMessenger _messenger;
+
 		private readonly IDiskSearcher _diskSearcher;
 
 		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
@@ -30,10 +32,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public AsyncCommand RunCommand { get; }
 
 		public SnippetViewModel(
-			ErrorService errorService,
+			IErrorService errorService,
 			SnippetModel snippetModel,
 			INavigationService navigationService,
-			Messenger messenger,
+			IMessenger messenger,
 			IDiskSearcher diskSearcher)
 		{
 			Item = snippetModel;
@@ -74,7 +76,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 
 		private async Task LoadAndRunAsync()
@@ -212,7 +214,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error saving...", ex);
+				await _errorService.ShowAlertAsync("Error saving...", ex);
 			}
 			finally
 			{
@@ -248,7 +250,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error deleting...", ex);
+				await _errorService.ShowAlertAsync("Error deleting...", ex);
 			}
 			finally
 			{
@@ -271,7 +273,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Error starting edit...", ex);
+				await _errorService.ShowAlertAsync("Error starting edit...", ex);
 			}
 			finally
 			{

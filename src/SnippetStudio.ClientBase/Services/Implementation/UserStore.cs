@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.Contracts;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class SnippetStore : IDataStore<SnippetModel>
+	public class UserStore : IUserStore
 	{
 		private readonly IRequestClient _client;
-		private readonly TokenProvider _tokenProvider;
-		private IEnumerable<SnippetModel> items;
+		private readonly ITokenProvider _tokenProvider;
+		private IEnumerable<UserModel> items;
 
-		public SnippetStore(IRequestClient client, TokenProvider tokenProvider)
+		public UserStore(IRequestClient client, ITokenProvider tokenProvider)
 		{
 			_tokenProvider = tokenProvider;
 			_client = client;
-			items = new List<SnippetModel>();
+			items = new List<UserModel>();
 		}
 
-		public async Task<IEnumerable<SnippetModel>> GetItemsAsync(bool forceRefresh = false)
+		public async Task<IEnumerable<UserModel>> GetItemsAsync(bool forceRefresh = false)
 		{
 			if (forceRefresh)
 			{
@@ -33,13 +33,13 @@ namespace SnippetStudio.ClientBase.Services
 					{ "Authorization", $"Bearer {token}" }
 				};
 
-				items = await _client.GetAsync<List<SnippetModel>>("api/Snippet", headers);
+				items = await _client.GetAsync<List<UserModel>>("api/User", headers);
 			}
 
 			return items;
 		}
 
-		public async Task<SnippetModel> GetItemAsync(Guid id)
+		public async Task<UserModel> GetItemAsync(Guid id)
 		{
 			if (id != Guid.Empty)
 			{
@@ -50,13 +50,13 @@ namespace SnippetStudio.ClientBase.Services
 					{ "Authorization", $"Bearer {token}" }
 				};
 
-				return await _client.GetAsync<SnippetModel>($"api/Snippet/{id}", headers);
+				return await _client.GetAsync<UserModel>($"api/User/{id}", headers);
 			}
 
 			return null;
 		}
 
-		public async Task<bool> AddItemAsync(SnippetModel item)
+		public async Task<bool> AddItemAsync(UserModel item)
 		{
 			if (item == null)
 			{
@@ -70,19 +70,17 @@ namespace SnippetStudio.ClientBase.Services
 				{ "Authorization", $"Bearer {token}" }
 			};
 
-			var request = new CreateSnippet(item.Id,
-				item.Name,
-				item.Language,
-				item.Variables,
-				item.Template,
-				item.Code);
+			var request = new CreateUser(item.Id,
+				item.Username,
+				item.EMail,
+				item.Password);
 
-			await _client.PostAsync($"api/Snippet", request, headers);
+			await _client.PostAsync($"api/User", request, headers);
 
 			return true;
 		}
 
-		public async Task<bool> UpdateItemAsync(SnippetModel item)
+		public async Task<bool> UpdateItemAsync(UserModel item)
 		{
 			if (item == null || item.Id == Guid.Empty)
 			{
@@ -96,14 +94,12 @@ namespace SnippetStudio.ClientBase.Services
 				{ "Authorization", $"Bearer {token}" }
 			};
 
-			var request = new UpdateSnippet(item.Id,
-				item.Name,
-				item.Language,
-				item.Variables,
-				item.Template,
-				item.Code);
+			var request = new UpdateUser(item.Id,
+				item.Username,
+				item.EMail,
+				item.Password);
 
-			await _client.PutAsync($"api/Snippet", request, headers);
+			await _client.PutAsync($"api/User", request, headers);
 
 			return true;
 		}
@@ -122,7 +118,7 @@ namespace SnippetStudio.ClientBase.Services
 				{ "Authorization", $"Bearer {token}" }
 			};
 
-			var response = await _client.DeleteAsync($"api/Snippet/{id}", headers);
+			var response = await _client.DeleteAsync($"api/User/{id}", headers);
 			response.EnsureSuccessStatusCode();
 
 			return true;

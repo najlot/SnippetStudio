@@ -8,15 +8,15 @@ using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.ProfileHandler;
 using SnippetStudio.Contracts;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public sealed class LocalUserStore : IDataStore<UserModel>
+	public sealed class LocalUserStore : IUserStore
 	{
 		private readonly string _dataPath;
-		private readonly LocalSubscriber _subscriber;
+		private readonly ILocalSubscriber _subscriber;
 		private List<UserModel> _items = null;
 
-		public LocalUserStore(string folderName, LocalSubscriber localSubscriber)
+		public LocalUserStore(string folderName, ILocalSubscriber localSubscriber)
 		{
 			var appdataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SnippetStudio");
 			appdataDir = Path.Combine(appdataDir, folderName);

@@ -10,8 +10,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 	public class ProfileViewModel : AbstractViewModel
 	{
 		private ProfileBase profile;
-		private readonly Messenger _messenger;
-		private readonly ErrorService _errorService;
+		private readonly IMessenger _messenger;
+		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
 
 		public ProfileBase Profile { get => profile; private set => Set(nameof(Profile), ref profile, value); }
@@ -56,7 +56,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		public List<Source> PossibleSources { get; } = new List<Source>(Enum.GetValues(typeof(Source)) as Source[]);
 
-		public ProfileViewModel(Messenger messenger, ErrorService errorService, INavigationService navigationService)
+		public ProfileViewModel(IMessenger messenger, IErrorService errorService, INavigationService navigationService)
 		{
 			var id = Guid.NewGuid();
 
@@ -74,7 +74,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 		}
 
-		public ProfileViewModel(ProfileBase profile, Messenger messenger, ErrorService errorService, INavigationService navigationService)
+		public ProfileViewModel(ProfileBase profile, IMessenger messenger, IErrorService errorService, INavigationService navigationService)
 		{
 			Profile = profile;
 			_messenger = messenger;
@@ -86,7 +86,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 
 		public AsyncCommand SaveCommand { get; }

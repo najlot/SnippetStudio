@@ -3,20 +3,20 @@ using Cosei.Client.RabbitMq;
 using System.Threading.Tasks;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
+using SnippetStudio.ClientBase.Services.Implementation;
 
 namespace SnippetStudio.ClientBase.ProfileHandler
 {
 	public sealed class RmqProfileHandler : AbstractProfileHandler
 	{
 		private RmqProfile _profile;
-		private RabbitMqSubscriber _subscriber;
 		private RabbitMqModelFactory _rabbitMqModelFactory;
-		private readonly Messenger _messenger;
+		private readonly IMessenger _messenger;
 		private readonly IDispatcherHelper _dispatcher;
-		private readonly ErrorService _errorService;
+		private readonly IErrorService _errorService;
 		private readonly IClipboardService _clipboardService;
 
-		public RmqProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, ErrorService errorService, IClipboardService clipboardService)
+		public RmqProfileHandler(Messenger messenger, IDispatcherHelper dispatcher, IErrorService errorService, IClipboardService clipboardService)
 		{
 			_messenger = messenger;
 			_dispatcher = dispatcher;
@@ -31,12 +31,6 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 		protected override async Task ApplyProfile(ProfileBase profile)
 		{
-			if (_subscriber != null)
-			{
-				await _subscriber.DisposeAsync();
-				_subscriber = null;
-			}
-
 			if (_rabbitMqModelFactory != null)
 			{
 				_rabbitMqModelFactory.Dispose();
@@ -59,7 +53,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 					_rabbitMqModelFactory,
 					exception =>
 					{
-						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlert(exception));
+						_dispatcher.BeginInvokeOnMainThread(async () => await _errorService.ShowAlertAsync(exception));
 					});
 
 				var snippetStore = new SnippetStore(requestClient, tokenProvider);
@@ -71,7 +65,7 @@ namespace SnippetStudio.ClientBase.ProfileHandler
 
 				await subscriber.StartAsync();
 
-				_subscriber = subscriber;
+				Subscriber = subscriber;
 			}
 		}
 	}

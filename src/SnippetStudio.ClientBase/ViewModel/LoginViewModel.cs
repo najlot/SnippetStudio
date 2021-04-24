@@ -11,12 +11,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class LoginViewModel : AbstractViewModel
 	{
-		private readonly ErrorService _errorService;
+		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
-		private readonly ProfilesService _profilesService;
+		private readonly IProfilesService _profilesService;
 		private readonly IProfileHandler _profileHandler;
 		private readonly IServiceProvider _serviceProvider;
-		private readonly Messenger _messenger;
+		private readonly IMessenger _messenger;
 		private readonly Func<LoginProfileViewModel> _createLoginProfileViewModel;
 		private IServiceScope _serviceScope;
 		private ObservableCollection<LoginProfileViewModel> _loginProfiles = new ObservableCollection<LoginProfileViewModel>();
@@ -33,12 +33,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 			await _navigationService.NavigateForward(new ProfileViewModel(_messenger, _errorService, _navigationService));
 		}
 
-		public LoginViewModel(ErrorService errorService,
+		public LoginViewModel(IErrorService errorService,
 			INavigationService navigationService,
-			ProfilesService profilesService,
+			IProfilesService profilesService,
 			IProfileHandler profileHandler,
 			IServiceProvider serviceProvider,
-			Messenger messenger,
+			IMessenger messenger,
 			Func<LoginProfileViewModel> createLoginProfileViewModel)
 		{
 			_errorService = errorService;
@@ -61,7 +61,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlert("Error...", task.Exception);
+			await _errorService.ShowAlertAsync("Error...", task.Exception);
 		}
 
 		private async Task LoadProfiles()
@@ -78,7 +78,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Could not load profiles...", ex);
+				await _errorService.ShowAlertAsync("Could not load profiles...", ex);
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			}
 			catch (Exception ex)
 			{
-				await _errorService.ShowAlert("Could not login...", ex);
+				await _errorService.ShowAlertAsync("Could not login...", ex);
 			}
 		}
 	}

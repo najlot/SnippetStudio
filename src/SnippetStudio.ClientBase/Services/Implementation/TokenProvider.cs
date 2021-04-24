@@ -1,15 +1,14 @@
 ﻿using Cosei.Client.Base;
 using System;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 
-namespace SnippetStudio.ClientBase.Services
+namespace SnippetStudio.ClientBase.Services.Implementation
 {
-	public class TokenProvider
+	public class TokenProvider : ITokenProvider
 	{
 		private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 		private readonly Func<IRequestClient> _clientFactory;
