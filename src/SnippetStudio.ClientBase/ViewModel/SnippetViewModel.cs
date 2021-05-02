@@ -37,7 +37,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 				if (Item.Variables == null)
 				{
+					_messenger.Register<SnippetLoaded>(Handle);
 					Variables = new ObservableCollection<VariableViewModel>();
+					RunCommand = new AsyncCommand(LoadAndRunAsync, DisplayError);
 				}
 				else
 				{
@@ -81,6 +83,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
 			EditSnippetCommand = new AsyncCommand(EditSnippetAsync, DisplayError, () => !IsBusy);
 			ExportSnippetCommand = new AsyncCommand(ExportSnippetAsync, DisplayError, () => !IsBusy);
+			RunCommand = new AsyncCommand(RunAsync, DisplayError);
 		}
 
 		private async Task DisplayError(Task task)
@@ -93,6 +96,8 @@ namespace SnippetStudio.ClientBase.ViewModel
 			await _messenger.SendAsync(new LoadSnippet(Item.Id));
 			await RunAsync();
 		}
+
+		public AsyncCommand RunCommand { get; private set; }
 
 		private async Task RunAsync()
 		{

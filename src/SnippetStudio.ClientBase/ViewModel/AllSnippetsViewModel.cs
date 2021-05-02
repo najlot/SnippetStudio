@@ -341,18 +341,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 					// Prevalidate
 					item.SetValidation(new SnippetValidationList(), true);
 
-					var itemVm = new SnippetViewModel(
-						_errorService,
-						item,
-						_navigationService,
-						_messenger,
-						_diskSearcher);
+					var viewModel = _snippetViewModelFactory();
+					viewModel.Item = item;
+					
+					_messenger.Register<EditVariable>(viewModel.Handle);
+					_messenger.Register<DeleteVariable>(viewModel.Handle);
+					_messenger.Register<SaveVariable>(viewModel.Handle);
 
-					_messenger.Register<EditVariable>(itemVm.Handle);
-					_messenger.Register<DeleteVariable>(itemVm.Handle);
-					_messenger.Register<SaveVariable>(itemVm.Handle);
-
-					await _navigationService.NavigateForward(itemVm);
+					await _navigationService.NavigateForward(viewModel);
 				}
 			}
 			catch (Exception ex)
