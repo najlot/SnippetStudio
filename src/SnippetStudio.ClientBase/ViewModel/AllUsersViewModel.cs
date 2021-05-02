@@ -11,6 +11,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class AllUsersViewModel : AbstractViewModel, IDisposable
 	{
+		private readonly Func<UserViewModel> _userViewModelFactory;
 		private readonly IUserService _userService;
 		private readonly INavigationService _navigationService;
 		private readonly IMessenger _messenger;
@@ -38,11 +39,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public ObservableCollectionView<UserViewModel> UsersView { get; }
 		public ObservableCollection<UserViewModel> Users { get; } = new ObservableCollection<UserViewModel>();
 
-		public AllUsersViewModel(IErrorService errorService,
+		public AllUsersViewModel(
+			Func<UserViewModel> userViewModelFactory,
+			IErrorService errorService,
 			IUserService userService,
 			INavigationService navigationService,
 			IMessenger messenger)
 		{
+			_userViewModelFactory = userViewModelFactory;
 			_errorService = errorService;
 			_userService = userService;
 			_navigationService = navigationService;
@@ -99,18 +103,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private void Handle(UserCreated obj)
 		{
+			var viewModel = _userViewModelFactory();
 
-			Users.Insert(0, new UserViewModel(
-				_errorService,
-				new Models.UserModel()
-				{
-					Id = obj.Id,
-					Username = obj.Username,
-					EMail = obj.EMail,
-					Password = obj.Password,
-				},
-				_navigationService,
-				_messenger));
+
+			viewModel.Item = new Models.UserModel()
+			{
+				Id = obj.Id,
+				Username = obj.Username,
+				EMail = obj.EMail,
+				Password = obj.Password,
+			};
+
+			Users.Insert(0, viewModel);
 		}
 
 		private void Handle(UserUpdated obj)
@@ -133,18 +137,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 				index = 0;
 			}
 
+			var viewModel = _userViewModelFactory();
 
-			Users.Insert(index, new UserViewModel(
-				_errorService,
-				new Models.UserModel()
-				{
-					Id = obj.Id,
-					Username = obj.Username,
-					EMail = obj.EMail,
-					Password = obj.Password,
-				},
-				_navigationService,
-				_messenger));
+
+			viewModel.Item = new Models.UserModel()
+			{
+				Id = obj.Id,
+				Username = obj.Username,
+				EMail = obj.EMail,
+				Password = obj.Password,
+			};
+
+			Users.Insert(index, viewModel);
 		}
 
 		private void Handle(UserDeleted obj)
@@ -185,17 +189,15 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new UserValidationList(), true);
 
-
-				var vm = new UserViewModel(
-					_errorService,
-					item,
-					_navigationService,
-					_messenger);
+				var viewModel = _userViewModelFactory();
 
 
-				_messenger.Register<UserUpdated>(vm.Handle);
+				viewModel.Item = item;
 
-				await _navigationService.NavigateForward(vm);
+
+				_messenger.Register<UserUpdated>(viewModel.Handle);
+
+				await _navigationService.NavigateForward(viewModel);
 			}
 			catch (Exception ex)
 			{
@@ -243,14 +245,13 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new UserValidationList(), true);
 
-				var itemVm = new UserViewModel(
-					_errorService,
-					item,
-					_navigationService,
-					_messenger);
+				var viewModel = _userViewModelFactory();
 
 
-				await _navigationService.NavigateForward(itemVm);
+				viewModel.Item = item;
+
+
+				await _navigationService.NavigateForward(viewModel);
 			}
 			catch (Exception ex)
 			{
@@ -282,13 +283,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 				foreach (var item in users)
 				{
-					var vm = new UserViewModel(
-						_errorService,
-						item,
-						_navigationService,
-						_messenger);
+					var viewModel = _userViewModelFactory();
 
-					Users.Add(vm);
+
+					viewModel.Item = item;
+
+					Users.Add(viewModel);
 				}
 			}
 			catch (Exception ex)

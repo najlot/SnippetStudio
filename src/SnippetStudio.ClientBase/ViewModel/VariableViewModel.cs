@@ -15,27 +15,32 @@ namespace SnippetStudio.ClientBase.ViewModel
 	{
 		private bool _isBusy;
 		private VariableModel _item;
+		private Guid _parentId;
 
 		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly IMessenger _messenger;
-		private readonly Guid _parentId;
 
-		public VariableModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
+		public VariableModel Item
+		{
+			get => _item;
+			set
+			{
+				Set(nameof(Item), ref _item, value);
+			}
+		}
+
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
+		public Guid ParentId { get => _parentId; set => Set(nameof(ParentId), ref _parentId, value); }
 
 		public VariableViewModel(
 			IErrorService errorService,
-			VariableModel variableModel,
 			INavigationService navigationService,
-			IMessenger messenger,
-			Guid parentId)
+			IMessenger messenger)
 		{
-			Item = variableModel;
 			_errorService = errorService;
 			_navigationService = navigationService;
 			_messenger = messenger;
-			_parentId = parentId;
 
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 			DeleteCommand = new AsyncCommand<bool>(DeleteAsync, DisplayError);

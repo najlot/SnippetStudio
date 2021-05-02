@@ -11,6 +11,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 {
 	public class AllSnippetsViewModel : AbstractViewModel, IDisposable
 	{
+		private readonly Func<SnippetViewModel> _snippetViewModelFactory;
 		private readonly ISnippetService _snippetService;
 		private readonly INavigationService _navigationService;
 		private readonly IMessenger _messenger;
@@ -38,11 +39,14 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public ObservableCollectionView<SnippetViewModel> SnippetsView { get; }
 		public ObservableCollection<SnippetViewModel> Snippets { get; } = new ObservableCollection<SnippetViewModel>();
 
-		public AllSnippetsViewModel(IErrorService errorService,
+		public AllSnippetsViewModel(
+			Func<SnippetViewModel> snippetViewModelFactory,
+			IErrorService errorService,
 			ISnippetService snippetService,
 			INavigationService navigationService,
 			IMessenger messenger)
 		{
+			_snippetViewModelFactory = snippetViewModelFactory;
 			_errorService = errorService;
 			_snippetService = snippetService;
 			_navigationService = navigationService;
@@ -105,20 +109,20 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private void Handle(SnippetCreated obj)
 		{
+			var viewModel = _snippetViewModelFactory();
 
-			Snippets.Insert(0, new SnippetViewModel(
-				_errorService,
-				new Models.SnippetModel()
-				{
-					Id = obj.Id,
-					Name = obj.Name,
-					Language = obj.Language,
-					Variables = obj.Variables,
-					Template = obj.Template,
-					Code = obj.Code,
-				},
-				_navigationService,
-				_messenger));
+
+			viewModel.Item = new Models.SnippetModel()
+			{
+				Id = obj.Id,
+				Name = obj.Name,
+				Language = obj.Language,
+				Variables = obj.Variables,
+				Template = obj.Template,
+				Code = obj.Code,
+			};
+
+			Snippets.Insert(0, viewModel);
 		}
 
 		private void Handle(SnippetUpdated obj)
@@ -141,20 +145,20 @@ namespace SnippetStudio.ClientBase.ViewModel
 				index = 0;
 			}
 
+			var viewModel = _snippetViewModelFactory();
 
-			Snippets.Insert(index, new SnippetViewModel(
-				_errorService,
-				new Models.SnippetModel()
-				{
-					Id = obj.Id,
-					Name = obj.Name,
-					Language = obj.Language,
-					Variables = obj.Variables,
-					Template = obj.Template,
-					Code = obj.Code,
-				},
-				_navigationService,
-				_messenger));
+
+			viewModel.Item = new Models.SnippetModel()
+			{
+				Id = obj.Id,
+				Name = obj.Name,
+				Language = obj.Language,
+				Variables = obj.Variables,
+				Template = obj.Template,
+				Code = obj.Code,
+			};
+
+			Snippets.Insert(index, viewModel);
 		}
 
 		private void Handle(SnippetDeleted obj)
@@ -195,20 +199,18 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);
 
+				var viewModel = _snippetViewModelFactory();
 
-				var vm = new SnippetViewModel(
-					_errorService,
-					item,
-					_navigationService,
-					_messenger);
 
-				_messenger.Register<EditVariable>(vm.Handle);
-				_messenger.Register<DeleteVariable>(vm.Handle);
-				_messenger.Register<SaveVariable>(vm.Handle);
+				viewModel.Item = item;
 
-				_messenger.Register<SnippetUpdated>(vm.Handle);
+				_messenger.Register<EditVariable>(viewModel.Handle);
+				_messenger.Register<DeleteVariable>(viewModel.Handle);
+				_messenger.Register<SaveVariable>(viewModel.Handle);
 
-				await _navigationService.NavigateForward(vm);
+				_messenger.Register<SnippetUpdated>(viewModel.Handle);
+
+				await _navigationService.NavigateForward(viewModel);
 			}
 			catch (Exception ex)
 			{
@@ -256,17 +258,16 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				item.SetValidation(new SnippetValidationList(), true);
 
-				var itemVm = new SnippetViewModel(
-					_errorService,
-					item,
-					_navigationService,
-					_messenger);
+				var viewModel = _snippetViewModelFactory();
 
-				_messenger.Register<EditVariable>(itemVm.Handle);
-				_messenger.Register<DeleteVariable>(itemVm.Handle);
-				_messenger.Register<SaveVariable>(itemVm.Handle);
 
-				await _navigationService.NavigateForward(itemVm);
+				viewModel.Item = item;
+
+				_messenger.Register<EditVariable>(viewModel.Handle);
+				_messenger.Register<DeleteVariable>(viewModel.Handle);
+				_messenger.Register<SaveVariable>(viewModel.Handle);
+
+				await _navigationService.NavigateForward(viewModel);
 			}
 			catch (Exception ex)
 			{
@@ -298,13 +299,12 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 				foreach (var item in snippets)
 				{
-					var vm = new SnippetViewModel(
-						_errorService,
-						item,
-						_navigationService,
-						_messenger);
+					var viewModel = _snippetViewModelFactory();
 
-					Snippets.Add(vm);
+
+					viewModel.Item = item;
+
+					Snippets.Add(viewModel);
 				}
 			}
 			catch (Exception ex)

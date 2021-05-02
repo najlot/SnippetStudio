@@ -16,43 +16,57 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private bool _isBusy;
 		private SnippetModel _item;
 
+
+		private readonly Func<VariableViewModel> _variableViewModelFactory;
 		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
 		private readonly IMessenger _messenger;
 
-		public SnippetModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
+		public SnippetModel Item
+		{
+			get => _item;
+			set
+			{
+				Set(nameof(Item), ref _item, value);
+
+				if (Item.Variables == null)
+				{
+					Variables = new ObservableCollection<VariableViewModel>();
+				}
+				else
+				{
+					Variables = new ObservableCollection<VariableViewModel>(Item.Variables.Select(e =>
+					{
+						var model = new VariableModel()
+						{
+							Id = e.Id,
+							Name = e.Name,
+							RequestName = e.RequestName,
+							DefaultValue = e.DefaultValue,
+						};
+
+						var viewModel = _variableViewModelFactory();
+						viewModel.ParentId = Item.Id;
+						viewModel.Item = model;
+						return viewModel;
+					}));
+				}
+			}
+		}
+
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
 		public SnippetViewModel(
+			Func<VariableViewModel> variableViewModelFactory,
 			IErrorService errorService,
-			SnippetModel snippetModel,
 			INavigationService navigationService,
 			IMessenger messenger)
 		{
-			Item = snippetModel;
+			_variableViewModelFactory = variableViewModelFactory;
+
 			_errorService = errorService;
 			_navigationService = navigationService;
 			_messenger = messenger;
-
-			if (Item.Variables == null)
-			{
-				Variables = new ObservableCollection<VariableViewModel>();
-			}
-			else
-			{
-				Variables = new ObservableCollection<VariableViewModel>(Item.Variables.Select(e =>
-				{
-					var model = new VariableModel()
-					{
-						Id = e.Id,
-						Name = e.Name,
-						RequestName = e.RequestName,
-						DefaultValue = e.DefaultValue,
-					};
-
-					return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
-				}));
-			}
 
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 			DeleteCommand = new AsyncCommand(DeleteAsync, DisplayError);
@@ -91,7 +105,10 @@ namespace SnippetStudio.ClientBase.ViewModel
 					DefaultValue = e.DefaultValue,
 				};
 
-				return new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
+				var viewModel = _variableViewModelFactory();
+				viewModel.ParentId = Item.Id;
+				viewModel.Item = model;
+				return viewModel;
 			}));
 		}
 
