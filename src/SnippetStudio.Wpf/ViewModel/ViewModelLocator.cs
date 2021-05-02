@@ -43,12 +43,21 @@ namespace SnippetStudio.Wpf.ViewModel
 
 			// Register viewmodels
 			serviceCollection.AddSingleton<LoginViewModel>();
+			serviceCollection.AddTransient<ProfileViewModel>();
+			serviceCollection.AddSingleton<Func<ProfileViewModel>>(c => () => c.GetRequiredService<ProfileViewModel>());
 			serviceCollection.AddTransient<LoginProfileViewModel>();
 			serviceCollection.AddSingleton<Func<LoginProfileViewModel>>(c => () => c.GetRequiredService<LoginProfileViewModel>());
 			serviceCollection.AddScoped<MenuViewModel>();
 
 			serviceCollection.AddScoped<AllSnippetsViewModel>();
 			serviceCollection.AddScoped<AllUsersViewModel>();
+
+			serviceCollection.AddTransient<SnippetViewModel>();
+			serviceCollection.AddSingleton<Func<SnippetViewModel>>(c => () => c.GetRequiredService<SnippetViewModel>());
+			serviceCollection.AddTransient<UserViewModel>();
+			serviceCollection.AddSingleton<Func<UserViewModel>>(c => () => c.GetRequiredService<UserViewModel>());
+			serviceCollection.AddTransient<VariableViewModel>();
+			serviceCollection.AddSingleton<Func<VariableViewModel>>(c => () => c.GetRequiredService<VariableViewModel>());
 
 			serviceCollection.AddSingleton<INavigationService>(Main);
 

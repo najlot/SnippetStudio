@@ -20,16 +20,22 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly INavigationService _navigationService;
 		private readonly IMessenger _messenger;
 
-		public UserModel Item { get => _item; private set => Set(nameof(Item), ref _item, value); }
+		public UserModel Item
+		{
+			get => _item;
+			set
+			{
+				Set(nameof(Item), ref _item, value);
+			}
+		}
+
 		public bool IsBusy { get => _isBusy; private set => Set(nameof(IsBusy), ref _isBusy, value); }
 
 		public UserViewModel(
 			IErrorService errorService,
-			UserModel userModel,
 			INavigationService navigationService,
 			IMessenger messenger)
 		{
-			Item = userModel;
 			_errorService = errorService;
 			_navigationService = navigationService;
 			_messenger = messenger;

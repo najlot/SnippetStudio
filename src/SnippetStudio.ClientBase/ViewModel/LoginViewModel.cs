@@ -17,6 +17,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly IProfileHandler _profileHandler;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IMessenger _messenger;
+		private readonly Func<ProfileViewModel> _createProfileViewModel;
 		private readonly Func<LoginProfileViewModel> _createLoginProfileViewModel;
 		private IServiceScope _serviceScope;
 		private ObservableCollection<LoginProfileViewModel> _loginProfiles = new ObservableCollection<LoginProfileViewModel>();
@@ -30,7 +31,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		public AsyncCommand CreateProfileCommand { get; }
 		private async Task CreateProfileAsync()
 		{
-			await _navigationService.NavigateForward(new ProfileViewModel(_messenger, _errorService, _navigationService));
+			await _navigationService.NavigateForward(_createProfileViewModel());
 		}
 
 		public LoginViewModel(IErrorService errorService,
@@ -39,6 +40,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			IProfileHandler profileHandler,
 			IServiceProvider serviceProvider,
 			IMessenger messenger,
+			Func<ProfileViewModel> createProfileViewModel,
 			Func<LoginProfileViewModel> createLoginProfileViewModel)
 		{
 			_errorService = errorService;
@@ -47,6 +49,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			_profileHandler = profileHandler;
 			_serviceProvider = serviceProvider;
 			_messenger = messenger;
+			_createProfileViewModel = createProfileViewModel;
 			_createLoginProfileViewModel = createLoginProfileViewModel;
 
 			_messenger.Register<LoginProfile>(Login);

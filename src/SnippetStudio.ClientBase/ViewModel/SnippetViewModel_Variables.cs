@@ -27,9 +27,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 			var model = new VariableModel() { Id = max };
 
-			var vm = new VariableViewModel(_errorService, model, _navigationService, _messenger, Item.Id);
+			var viewModel = _variableViewModelFactory();
+			viewModel.ParentId = Item.Id;
+			viewModel.Item = model;
 
-			Variables.Add(vm);
+			Variables.Add(viewModel);
 		});
 
 		public async Task Handle(DeleteVariable obj)
@@ -80,14 +82,11 @@ namespace SnippetStudio.ClientBase.ViewModel
 				// Prevalidate
 				vm.Item.SetValidation(new VariableValidationList(), true);
 
-				vm = new VariableViewModel(
-					_errorService,
-					vm.Item,
-					_navigationService,
-					_messenger,
-					Item.Id);
+				var viewModel = _variableViewModelFactory();
+				viewModel.ParentId = Item.Id;
+				viewModel.Item = vm.Item;
 
-				await _navigationService.NavigateForward(vm);
+				await _navigationService.NavigateForward(viewModel);
 			}
 			catch (Exception ex)
 			{
@@ -121,23 +120,17 @@ namespace SnippetStudio.ClientBase.ViewModel
 					}
 				}
 
+				var viewModel = _variableViewModelFactory();
+				viewModel.ParentId = Item.Id;
+				viewModel.Item = obj.Item;
+
 				if (index == -1)
 				{
-					Variables.Insert(0, new VariableViewModel(
-						_errorService,
-						obj.Item,
-						_navigationService,
-						_messenger,
-						Item.Id));
+					Variables.Insert(0, viewModel);
 				}
 				else
 				{
-					Variables.Insert(index, new VariableViewModel(
-						_errorService,
-						obj.Item,
-						_navigationService,
-						_messenger,
-						Item.Id));
+					Variables.Insert(index, viewModel);
 				}
 			}
 			catch (Exception ex)
