@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using SnippetStudio.ClientBase.Localisation;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
@@ -116,7 +117,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlertAsync("Error...", task.Exception);
+			await _errorService.ShowAlertAsync(CommonLoc.Error, task.Exception);
 		}
 
 		private async Task Handle(RunSnippet obj)

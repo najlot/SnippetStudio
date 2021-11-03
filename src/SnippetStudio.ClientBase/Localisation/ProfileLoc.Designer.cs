@@ -61,6 +61,24 @@ namespace SnippetStudio.ClientBase.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not load profiles.
+        /// </summary>
+        public static string CouldNotLoadProfiles {
+            get {
+                return ResourceManager.GetString("CouldNotLoadProfiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not login.
+        /// </summary>
+        public static string CouldNotLogin {
+            get {
+                return ResourceManager.GetString("CouldNotLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -70,11 +88,38 @@ namespace SnippetStudio.ClientBase.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete profile &apos;{0}&apos;?.
+        /// </summary>
+        public static string DeleteProfile {
+            get {
+                return ResourceManager.GetString("DeleteProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete?.
+        /// </summary>
+        public static string DeleteQ {
+            get {
+                return ResourceManager.GetString("DeleteQ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error creating profile.
+        /// </summary>
+        public static string ErrorCreatingProfile {
+            get {
+                return ResourceManager.GetString("ErrorCreatingProfile", resourceCulture);
             }
         }
         

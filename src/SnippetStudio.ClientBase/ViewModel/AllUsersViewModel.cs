@@ -6,6 +6,7 @@ using SnippetStudio.Contracts;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Services;
 using SnippetStudio.ClientBase.Validation;
+using SnippetStudio.ClientBase.Localisation;
 
 namespace SnippetStudio.ClientBase.ViewModel
 {
@@ -98,7 +99,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlertAsync("Error...", task.Exception);
+			await _errorService.ShowAlertAsync(CommonLoc.Error, task.Exception);
 		}
 
 		private void Handle(UserCreated obj)

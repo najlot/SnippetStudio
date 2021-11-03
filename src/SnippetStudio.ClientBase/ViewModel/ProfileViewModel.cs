@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SnippetStudio.ClientBase.Localisation;
 using SnippetStudio.ClientBase.Messages;
 using SnippetStudio.ClientBase.Models;
 using SnippetStudio.ClientBase.Services;
@@ -14,7 +15,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 		private readonly IErrorService _errorService;
 		private readonly INavigationService _navigationService;
 
-		public ProfileBase Profile { get => profile; private set => Set(nameof(Profile), ref profile, value); }
+		public ProfileBase Profile { get => profile; set => Set(nameof(Profile), ref profile, value); }
 
 		public Source Source
 		{
@@ -63,7 +64,7 @@ namespace SnippetStudio.ClientBase.ViewModel
 			Profile = new LocalProfile
 			{
 				Id = id,
-				Name = "New Profile",
+				Name = ProfileLoc.NewProfile,
 				FolderName = id.ToString()
 			};
 
@@ -74,19 +75,9 @@ namespace SnippetStudio.ClientBase.ViewModel
 			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
 		}
 
-		public ProfileViewModel(ProfileBase profile, IMessenger messenger, IErrorService errorService, INavigationService navigationService)
-		{
-			Profile = profile;
-			_messenger = messenger;
-			_errorService = errorService;
-			_navigationService = navigationService;
-
-			SaveCommand = new AsyncCommand(SaveAsync, DisplayError);
-		}
-
 		private async Task DisplayError(Task task)
 		{
-			await _errorService.ShowAlertAsync("Error...", task.Exception);
+			await _errorService.ShowAlertAsync(CommonLoc.Error, task.Exception);
 		}
 
 		public AsyncCommand SaveCommand { get; }
