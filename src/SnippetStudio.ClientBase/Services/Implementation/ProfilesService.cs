@@ -88,7 +88,7 @@ namespace SnippetStudio.ClientBase.Services.Implementation
 					}
 				};
 
-				Save(oldEntries);
+				await SaveAsync(oldEntries);
 
 				return oldEntries;
 			}
