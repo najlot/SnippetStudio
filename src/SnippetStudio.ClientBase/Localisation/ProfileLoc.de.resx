@@ -117,11 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CouldNotLoadProfiles" xml:space="preserve">
+    <value>Profile konnten nicht geladen werden</value>
+  </data>
+  <data name="CouldNotLogin" xml:space="preserve">
+    <value>Konnte nicht einloggen</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Löschen</value>
   </data>
+  <data name="DeleteProfile" xml:space="preserve">
+    <value>Möchten Sie das Profil '{0}' wirklich löschen?</value>
+  </data>
+  <data name="DeleteQ" xml:space="preserve">
+    <value>Löschen?</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Bearbeiten</value>
+  </data>
+  <data name="ErrorCreatingProfile" xml:space="preserve">
+    <value>Fehler beim Erstellen des Profils</value>
   </data>
   <data name="Foldername" xml:space="preserve">
     <value>Ordnername:</value>
