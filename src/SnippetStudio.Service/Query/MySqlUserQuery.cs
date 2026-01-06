@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using SnippetStudio.Contracts;
 using SnippetStudio.Service.Configuration;
 using SnippetStudio.Service.Model;
+using MySqlConnector;
 
 namespace SnippetStudio.Service.Query
 {

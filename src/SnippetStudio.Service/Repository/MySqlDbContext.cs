@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SnippetStudio.Service.Configuration;
 using SnippetStudio.Service.Model;
+using System.Collections.Concurrent;
 
 namespace SnippetStudio.Service.Repository
 {
@@ -8,7 +9,9 @@ namespace SnippetStudio.Service.Repository
 	{
 		private readonly MySqlConfiguration _configuration;
 
-		public MySqlDbContext(MySqlConfiguration configuration)
+        private static readonly ConcurrentDictionary<string, ServerVersion> _knownVersions = new();
+
+        public MySqlDbContext(MySqlConfiguration configuration)
 		{
 			_configuration = configuration;
 		}
@@ -21,7 +24,13 @@ namespace SnippetStudio.Service.Repository
 				$"uid={_configuration.User};" +
 				$"password={_configuration.Password}";
 
-			optionsBuilder.UseMySql(connectionString);
+            if (!_knownVersions.TryGetValue(connectionString, out var version))
+            {
+                version = ServerVersion.AutoDetect(connectionString);
+                _knownVersions[connectionString] = version;
+            }
+
+            optionsBuilder.UseMySql(connectionString, version);
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
